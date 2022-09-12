@@ -23,6 +23,34 @@ void test_create_destroy()
    ioopm_hash_table_destroy(ht);
 }
 
+void test_insert_once(int k, char *v)
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
+  char *a = ioopm_hash_table_lookup(ht, k); //verify that key k is not in h using lookup
+  CU_ASSERT_PTR_NULL(a); //make sure a is null aka that there is no value to key k in ht
+  ioopm_hash_table_insert(ht, k, v); //insert (k, v) into the hashtable
+  char *b = ioopm_hash_table_lookup(ht, k);
+  CU_ASSERT_EQUAL(b, v); //make sure value b in ht (paired with k), is the same as value v we inserted together in beginning
+  ioopm_hash_table_destroy(ht); //destroy ht
+}
+
+void test_insert_alreadythere (int k, char *v)
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
+  char *a = ioopm_hash_table_lookup(ht, k); //verify that key k IS ht using lookup. return value mapped to this k
+  ioopm_hash_table_insert(ht, k, v); //insert (k, v) into the hashtable
+  char *b = ioopm_hash_table_lookup(ht, k); //looking up new value mapped to k
+  CU_ASSERT_NOT_EQUAL(a, b); //make sure current value paired with k (b) is NOT the same as initial value a
+  ioopm_hash_table_destroy(ht); //destroy ht
+}
+
+void test_insert_invalidkey()
+{
+ //TODO: first half of inlup1.1
+}
+
+//test different combinations of 1,2 and 3. look first half of inlup1.
+
 int main() {
   // First we try to set up CUnit, and exit if we fail
   if (CU_initialize_registry() != CUE_SUCCESS)
