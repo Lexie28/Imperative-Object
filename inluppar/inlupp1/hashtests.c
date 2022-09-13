@@ -1,5 +1,6 @@
 #include <CUnit/Basic.h>
 #include "hash_table.h"
+#include <string.h>
 
 
 int init_suite(void) {
@@ -21,32 +22,57 @@ void test_create_destroy()
    ioopm_hash_table_t *ht = ioopm_hash_table_create();
    CU_ASSERT_PTR_NOT_NULL(ht); //	Check that ht is not equal to NULL
    ioopm_hash_table_destroy(ht);
+   CU_ASSERT_PTR_NULL(ht); //kolla att pekaren till hashtablet är NULL efter vi destroyed den
 }
 
-void test_insert_once(int k, char *v)
+void test_insert_freshkey()
 {
+  int k = 1;
+  char *v = "John";
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
   char *a = ioopm_hash_table_lookup(ht, k); //verify that key k is not in h using lookup
   CU_ASSERT_PTR_NULL(a); //make sure a is null aka that there is no value to key k in ht
   ioopm_hash_table_insert(ht, k, v); //insert (k, v) into the hashtable
   char *b = ioopm_hash_table_lookup(ht, k);
-  CU_ASSERT_EQUAL(b, v); //make sure value b in ht (paired with k), is the same as value v we inserted together in beginning
-  ioopm_hash_table_destroy(ht); //destroy ht
+  CU_ASSERT(strcmp(b, v)); //make sure value b in ht (paired with k), is the same as value v we inserted together in beginning
+  ioopm_hash_table_destroy(ht); //destroy ht 
 }
 
-void test_insert_alreadythere (int k, char *v)
+void test_insert_alreadythere ()
 {
+  int k = 2;
+  char *v1 = "Lexie";
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
+  ioopm_hash_table_insert(ht, k, v1);
   char *a = ioopm_hash_table_lookup(ht, k); //verify that key k IS ht using lookup. return value mapped to this k
-  ioopm_hash_table_insert(ht, k, v); //insert (k, v) into the hashtable
+  char *v2 = "Nyacool";
+  ioopm_hash_table_insert(ht, k, v2); //insert (k, v) into the hashtable
   char *b = ioopm_hash_table_lookup(ht, k); //looking up new value mapped to k
-  CU_ASSERT_NOT_EQUAL(a, b); //make sure current value paired with k (b) is NOT the same as initial value a
+  CU_ASSERT_FALSE(strcmp(a, b)); //make sure current value paired with k (b) is NOT the same as initial value a
   ioopm_hash_table_destroy(ht); //destroy ht
-}
+} 
 
 void test_insert_invalidkey()
 {
- //TODO: first half of inlup1.1
+  int k = -67;
+  char *v = "Lexie";
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
+  ioopm_hash_table_insert(ht, k, v);
+  char *a = ioopm_hash_table_lookup(ht,k);
+  CU_ASSERT(strcmp(v,a)); //TODO?? SKA VI KUNNA TA INVALIDS? VAD ÄR INVALIDS
+  ioopm_hash_table_destroy(ht);
+  //test andra invalids också
+}
+
+void test_lookup_empty()
+{
+   ioopm_hash_table_t *ht = ioopm_hash_table_create();
+   for (int i = 0; i < 18; ++i) /// 18 is a bit magical. 18 because 17 wraps around to 0.
+     {
+       CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, i));
+     }
+   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, -1));
+   ioopm_hash_table_destroy(ht);
 }
 
 //test different combinations of 1,2 and 3. look first half of inlup1.
@@ -72,6 +98,8 @@ int main() {
   // copy a line below and change the information
   if (
     (CU_add_test(my_test_suite, "Test that create != destroy hash table", test_create_destroy) == NULL) ||
+    (CU_add_test(my_test_suite, "Test that inserts a fresh key in hash table", test_insert_freshkey) == NULL) ||
+    (CU_add_test(my_test_suite, "Test that inserts already existing key in hash table", test_insert_alreadythere) == NULL) ||
     0
   )
     {
