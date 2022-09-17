@@ -1,3 +1,5 @@
+
+
 #include "hash_table.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +9,7 @@
 #include <time.h>
 
 #define Success(v) (option_t){.success = true, .value = v};
-#define Failure() (option_t){.success = false};
+#define Failure() (option_t){.success = false}; //valuet blir NULL
 #define Successful(o) (o.success == true)
 #define Unsuccessful(o) (o.success == false)
 
@@ -26,12 +28,8 @@ struct hash_table
   // utan * så säger vi att varje låda innehåller en entry_t och då kommer den skapas (dummy)
 };
 
-typedef struct option option_t;
-struct option
-{
-  bool success;
-  char *value;
-};
+//typedef struct option option_t;
+
 
 static entry_t *find_previous_entry_for_key(entry_t *entry, int key)
 {
@@ -52,13 +50,15 @@ ioopm_hash_table_t *ioopm_hash_table_create()
   return result;
 }
 
-void entry_destroy(entry_t *entry, int key)
+
+void entry_destroy(entry_t *entry)
 {
-  entry_t *laterpointer = entry->next;                         // pekare till entryn efter den vi ska destroy
+  free(entry);
+  /* entry_t *laterpointer = entry->next;                         // pekare till entryn efter den vi ska destroy
   entry_t *previous = find_previous_entry_for_key(entry, key); // pekare till entryn innan den vi ska destroy
   previous->next = laterpointer;
-  free(entry);
-}
+  free(entry); */
+  } 
 
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only owns (and thus needs to manage)
 // the memory it has allocated itself (meaning only the buckets array and all entries). Thus, if destroying a hash table creates memory leaks it is the fault of the programmer.
@@ -68,15 +68,17 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only own
   for (int i = 0; i < 17; i++)
   {
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
-    while (entry->next != NULL)       // går igenom next-pekarna tills vi kommer till slutet
+    entry = entry->next; //för att skippa dummy entryt
+
+    while (entry != NULL)       // går igenom next-pekarna tills vi kommer till slutet
     {
       entry_t *a = entry->next;
-      entry_destroy(a, a->key);
-      free(a); //????
+      free(entry);
+      entry = a;
     }
   }
   // for each bucket, iterate over its entries and deallocate them
-  free(ht);
+  free(ht); //destroying the ht structure
 }
 
 static entry_t *entry_create(int k, char *v, entry_t *next)
@@ -90,10 +92,15 @@ static entry_t *entry_create(int k, char *v, entry_t *next)
 
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
+  if (key < 0)
+  {
+    printf("Invalid key!");
+    return;
+  }
   /// Calculate the bucket for this entry
   int bucket = key % 17;
   /// Search for an existing entry for a key
-  entry_t *previousentry = find_previous_entry_for_key(&ht->buckets[bucket], key); // This passes in the addressto the entry in the
+  entry_t *previousentry = find_previous_entry_for_key(&ht->buckets[bucket], key); // This passes in the address to the entry in the
   // bucket rather than passes in a copy of the entire entry
   // pekare till hela entryt innan det vi vill sätta in
   entry_t *next = previousentry->next; // previousentry is the previous key
@@ -120,6 +127,10 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
 {
   /// Find the previous entry for key
+  if (key < 0)
+  {
+    return Failure();
+  }
   entry_t *tmp = find_previous_entry_for_key(&ht->buckets[key % 17], key);
   entry_t *next = tmp->next;
 
@@ -131,12 +142,11 @@ else
   {
     return Failure();
   }
-
-  /////change to higher level of abstraction as in inlupp-description
 }
 
+/*
 int main(int argc, char const *argv[])
 {
-  /* code */
   return 0;
 }
+*/

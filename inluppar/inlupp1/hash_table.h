@@ -1,5 +1,5 @@
+#include <stdbool.h>
 #pragma once
-
 /**
  * @file hash_table.h
  * @author Alexandra Dahlberg & Anthony Melinder
@@ -16,6 +16,11 @@
 typedef struct hash_table ioopm_hash_table_t;
 typedef struct option option_t;
 
+struct option
+{
+  bool success;
+  char *value;
+};
 /// @brief Create a new hash table
 /// @return A new empty hash table
 ioopm_hash_table_t *ioopm_hash_table_create(void);
