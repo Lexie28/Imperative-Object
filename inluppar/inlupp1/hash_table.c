@@ -1,5 +1,3 @@
-
-
 #include "hash_table.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +5,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+
+#define No_Buckets 17
 
 #define Success(v) (option_t){.success = true, .value = v};
 #define Failure() (option_t){.success = false}; // valuet blir NULL
@@ -24,7 +24,7 @@ struct entry
 
 struct hash_table
 {
-  entry_t buckets[17]; // utan * för att add a dummy entre to the buckets' lists??
+  entry_t buckets[No_Buckets]; // utan * för att add a dummy entre to the buckets' lists??
   // utan * så säger vi att varje låda innehåller en entry_t och då kommer den skapas (dummy)
 };
 
@@ -45,7 +45,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
 {
   
   
-  entry_t *prev_entry = find_previous_entry_for_key(&ht->buckets[key % 17], key);
+  entry_t *prev_entry = find_previous_entry_for_key(&ht->buckets[key % No_Buckets], key);
   entry_t *entry_remove = prev_entry->next;
   option_t entry_exist = ioopm_hash_table_lookup(ht, key);
   if(entry_exist.success)
@@ -78,7 +78,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only own
 {
   // destroy_entry(entries in ht)
   // iterate over the buckets in the buckets array
-  for (int i = 0; i < 17; i++)
+  for (int i = 0; i < No_Buckets; i++)
   {
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
     entry = entry->next;              // för att skippa dummy entryt
@@ -113,7 +113,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     return;
   }
   /// Calculate the bucket for this entry
-  int bucket = key % 17;
+  int bucket = key % No_Buckets;
   /// Search for an existing entry for a key
   entry_t *previousentry = find_previous_entry_for_key(&ht->buckets[bucket], key); // This passes in the address to the entry in the
   // bucket rather than passes in a copy of the entire entry
@@ -146,7 +146,7 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
   {
     return Failure();
   }
-  entry_t *tmp = find_previous_entry_for_key(&ht->buckets[key % 17], key);
+  entry_t *tmp = find_previous_entry_for_key(&ht->buckets[key % No_Buckets], key);
   entry_t *next = tmp->next;
 
   if (next && next->value)
