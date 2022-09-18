@@ -68,7 +68,7 @@ ioopm_hash_table_t *ioopm_hash_table_create()
   return result;
 }
 
-void entry_destroy(entry_t *entry)
+static void entry_destroy(entry_t *entry)
 {
   free(entry);
 }
