@@ -97,8 +97,7 @@ void test_remove_existingkey()
   option_t second = ioopm_hash_table_lookup(ht,k);
   char *b = second.value;
   CU_ASSERT_PTR_NULL(b); //checks that b is NULL (since we should have removed this entry)
-  
-  free(ht);
+  ioopm_hash_table_destroy(ht);
 }
 
 void test_remove_nonexistingkey()
@@ -109,7 +108,61 @@ void test_remove_nonexistingkey()
   option_t first = ioopm_hash_table_lookup(ht,k);
   char *a = first.value;
   CU_ASSERT_PTR_NULL(a); //checks that a = NULL since if we try to remove something that isn't there it remains NULL
-  free(ht);
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_countingemptyht()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  int a = ioopm_hash_table_size(ht);
+  CU_ASSERT_EQUAL(a,0);//kollar att size = 0 om ht är empty
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_countingsingleht()
+{
+  int k = 7;
+  char *v = "Lexie";
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
+  ioopm_hash_table_insert(ht, k, v);
+  int a = ioopm_hash_table_size(ht);
+  CU_ASSERT_EQUAL(a,1);//kollar att size = 1 om ht har ett entry
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_countingmanyht()
+{
+  int k = 7;
+  char *v = "Lexie";
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
+  ioopm_hash_table_insert(ht, k, v);
+  int k2 = 1;
+  char *v2 = "Hej";
+  ioopm_hash_table_insert(ht, k2, v2);
+  int k3 = 3;
+  char *v3 = "Ja";
+  ioopm_hash_table_insert(ht, k3, v3);
+  int a = ioopm_hash_table_size(ht);
+  CU_ASSERT_EQUAL(a,3);//kollar att size = 3 om ht har ett entry
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_clearingaht()
+{
+  int k = 18;
+  char *v = "Lexie";
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
+  ioopm_hash_table_insert(ht, k, v);
+  int k2 = 1;
+  char *v2 = "Hej";
+  ioopm_hash_table_insert(ht, k2, v2);
+  int k3 = 35;
+  char *v3 = "Ja";
+  ioopm_hash_table_insert(ht, k3, v3);
+  ioopm_hash_table_clear(ht);
+  bool a = ioopm_hash_table_is_empty(ht);
+  CU_ASSERT_TRUE(a);
+  ioopm_hash_table_destroy(ht);
 }
 
 
@@ -142,6 +195,10 @@ int main() {
     (CU_add_test(my_test_suite, "Test lookup empty", test_lookup_empty) == NULL) ||
     (CU_add_test(my_test_suite, "Test remove existing key", test_remove_existingkey) == NULL) ||
     (CU_add_test(my_test_suite, "Test remove non-existing key", test_remove_nonexistingkey) == NULL) ||
+    (CU_add_test(my_test_suite, "Test counting entries in empty ht", test_countingemptyht) == NULL) ||
+    (CU_add_test(my_test_suite, "Test counting entries in one-entry ht", test_countingsingleht) == NULL) ||
+    (CU_add_test(my_test_suite, "Test counting entries in multiple-entry (3 entries) ht", test_countingmanyht) == NULL) ||
+    (CU_add_test(my_test_suite, "Test clearing a hashtable", test_clearingaht) == NULL) ||
     0
   )
     {
