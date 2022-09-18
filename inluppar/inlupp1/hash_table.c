@@ -9,7 +9,7 @@
 #include <time.h>
 
 #define Success(v) (option_t){.success = true, .value = v};
-#define Failure() (option_t){.success = false}; //valuet blir NULL
+#define Failure() (option_t){.success = false}; // valuet blir NULL
 #define Successful(o) (o.success == true)
 #define Unsuccessful(o) (o.success == false)
 
@@ -28,8 +28,7 @@ struct hash_table
   // utan * så säger vi att varje låda innehåller en entry_t och då kommer den skapas (dummy)
 };
 
-//typedef struct option option_t;
-
+// typedef struct option option_t;
 
 static entry_t *find_previous_entry_for_key(entry_t *entry, int key)
 {
@@ -42,6 +41,25 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, int key)
   return entry;
 }
 
+char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
+{
+  
+  
+  entry_t *prev_entry = find_previous_entry_for_key(&ht->buckets[key % 17], key);
+  entry_t *entry_remove = prev_entry->next;
+  option_t entry_exist = ioopm_hash_table_lookup(ht, key);
+  if(entry_exist.success)
+  {
+    
+    prev_entry->next = entry_remove->next;
+    free(entry_remove);
+    return(entry_exist.value);
+  }
+  
+  return NULL;
+  
+}
+
 ioopm_hash_table_t *ioopm_hash_table_create()
 {
   /// Allocate space for a ioopm_hash_table_t = 17 pointers to
@@ -50,15 +68,10 @@ ioopm_hash_table_t *ioopm_hash_table_create()
   return result;
 }
 
-
 void entry_destroy(entry_t *entry)
 {
   free(entry);
-  /* entry_t *laterpointer = entry->next;                         // pekare till entryn efter den vi ska destroy
-  entry_t *previous = find_previous_entry_for_key(entry, key); // pekare till entryn innan den vi ska destroy
-  previous->next = laterpointer;
-  free(entry); */
-  } 
+}
 
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only owns (and thus needs to manage)
 // the memory it has allocated itself (meaning only the buckets array and all entries). Thus, if destroying a hash table creates memory leaks it is the fault of the programmer.
@@ -68,9 +81,9 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only own
   for (int i = 0; i < 17; i++)
   {
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
-    entry = entry->next; //för att skippa dummy entryt
+    entry = entry->next;              // för att skippa dummy entryt
 
-    while (entry != NULL)       // går igenom next-pekarna tills vi kommer till slutet
+    while (entry != NULL) // går igenom next-pekarna tills vi kommer till slutet
     {
       entry_t *a = entry->next;
       free(entry);
@@ -78,7 +91,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only own
     }
   }
   // for each bucket, iterate over its entries and deallocate them
-  free(ht); //destroying the ht structure
+  free(ht); // destroying the ht structure
 }
 
 static entry_t *entry_create(int k, char *v, entry_t *next)
@@ -89,6 +102,8 @@ static entry_t *entry_create(int k, char *v, entry_t *next)
   new_entry->next = next;
   return new_entry;
 }
+
+
 
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
@@ -138,7 +153,7 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
   {
     return Success(next->value);
   }
-else
+  else
   {
     return Failure();
   }

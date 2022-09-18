@@ -1,4 +1,5 @@
 #include <CUnit/Basic.h>
+#include <stdlib.h>
 #include "hash_table.h"
 //#include "hash_table.c"
 
@@ -86,6 +87,31 @@ void test_lookup_empty()
    ioopm_hash_table_destroy(ht);
 }
 
+void test_remove_existingkey()
+{
+  int k = 6;
+  char *v = "Lexie";
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new hashtable
+  ioopm_hash_table_insert(ht, k, v);
+  ioopm_hash_table_remove(ht,k);
+  option_t second = ioopm_hash_table_lookup(ht,k);
+  char *b = second.value;
+  CU_ASSERT_PTR_NULL(b); //checks that b is NULL (since we should have removed this entry)
+  
+  free(ht);
+}
+
+void test_remove_nonexistingkey()
+{
+  int k = 6;
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  ioopm_hash_table_remove (ht, k);
+  option_t first = ioopm_hash_table_lookup(ht,k);
+  char *a = first.value;
+  CU_ASSERT_PTR_NULL(a); //checks that a = NULL since if we try to remove something that isn't there it remains NULL
+  free(ht);
+}
+
 
 //test different combinations of 1,2 and 3. look first half of inlup1.
 
@@ -114,6 +140,8 @@ int main() {
     (CU_add_test(my_test_suite, "Test that inserts already existing key in hash table", test_insert_alreadythere) == NULL) ||
     (CU_add_test(my_test_suite, "Test that is trying to look up a key that is not in the table", test_insert_invalidkey) == NULL) ||
     (CU_add_test(my_test_suite, "Test lookup empty", test_lookup_empty) == NULL) ||
+    (CU_add_test(my_test_suite, "Test remove existing key", test_remove_existingkey) == NULL) ||
+    (CU_add_test(my_test_suite, "Test remove non-existing key", test_remove_nonexistingkey) == NULL) ||
     0
   )
     {
