@@ -122,7 +122,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
   if (next != NULL && next->key == key) // vi är inte på slutet och vi vill
   // sätta in nytt entry med samma key som existerande, byter vi bara ut valuet till det nya
   {
-    next->value = value;
+    next->value = value; //TODO THIS IS CORRRECT!! REMOVE FOR GDB DEMONSTRATION!!
   }
   else
   {
@@ -190,7 +190,7 @@ int ioopm_hash_table_size(ioopm_hash_table_t *ht) // counting how many entries i
     return 0;
   }*/
   
-  int m = 0; //TODO!! Funkar inte på ett empty hashtable
+  int m = 0;
   for (int i = 0; i < No_Buckets; i++)
   {
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
@@ -205,6 +205,10 @@ int ioopm_hash_table_size(ioopm_hash_table_t *ht) // counting how many entries i
   return m;
 }
 
+
+
+
+
 void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
 {
   if (ioopm_hash_table_is_empty(ht))
@@ -213,6 +217,8 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
   }
   for (int i = 0; i < No_Buckets; i++)
   {
+    //entry_t *entry = &ht->buckets[i]
+    //clear_bucket (entry_t *entry)
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
     entry_t *dummy = entry;
     entry = entry->next;              // för att skippa dummy entryt
@@ -227,25 +233,21 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
     dummy->next = NULL;
   }
 }
-  /*
-  // destroy_entry(entries in ht)
-  // iterate over the buckets in the buckets array
-  for (int i = 0; i < No_Buckets; i++)
-  {
-    entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
-    entry = entry->next;              // för att skippa dummy entryt
 
-    while (entry != NULL) // går igenom next-pekarna tills vi kommer till slutet
-    {
-      entry_t *a = entry->next;
-      entry_destroy(entry);
-      entry = a;
-      entry->next = NULL;
-    }
-  }
 
+
+/*
+int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
+{
+  int size = ioopm_hash_table_size(ht); //see how many entries in the hashtable
+  int *arrayofkeys = calloc(size, sizeof(int)); //create an array of ints the size to fit all keys in the hashtable
+}
+
+char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
+{
+  int size = ioopm_hash_table_size(ht); //see how many entries in the hashtable
+  char **arrayofvalues = calloc(size, sizeof(char *)); //create an array of strings (char *) the size to fit all keys in the hashtable
 } */
-
 
 
 /*

@@ -21,7 +21,7 @@ int clean_suite(void) {
 // These are example test functions. You should replace them with
 // functions of your own.
 void test_create_destroy()
-{
+{ //pekaren/adressen till vårt hash table (som är i heapen) ligger i en stack - pekaren ht är i stacken och ioopmhashtablecreate är minne i heapen
    ioopm_hash_table_t *ht = ioopm_hash_table_create();
    CU_ASSERT_PTR_NOT_NULL(ht); //	Check that ht is not equal to NULL
    ioopm_hash_table_destroy(ht);
@@ -29,17 +29,19 @@ void test_create_destroy()
 
 void test_insert_freshkey()
 {
-  int k = 1;
-  char *v = "John";
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
-  option_t first = ioopm_hash_table_lookup(ht, k); //verify that key k is not in h using lookup
-  char *a = first.value;
-  CU_ASSERT_PTR_NULL(a); //make sure a is null aka that there is no value to key k in ht
-  ioopm_hash_table_insert(ht, k, v); //insert (k, v) into the hashtable
-  option_t second = ioopm_hash_table_lookup(ht, k);
+  int k = 1; //stacken inom funktionen freshkey
+  char *v = "John"; //s
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht. pekaren sparas i stacken. tablecreate allokerar minne i heapen (som vi pekar på med en variabel från stacken)
+  option_t first = ioopm_hash_table_lookup(ht, k); //verify that key k is not in h using lookup //skapa en ny stack för lookup med ht och k. look-up stacken försvinner (man "poppar stacken")
+  //och ger vårt returvärde som vi sparar i variabeln first (som ligger freshkey-stacken). lookup-stacken finns inte längre
+  char *a = first.value; //en till stack-variabel a
+  CU_ASSERT_PTR_NULL(a); //make sure a is null aka that there is no value to key k in ht //jämför vår stack-variabel a
+  ioopm_hash_table_insert(ht, k, v); //insert (k, v) into the hashtable //samma som i look-up (ny stack för insert - kopierar ht, k, v) - försvinner när vi når return i insert
+  option_t second = ioopm_hash_table_lookup(ht, k); //samma som ovan
   char *b = second.value;
   CU_ASSERT_STRING_EQUAL(b, v); //make sure value b in ht (paired with k), is the same as value v we inserted together in beginning
-  ioopm_hash_table_destroy(ht); //destroy ht 
+  //jämför variablar från vår stack
+  ioopm_hash_table_destroy(ht); //ny destroy-stack med kopia av ht. en till stack för clear. sista raden i destroy - freear heap-minnet för vårt hashtable
 }
 
 void test_insert_alreadythere ()
@@ -68,9 +70,9 @@ void test_insert_invalidkey()
   option_t first= ioopm_hash_table_lookup(ht,k);
   char *a = first.value;
   CU_ASSERT_PTR_NULL(a);
-  ioopm_hash_table_destroy(ht); 
+  ioopm_hash_table_destroy(ht);
   
-  //CU_ASSERT_STRING_EQUAL(v,a); //TODO?? SKA VI KUNNA TA INVALIDS? VAD ÄR INVALIDS
+  //TODO?? SKA VI KUNNA TA INVALIDS? VAD ÄR INVALIDS
   //test andra invalids också
 }
 
@@ -112,39 +114,39 @@ void test_remove_nonexistingkey()
 }
 
 void test_countingemptyht()
-{
-  ioopm_hash_table_t *ht = ioopm_hash_table_create();
-  int a = ioopm_hash_table_size(ht);
-  CU_ASSERT_EQUAL(a,0);//kollar att size = 0 om ht är empty
-  ioopm_hash_table_destroy(ht);
+{//testing ioopm_hash_table_size for case where hash table is empty
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //creates a new empty hashtable
+  int a = ioopm_hash_table_size(ht); //gets size of current hashtable
+  CU_ASSERT_EQUAL(a,0);//checks that size = 0 if ht is empty
+  ioopm_hash_table_destroy(ht); //destroys and frees hashtable
 }
 
 void test_countingsingleht()
-{
-  int k = 7;
-  char *v = "Lexie";
+{//testing ioopm_hash_table_size for case where hash table has a single entry
+  int k = 7; //creating variable k = 7
+  char *v = "Lexie"; //creating variable v = "Lexie"
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
-  ioopm_hash_table_insert(ht, k, v);
-  int a = ioopm_hash_table_size(ht);
-  CU_ASSERT_EQUAL(a,1);//kollar att size = 1 om ht har ett entry
-  ioopm_hash_table_destroy(ht);
+  ioopm_hash_table_insert(ht, k, v); //inserting (k,v) into hashtable ht
+  int a = ioopm_hash_table_size(ht); //get size of our current hash table
+  CU_ASSERT_EQUAL(a,1);//checks that size of hashtable is 1 if it has one entry
+  ioopm_hash_table_destroy(ht); //destroys and frees hashtable
 }
 
 void test_countingmanyht()
-{
-  int k = 7;
-  char *v = "Lexie";
+{//testing ioopm_hash_table_size for case where hash table has multiple entries; in this case three entries
+  int k = 7; //creating variable k = 7
+  char *v = "Lexie"; //creating variable v = "Lexie"
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //create a new empty hash table ht
-  ioopm_hash_table_insert(ht, k, v);
-  int k2 = 1;
-  char *v2 = "Hej";
-  ioopm_hash_table_insert(ht, k2, v2);
-  int k3 = 3;
-  char *v3 = "Ja";
-  ioopm_hash_table_insert(ht, k3, v3);
-  int a = ioopm_hash_table_size(ht);
-  CU_ASSERT_EQUAL(a,3);//kollar att size = 3 om ht har ett entry
-  ioopm_hash_table_destroy(ht);
+  ioopm_hash_table_insert(ht, k, v); //inserting (k,v) into hashtable ht
+  int k2 = 1; //creating variable k2 = 1
+  char *v2 = "Hej"; //creating variable v2 = "Hej"
+  ioopm_hash_table_insert(ht, k2, v2); //inserting (k2,v2) into hashtable ht
+  int k3 = 3; //creating variable k3 = 3
+  char *v3 = "Ja"; //creating variable v3 = "Ja"
+  ioopm_hash_table_insert(ht, k3, v3); //inserting (k3,v3) into hashtable ht
+  int a = ioopm_hash_table_size(ht); //gets size of our current hashtable
+  CU_ASSERT_EQUAL(a,3);//checks that size of hashtable is 3 if it has three entries
+  ioopm_hash_table_destroy(ht); //destroys and frees hashtable
 }
 
 void test_clearingaht()
