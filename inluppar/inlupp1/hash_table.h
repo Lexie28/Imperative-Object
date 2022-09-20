@@ -80,7 +80,6 @@ bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key);
 /// @param value the value sought
 bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value);
 
-
 /// @brief check if a predicate is satisfied by all entries in a hash table
 /// @param h hash table operated upon
 /// @param pred the predicate

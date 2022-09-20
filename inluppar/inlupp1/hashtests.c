@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "hash_table.h"
 //#include "hash_table.c"
+#define _XOPEN_SOURCE 700
 
 #include <string.h>
 
@@ -240,6 +241,45 @@ void test_get_all_values()
   ioopm_hash_table_destroy(ht); // Free memory used by hash table.
 }
 
+void test_haskey_exists()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  int k = 2;
+  char *v = "Lexie";
+  ioopm_hash_table_insert(ht, k, v);
+  CU_ASSERT_TRUE(ioopm_hash_table_has_key(ht,k));
+  ioopm_hash_table_clear(ht);
+  CU_ASSERT_FALSE(ioopm_hash_table_has_key(ht,k));
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_hasvalue_exists()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  int k = 2;
+  char *v = "Lexie";
+  ioopm_hash_table_insert(ht, k, v);
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,v));
+  ioopm_hash_table_clear(ht);
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht,v));
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_copyhasvalue_exists()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  int k = 2;
+  char *v = "Lexie";
+  ioopm_hash_table_insert(ht, k, v);
+  //char *copy = "Lexie";
+  char *copy = strdup(v); //TODO???? VARFÖR FUNKAR INTE STRING COPY?????????????
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,copy));
+  ioopm_hash_table_clear(ht);
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht,v));
+  free(copy);
+  ioopm_hash_table_destroy(ht);
+}
+
 // test different combinations of 1,2 and 3. look first half of inlup1.
 
 int main()
@@ -276,7 +316,10 @@ int main()
       (CU_add_test(my_test_suite, "Test counting entries in multiple-entry (3 entries) ht", test_countingmanyht) == NULL) ||
       (CU_add_test(my_test_suite, "Test clearing a hashtable", test_clearingaht) == NULL) ||
       (CU_add_test(my_test_suite, "Test get array of all keys", test_get_all_keys) == NULL) ||
-      (CU_add_test(my_test_suite, "Test get array of all keys", test_get_all_values) == NULL) ||
+      (CU_add_test(my_test_suite, "Test get array of all values", test_get_all_values) == NULL) ||
+      (CU_add_test(my_test_suite, "Test if a key exists in a hash table", test_haskey_exists) == NULL) ||
+      (CU_add_test(my_test_suite, "Test if a value exists in a hash table", test_hasvalue_exists) == NULL) ||
+      (CU_add_test(my_test_suite, "Test copy; if a value exists in a hash table", test_copyhasvalue_exists) == NULL) ||
       0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit

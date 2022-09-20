@@ -268,6 +268,40 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
   return arrayofvalues;
 }
 
+
+bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)
+{
+  option_t result = ioopm_hash_table_lookup(ht, key);
+  if (result.success == true)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value)
+{
+  char **arrayofvalues = ioopm_hash_table_values(ht);
+  int size = ioopm_hash_table_size(ht);
+  for (int i=0; i < size; i++)
+  {
+    //char *a = arrayofvalues[i];
+    //if (strcmp(a, value) = 0)
+    char *comp_string = arrayofvalues[i];
+    if (strcmp(value, comp_string) == 0)
+    {
+      free(arrayofvalues);
+      return true;
+    }
+  }
+    free(arrayofvalues);
+    return false;
+}
+
+
 /*
 int main(int argc, char const *argv[])
 {
