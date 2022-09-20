@@ -44,18 +44,18 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, int key)
 char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
 {
 
-  entry_t *prev_entry = find_previous_entry_for_key(&ht->buckets[key % No_Buckets], key); //finds previous entry to the entry we want to remove
-  entry_t *entry_remove = prev_entry->next; //entry_remove is pointer to entry we wish to remove (the one after our previous entry)
-  option_t entry_exist = ioopm_hash_table_lookup(ht, key); //we look if our entry exists in our hashtable
-  if (entry_exist.success) //if our entry that we want to remove does exist
+  entry_t *prev_entry = find_previous_entry_for_key(&ht->buckets[key % No_Buckets], key); // finds previous entry to the entry we want to remove
+  entry_t *entry_remove = prev_entry->next;                                               // entry_remove is pointer to entry we wish to remove (the one after our previous entry)
+  option_t entry_exist = ioopm_hash_table_lookup(ht, key);                                // we look if our entry exists in our hashtable
+  if (entry_exist.success)                                                                // if our entry that we want to remove does exist
   {
 
-    prev_entry->next = entry_remove->next; //we make the previous entry next pointer point to the adress of the entry AFTER the one we want to remove
-    free(entry_remove); //we free the entry we want to remove
-    return (entry_exist.value); //we return the value belonging together with the key in the entry we removed (as requested on studium)
+    prev_entry->next = entry_remove->next; // we make the previous entry next pointer point to the adress of the entry AFTER the one we want to remove
+    free(entry_remove);                    // we free the entry we want to remove
+    return (entry_exist.value);            // we return the value belonging together with the key in the entry we removed (as requested on studium)
   }
 
-  return NULL; //if the entry we wanted to remove didn't even exist in our hashtable we return NULL
+  return NULL; // if the entry we wanted to remove didn't even exist in our hashtable we return NULL
 }
 
 ioopm_hash_table_t *ioopm_hash_table_create()
@@ -85,7 +85,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only own
     {
       entry_t *a = entry->next;
       entry_destroy(entry);
-      entry = a; 
+      entry = a;
     }
   } */
   ioopm_hash_table_clear(ht);
@@ -122,7 +122,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
   if (next != NULL && next->key == key) // vi är inte på slutet och vi vill
   // sätta in nytt entry med samma key som existerande, byter vi bara ut valuet till det nya
   {
-    next->value = value; //TODO THIS IS CORRRECT!! REMOVE FOR GDB DEMONSTRATION!!
+    next->value = value; // TODO THIS IS CORRRECT!! REMOVE FOR GDB DEMONSTRATION!!
   }
   else
   {
@@ -189,7 +189,7 @@ int ioopm_hash_table_size(ioopm_hash_table_t *ht) // counting how many entries i
   {
     return 0;
   }*/
-  
+
   int m = 0;
   for (int i = 0; i < No_Buckets; i++)
   {
@@ -205,10 +205,6 @@ int ioopm_hash_table_size(ioopm_hash_table_t *ht) // counting how many entries i
   return m;
 }
 
-
-
-
-
 void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
 {
   if (ioopm_hash_table_is_empty(ht))
@@ -217,11 +213,11 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
   }
   for (int i = 0; i < No_Buckets; i++)
   {
-    //entry_t *entry = &ht->buckets[i]
-    //clear_bucket (entry_t *entry)
+    // entry_t *entry = &ht->buckets[i]
+    // clear_bucket (entry_t *entry)
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
     entry_t *dummy = entry;
-    entry = entry->next;              // för att skippa dummy entryt
+    entry = entry->next; // för att skippa dummy entryt
 
     while (entry != NULL) // går igenom next-pekarna tills vi kommer till slutet
     {
@@ -234,21 +230,43 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
   }
 }
 
-
-
-/*
 int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 {
-  int size = ioopm_hash_table_size(ht); //see how many entries in the hashtable
-  int *arrayofkeys = calloc(size, sizeof(int)); //create an array of ints the size to fit all keys in the hashtable
+  int size = ioopm_hash_table_size(ht);         // see how many entries in the hashtable
+  int *arrayofkeys = calloc(size, sizeof(int)); // create an array of ints the size to fit all keys in the hashtable
+  int acc = 0;
+
+  for (int i = 0; i < No_Buckets; i++) // going through each bucket
+  {
+    entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
+    while (entry->next != NULL && acc < size)
+    {
+      entry = entry->next; // för att skippa dummy entryt
+      arrayofkeys[acc] = entry->key;
+      acc++;
+    }
+  }
+  return arrayofkeys;
 }
 
 char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
-  int size = ioopm_hash_table_size(ht); //see how many entries in the hashtable
-  char **arrayofvalues = calloc(size, sizeof(char *)); //create an array of strings (char *) the size to fit all keys in the hashtable
-} */
+  int size = ioopm_hash_table_size(ht);                // see how many entries in the hashtable
+  char **arrayofvalues = calloc(size, sizeof(char *)); // create an array of strings (char *) the size to fit all keys in the hashtable
+  int acc = 0;
 
+  for (int i = 0; i < No_Buckets; i++) // going through each bucket
+  {
+    entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
+    while (entry->next != NULL && acc < size)
+    {
+      entry = entry->next; // för att skippa dummy entryt
+      arrayofvalues[acc] = entry->value;
+      acc++;
+    }
+  }
+  return arrayofvalues;
+}
 
 /*
 int main(int argc, char const *argv[])
