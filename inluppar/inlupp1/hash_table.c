@@ -14,6 +14,8 @@
 #define Unsuccessful(o) (o.success == false)
 
 typedef struct entry entry_t;
+typedef void (*ioopm_apply_function)(int key, char **value, void *extra);
+typedef bool (*ioopm_predicate)(int key, char *value, void *extra);
 
 struct entry
 {
@@ -225,7 +227,6 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
       entry_destroy(entry);
       entry = a;
     }
-
     dummy->next = NULL;
   }
 }
@@ -239,7 +240,7 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
   for (int i = 0; i < No_Buckets; i++) // going through each bucket
   {
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
-    while (entry->next != NULL && acc < size)
+    while (entry->next != NULL)
     {
       entry = entry->next; // för att skippa dummy entryt
       arrayofkeys[acc] = entry->key;
@@ -268,10 +269,104 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
   return arrayofvalues;
 }
 
+bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate P, void *x)
+{
+
+  int j = 0;
+  for (int i = 0; i < No_Buckets; i++)
+  {
+    entry_t *entry = &ht->buckets[i];
+    entry = entry->next;
+    while (entry != NULL)
+    {
+      j++;
+      if (P(entry->key, entry->value, x) == false)
+        return false;
+      entry = entry->next;
+    }
+  }
+  if (j == 0)
+  {
+    return false;
+  }
+  return true;
+
+  /*int size = ioopm_hash_table_size(ht);
+  int *keys = ioopm_hash_table_keys(ht);
+  char **values = ioopm_hash_table_values(ht);
+  bool result = true;
+    if (size == 0)
+  {
+    free(keys); free(values);
+    return false;
+  }
+  for (int i = 0; i < size && result; ++i)
+  {
+    if (P(keys[i], values[i], x) == false)
+    {
+      free(keys); free(values);
+      return false;
+    }
+  }
+  free(keys); free(values);
+  return true; */
+}
+
+bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate P, void *x)
+{
+  for (int i = 0; i < No_Buckets; i++)
+  {
+    entry_t *entry = &ht->buckets[i];
+    entry = entry->next;
+    while (entry != NULL)
+    {
+      if (P(entry->key, entry->value, x) == true)
+        return true;
+      entry = entry->next;
+    }
+  }
+  return false;
+
+  /*
+  int size = ioopm_hash_table_size(ht);
+  int *keys = ioopm_hash_table_keys(ht);
+  char **values = ioopm_hash_table_values(ht);
+  bool result = true;
+  for (int i = 0; i < size && result; ++i)
+  {
+    if (P(keys[i], values[i], x) == true)
+    {
+      free(keys); free(values);
+      return true;
+    }
+  }
+  free(keys); free(values);
+  return false; */
+}
+
+static bool key_equiv(int key, char *value_ignored, void *x)
+{
+  int *other_key_ptr = x;
+  int other_key = *other_key_ptr;
+  return key == other_key;
+}
+
+static bool value_equiv(int key_ignored, char *value, void *x)
+{
+  char **other_value_ptr = x;
+  char *other_value = *other_value_ptr;
+  if (strcmp(value, other_value) == 0)
+  {
+    return true;
+  }
+  return false;
+}
 
 bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)
 {
-  option_t result = ioopm_hash_table_lookup(ht, key);
+  return ioopm_hash_table_any(ht, key_equiv, &key);
+
+  /*option_t result = ioopm_hash_table_lookup(ht, key);
   if (result.success == true)
   {
     return true;
@@ -279,17 +374,20 @@ bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)
   else
   {
     return false;
-  }
+  } */
 }
 
 bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value)
 {
+  return ioopm_hash_table_any(ht, value_equiv, &value);
+
+  /*
   char **arrayofvalues = ioopm_hash_table_values(ht);
   int size = ioopm_hash_table_size(ht);
-  for (int i=0; i < size; i++)
+  for (int i = 0; i < size; i++)
   {
-    //char *a = arrayofvalues[i];
-    //if (strcmp(a, value) = 0)
+    // char *a = arrayofvalues[i];
+    // if (strcmp(a, value) = 0)
     char *comp_string = arrayofvalues[i];
     if (strcmp(value, comp_string) == 0)
     {
@@ -297,10 +395,29 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value)
       return true;
     }
   }
-    free(arrayofvalues);
-    return false;
+  free(arrayofvalues);
+  return false; */
 }
 
+bool ioopm_hash_table_hasallvalues(ioopm_hash_table_t *ht, char *value)
+{
+  return ioopm_hash_table_all(ht, value_equiv, &value);
+}
+
+void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg) // tar in ht, funktion, och om det ska ta argument till funktionen
+{
+  for (int i = 0; i < No_Buckets; i++)
+  {
+    entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
+    entry = entry->next;              // för att skippa dummy entryt
+
+    while (entry != NULL)
+    {
+      apply_fun(entry->key, &entry->value, arg);
+      entry = entry->next;
+    }
+  }
+}
 
 /*
 int main(int argc, char const *argv[])

@@ -247,9 +247,9 @@ void test_haskey_exists()
   int k = 2;
   char *v = "Lexie";
   ioopm_hash_table_insert(ht, k, v);
-  CU_ASSERT_TRUE(ioopm_hash_table_has_key(ht,k));
+  CU_ASSERT_TRUE(ioopm_hash_table_has_key(ht, k));
   ioopm_hash_table_clear(ht);
-  CU_ASSERT_FALSE(ioopm_hash_table_has_key(ht,k));
+  CU_ASSERT_FALSE(ioopm_hash_table_has_key(ht, k));
   ioopm_hash_table_destroy(ht);
 }
 
@@ -258,10 +258,11 @@ void test_hasvalue_exists()
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
   int k = 2;
   char *v = "Lexie";
-  ioopm_hash_table_insert(ht, k, v);
-  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,v));
+  ioopm_hash_table_insert(ht, k, "hej");
+  ioopm_hash_table_insert(ht, k + 17, v);
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, v));
   ioopm_hash_table_clear(ht);
-  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht,v));
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, v));
   ioopm_hash_table_destroy(ht);
 }
 
@@ -271,12 +272,81 @@ void test_copyhasvalue_exists()
   int k = 2;
   char *v = "Lexie";
   ioopm_hash_table_insert(ht, k, v);
-  //char *copy = "Lexie";
-  char *copy = strdup(v); //TODO???? VARFÖR FUNKAR INTE STRING COPY?????????????
-  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,copy));
+  // char *copy = "Lexie";
+  char *copy = strdup(v); 
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, copy));
   ioopm_hash_table_clear(ht);
-  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht,v));
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, v));
   free(copy);
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_allentriesisissamevalue()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  int k1 = 1;
+  char *v1 = "Lexie";
+  int k2 = 4;
+  char *v2 = "Lexie";
+  int k3 = 17;
+  char *v3 = "Lexie";
+  ioopm_hash_table_insert(ht, k1, v1);
+  ioopm_hash_table_insert(ht, k2, v2);
+  ioopm_hash_table_insert(ht, k3, v3);
+  char *v4 = "Lexie";
+  bool a = ioopm_hash_table_hasallvalues(ht, v4);
+  CU_ASSERT_TRUE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_allentriesfalse()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  int k1 = 1;
+  char *v1 = "Hej";
+  int k2 = 4;
+  char *v2 = "Lexie";
+  int k3 = 17;
+  char *v3 = "Lexie";
+  ioopm_hash_table_insert(ht, k1, v1);
+  ioopm_hash_table_insert(ht, k2, v2);
+  ioopm_hash_table_insert(ht, k3, v3);
+  char *v4 = "Lexie";
+  bool a = ioopm_hash_table_hasallvalues(ht, v4);
+  CU_ASSERT_FALSE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_allentriesempty()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  char *v4 = "Lexie";
+  bool a = ioopm_hash_table_hasallvalues(ht, v4);
+  CU_ASSERT_FALSE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void changeallvaluestoarg(int key, char **value, void *arg) // arg = "A"
+{
+
+  *value = (char *)arg;
+}
+
+void test_applytoall()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  int k1 = 1;
+  char *v1 = "Hej";
+  int k2 = 4;
+  char *v2 = "Då";
+  int k3 = 17;
+  char *v3 = "Lexie";
+  ioopm_hash_table_insert(ht, k1, v1);
+  ioopm_hash_table_insert(ht, k2, v2);
+  ioopm_hash_table_insert(ht, k3, v3);
+  ioopm_hash_table_apply_to_all(ht, changeallvaluestoarg, "A");
+  bool a = ioopm_hash_table_hasallvalues(ht, "A");
+  CU_ASSERT_TRUE(a);
   ioopm_hash_table_destroy(ht);
 }
 
@@ -320,6 +390,10 @@ int main()
       (CU_add_test(my_test_suite, "Test if a key exists in a hash table", test_haskey_exists) == NULL) ||
       (CU_add_test(my_test_suite, "Test if a value exists in a hash table", test_hasvalue_exists) == NULL) ||
       (CU_add_test(my_test_suite, "Test copy; if a value exists in a hash table", test_copyhasvalue_exists) == NULL) ||
+      (CU_add_test(my_test_suite, "Test if all entries has value, v", test_allentriesisissamevalue) == NULL) ||
+      (CU_add_test(my_test_suite, "Test false if all entries has value, v", test_allentriesfalse) == NULL) ||
+      (CU_add_test(my_test_suite, "Test empty if all entries has value, v", test_allentriesempty) == NULL) ||
+      (CU_add_test(my_test_suite, "Test if all values are changed to A", test_applytoall) == NULL) ||
       0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit

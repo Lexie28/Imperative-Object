@@ -15,12 +15,18 @@
 
 typedef struct hash_table ioopm_hash_table_t;
 typedef struct option option_t;
+typedef void (*ioopm_apply_function)(int key, char **value, void *extra);
+typedef bool(*ioopm_predicate)(int key, char *value, void *extra);
 
 struct option
 {
   bool success;
   char *value;
 };
+
+
+bool ioopm_hash_table_hasallvalues(ioopm_hash_table_t *ht, char *value);
+
 /// @brief Create a new hash table
 /// @return A new empty hash table
 ioopm_hash_table_t *ioopm_hash_table_create(void);
@@ -84,18 +90,16 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value);
 /// @param h hash table operated upon
 /// @param pred the predicate
 /// @param arg extra argument to pred
-
-/*bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg);
+bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg);
 
 /// @brief check if a predicate is satisfied by any entry in a hash table
 /// @param h hash table operated upon
 /// @param pred the predicate
 /// @param arg extra argument to pred
-//bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg);
+bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg);
 
 /// @brief apply a function to all entries in a hash table
 /// @param h hash table operated upon
 /// @param apply_fun the function to be applied to all elements
 /// @param arg extra argument to apply_fun
-//void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
-*/
+void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
