@@ -19,6 +19,7 @@ struct list
 
 typedef struct list ioopm_list_t;
 
+
 ioopm_list_t *ioopm_linked_list_create(void)
 {
     ioopm_list_t *result = calloc(1, sizeof(ioopm_list_t));
@@ -39,9 +40,7 @@ static link_t *create_link(int v, link_t *n)
     return newlink;
 }
 
-/// @brief Insert at the end of a linked list in O(1) time
-/// @param list the linked list that will be appended
-/// @param value the value to be appended
+
 void ioopm_linked_list_append(ioopm_list_t *list, int value)
 {
     if (list->size == 0)
@@ -51,7 +50,7 @@ void ioopm_linked_list_append(ioopm_list_t *list, int value)
     else
     {
         link_t *link = list->head;
-        for (int i = 0; i < list->size; i++)
+        for (int i = 1; i < list->size; i++)
         {
             link = link->next;
         }
@@ -59,6 +58,8 @@ void ioopm_linked_list_append(ioopm_list_t *list, int value)
         list->size++;
     }
 }
+
+
 
 /// @brief Insert at the front of a linked list in O(1) time
 /// @param list the linked list that will be prepended to
@@ -117,12 +118,6 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value) // index
     list->size++;
 }
 
-/// @brief Remove an element from a linked list in O(n) time.
-/// The valid values of index are [0,n-1] for a list of n elements,
-/// where 0 means the first element and n-1 means the last element.
-/// @param list the linked list
-/// @param index the position in the list
-/// @return the value removed
 int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 {
     link_t *link = list->head;
@@ -132,28 +127,25 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
     }
     else if (index == 0)
     {
-        int result = link->value;
-        free(link);
-        list->size--;
-        return result;
+        int removeVal = link->value; // Get return value of remove entry.
+        list->head = link->next;     // Set new head
+        free(link);                  // Free memory used by head.
+        list->size--;                // Decrease size.
+        return removeVal;            // Return value of head.
     }
     else
     {
-        for (int i = 0; i < index - 1; i++)
+        for (int i = 0; i < index - 1; i++) // Get to the link entry BEFORE the one we want to remove.
         {
             link = link->next;
         }
-        link_t *remove = link->next;   // den vi vill ta bort
-        link->next = link->next->next; // connecta 1 med 3
-        list->size--;
-        int result = remove->value;
-        free(remove);
-        return result;
+        link_t *remove = link->next;   // Get the entry we want to remove
+        link->next = link->next->next; // Connect the entries before and after remove entry.
+        list->size--;                  // Decrease our list size value.
+        int result = remove->value;    // The value of index we want to remove (return val)
+        free(remove);                  // Free memory used by the entry.
+        return result;                 // Return deleted value of entry.
     }
-    // link är den innan
-    // link->next = adressen till den vi vill ta bort
-    // link->next->next = adressen till den efter vi vill ta bort
-    // connecta den innan till adressen av den efter
 }
 
 /// @brief Retrieve an element from a linked list in O(n) time.
@@ -329,10 +321,7 @@ bool has_any_value(ioopm_list_t *list, int value)
     return ioopm_linked_list_any(list, value_equiv, &value);
 }
 
-/// @brief Apply a supplied function to all elements in a list.
-/// @param list the linked list
-/// @param fun the function to be applied
-/// @param extra an additional argument (may be NULL) that will be passed to all internal calls of fun
+
 void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra)
 {
     link_t *link = list->head;

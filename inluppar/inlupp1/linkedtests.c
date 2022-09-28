@@ -1,6 +1,7 @@
 #include <CUnit/Basic.h>
 #include <stdlib.h>
 #include "linked_list.h"
+#include "iterator.h"
 //#include "hash_table.c"
 #define _XOPEN_SOURCE 700
 
@@ -26,7 +27,7 @@ void test_create_destroy() // Testing to create and destroy a linked table.
   CU_ASSERT_PTR_NOT_NULL(list);    // Check that we now have a pointer to where the linked structure is.
   ioopm_linked_list_destroy(list); // Destroy our linked structure.
 }
-/*
+
 void test_append() // Testing to insert element at the end of linked list.
 {
  ioopm_list_t *list = ioopm_linked_list_create();
@@ -35,8 +36,19 @@ void test_append() // Testing to insert element at the end of linked list.
  ioopm_linked_list_append(list, 7);
  CU_ASSERT_TRUE(ioopm_linked_list_get(list, 2) == 7);
  ioopm_linked_list_destroy(list); // Destroy our linked structure
-} */
-// TODO???????
+}
+
+void test_appendtwo() // Testing to insert element to the end of linked list.
+{
+    ioopm_list_t *linklist = ioopm_linked_list_create();          // Create a linked list.
+    ioopm_linked_list_append(linklist, 1);                        // Append a first element into the linked structure.
+    ioopm_linked_list_append(linklist, 2);                        // Append a second element into the linked structure.
+    ioopm_linked_list_append(linklist, 150);                      // Append a third (and last) element into the linked structure..
+    int lSize = ioopm_linked_list_size(linklist);                 // Get the size of the linked structure.
+    int lastElement = ioopm_linked_list_get(linklist, lSize - 1); // Get the last element in the linked structure.
+    CU_ASSERT_EQUAL(lastElement, 150);                            // Check if the last element is equal to last i in loop (133).
+    ioopm_linked_list_destroy(linklist);                          // Free up memory used by linked structure.
+}
 
 void test_prepend() // Testing to insert an element at the start of a linked list.
 {
@@ -79,6 +91,29 @@ void test_remove()
   CU_ASSERT_NOT_EQUAL(a, 4);
   CU_ASSERT_EQUAL(a, 7);
   ioopm_linked_list_destroy(list);
+}
+
+void test_removeloop() // Testing to remove an element from random places in the linked structure.
+{
+    ioopm_list_t *linklist = ioopm_linked_list_create(); // Create a linked list.
+    for (int i = 0; i <= 10; i++)
+    {
+        ioopm_linked_list_append(linklist, i); // Create a medium sized linked list.
+    }
+    int removeVal = ioopm_linked_list_remove(linklist, 0);   // Remove the first element from linked structrue (0)
+    CU_ASSERT_EQUAL(removeVal, 0);                           // Check if removed element is the right one..
+    CU_ASSERT_TRUE(ioopm_linked_list_get(linklist, 0) == 1); // Check if first element is now 1 (which was second before).
+
+    int lSize = ioopm_linked_list_size(linklist);                    // Get the size of the linked structure.
+    removeVal = ioopm_linked_list_remove(linklist, lSize - 1);       // Remove 10 from the linked structure.
+    CU_ASSERT_EQUAL(removeVal, 10);                                  // Check if we removed correct value.
+    lSize = ioopm_linked_list_size(linklist);                        // Get the updated list size.
+    CU_ASSERT_TRUE(ioopm_linked_list_get(linklist, lSize - 1) == 9); // Check if last element is now 9.
+
+    removeVal = ioopm_linked_list_remove(linklist, 5);       // Remove a entry from middle of linked list.
+    CU_ASSERT_EQUAL(removeVal, 6);                           // Check if we removed correct value (should be 6 now cause indexes are different.)
+    CU_ASSERT_TRUE(ioopm_linked_list_get(linklist, 5) == 7); // Check if new index 5 is the number after 6.
+    ioopm_linked_list_destroy(linklist);                     // Free up memory used by linked structure.
 }
 
 void test_get()
@@ -214,11 +249,13 @@ void test_anyfalse()
   CU_ASSERT_FALSE(a);
   ioopm_linked_list_destroy(list);
 }
+
 /*
 void changeallvaluestoarg(int value, void *arg) // arg = "7"
 {
- value = arg;
+ value = (int) arg;
 }
+
 
 void test_applytoall()
 {
@@ -254,13 +291,14 @@ int main()
   // the test in question. If you want to add another test, just
   // copy a line below and change the information
   if (
-      //(CU_add_test(my_test_suite, "Test recursive count size of list", test_recsizeoflist) == NULL) ||
       (CU_add_test(my_test_suite, "Test create/destroy list", test_create_destroy) == NULL) ||
-      //(CU_add_test(my_test_suite, "Test append", test_append) == NULL) || TODO!!!??????
+      (CU_add_test(my_test_suite, "Test append", test_append) == NULL) ||
+      (CU_add_test(my_test_suite, "Test append", test_appendtwo) == NULL) ||
       (CU_add_test(my_test_suite, "Test prepend", test_prepend) == NULL) ||
       (CU_add_test(my_test_suite, "Test insert", test_insertzero) == NULL) ||
       (CU_add_test(my_test_suite, "Test insert middle", test_insertmiddle) == NULL) ||
-      (CU_add_test(my_test_suite, "Test remove", test_remove) == NULL) || // TODO??!!!????
+      (CU_add_test(my_test_suite, "Test remove", test_remove) == NULL) ||
+      (CU_add_test(my_test_suite, "Test remove", test_removeloop) == NULL) ||
       (CU_add_test(my_test_suite, "Test get", test_get) == NULL) ||
       (CU_add_test(my_test_suite, "Test get middle", test_getmiddle) == NULL) ||
       //
@@ -275,7 +313,9 @@ int main()
       (CU_add_test(my_test_suite, "Test all", test_all) == NULL) ||
       (CU_add_test(my_test_suite, "Test any true", test_anytrue) == NULL) ||
       (CU_add_test(my_test_suite, "Test any false", test_anyfalse) == NULL) ||
-      //(CU_add_test(my_test_suite, "Test change all values to seven", test_applytoall) == NULL) ||
+      //(CU_add_test(my_test_suite, "Test change all values to seven", test_applytoall) == NULL) || //TODO?????
+      //TODO????????????????????????????????????????????????????????????????????????????????????????????????????????
+      //-----------------------ITERATOR--------------------
       //(CU_add_test(my_test_suite, "T...",) == NULL) ||
       0)
   {

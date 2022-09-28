@@ -11,3 +11,12 @@ linked_lists: linked_list.c linkedtests.c
 
 coverage: hash_table.c hashtests.c
 	gcc -Wall -fprofile-arcs -ftest-coverage hash_table.c hashtests.c -o hashtests -lcunit
+
+iterator: iterator.c iteratortests.c
+	gcc $(FLAGS) iterator.c linked_list.c iteratortests.c -o itests -lcunit
+
+all: //TODO
+
+test: //TODO
+
+clean: //TODO
