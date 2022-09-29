@@ -5,6 +5,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <stddef.h>
+#include "linked_list.h"
 
 #define No_Buckets 17
 
@@ -76,22 +78,7 @@ static void entry_destroy(entry_t *entry)
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only owns (and thus needs to manage)
 // the memory it has allocated itself (meaning only the buckets array and all entries). Thus, if destroying a hash table creates memory leaks it is the fault of the programmer.
 {
-  // destroy_entry(entries in ht)
-  // iterate over the buckets in the buckets array
-  /*for (int i = 0; i < No_Buckets; i++)
-  {
-    entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
-    entry = entry->next;              // för att skippa dummy entryt
-
-    while (entry != NULL) // går igenom next-pekarna tills vi kommer till slutet
-    {
-      entry_t *a = entry->next;
-      entry_destroy(entry);
-      entry = a;
-    }
-  } */
-  ioopm_hash_table_clear(ht);
-  // for each bucket, iterate over its entries and deallocate them
+  ioopm_hash_table_clear(ht); //clearing the entries
   free(ht); // destroying the ht structure
 }
 
@@ -168,31 +155,16 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
   {
     return false;
   }
-  /*for (int i = 0; i < No_Buckets; i++)
-  {
-    entry_t *entry = &ht->buckets[i]; //pekare till början av bucket
-    entry = entry->next; //skippa dummy entryt
-
-    while (entry)
-    {
-      if (entry != NULL)
-      {
-        return false;
-      }
-      entry = entry->next;
-    }
-  }
-  return true; */
 }
 
-int ioopm_hash_table_size(ioopm_hash_table_t *ht) // counting how many entries in hashtable
+size_t ioopm_hash_table_size(ioopm_hash_table_t *ht) // counting how many entries in hashtable
 {
   /*if (ioopm_hash_table_is_empty(ht) == true)
   {
     return 0;
   }*/
 
-  int m = 0;
+  size_t m = 0;
   for (int i = 0; i < No_Buckets; i++)
   {
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
@@ -231,28 +203,26 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
   }
 }
 
-int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
-{
-  int size = ioopm_hash_table_size(ht);         // see how many entries in the hashtable
-  int *arrayofkeys = calloc(size, sizeof(int)); // create an array of ints the size to fit all keys in the hashtable
-  int acc = 0;
+//skapar tom linked list, går igenom alla keys och appendar en för en
 
+ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht) //TODO!!!!!?????
+{
+  ioopm_list_t *keylist = ioopm_linked_list_create(); //create a list to place keys in  
   for (int i = 0; i < No_Buckets; i++) // going through each bucket
   {
     entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
     while (entry->next != NULL)
     {
       entry = entry->next; // för att skippa dummy entryt
-      arrayofkeys[acc] = entry->key;
-      acc++;
+      ioopm_linked_list_append(keylist, entry->key);
     }
   }
-  return arrayofkeys;
+  return keylist;
 }
 
 char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
-  int size = ioopm_hash_table_size(ht);                // see how many entries in the hashtable
+  size_t size = ioopm_hash_table_size(ht);         // see how many entries in the hashtable
   char **arrayofvalues = calloc(size, sizeof(char *)); // create an array of strings (char *) the size to fit all keys in the hashtable
   int acc = 0;
 
@@ -290,26 +260,6 @@ bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate P, void *x)
     return false;
   }
   return true;
-
-  /*int size = ioopm_hash_table_size(ht);
-  int *keys = ioopm_hash_table_keys(ht);
-  char **values = ioopm_hash_table_values(ht);
-  bool result = true;
-    if (size == 0)
-  {
-    free(keys); free(values);
-    return false;
-  }
-  for (int i = 0; i < size && result; ++i)
-  {
-    if (P(keys[i], values[i], x) == false)
-    {
-      free(keys); free(values);
-      return false;
-    }
-  }
-  free(keys); free(values);
-  return true; */
 }
 
 bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate P, void *x)

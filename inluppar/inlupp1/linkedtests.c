@@ -44,7 +44,7 @@ void test_appendtwo() // Testing to insert element to the end of linked list.
     ioopm_linked_list_append(linklist, 1);                        // Append a first element into the linked structure.
     ioopm_linked_list_append(linklist, 2);                        // Append a second element into the linked structure.
     ioopm_linked_list_append(linklist, 150);                      // Append a third (and last) element into the linked structure..
-    int lSize = ioopm_linked_list_size(linklist);                 // Get the size of the linked structure.
+    size_t lSize = ioopm_linked_list_size(linklist);                 // Get the size of the linked structure.
     int lastElement = ioopm_linked_list_get(linklist, lSize - 1); // Get the last element in the linked structure.
     CU_ASSERT_EQUAL(lastElement, 150);                            // Check if the last element is equal to last i in loop (133).
     ioopm_linked_list_destroy(linklist);                          // Free up memory used by linked structure.
@@ -104,7 +104,7 @@ void test_removeloop() // Testing to remove an element from random places in the
     CU_ASSERT_EQUAL(removeVal, 0);                           // Check if removed element is the right one..
     CU_ASSERT_TRUE(ioopm_linked_list_get(linklist, 0) == 1); // Check if first element is now 1 (which was second before).
 
-    int lSize = ioopm_linked_list_size(linklist);                    // Get the size of the linked structure.
+    size_t lSize = ioopm_linked_list_size(linklist);                    // Get the size of the linked structure.
     removeVal = ioopm_linked_list_remove(linklist, lSize - 1);       // Remove 10 from the linked structure.
     CU_ASSERT_EQUAL(removeVal, 10);                                  // Check if we removed correct value.
     lSize = ioopm_linked_list_size(linklist);                        // Get the updated list size.
@@ -172,7 +172,7 @@ void test_sizeoflist()
   ioopm_linked_list_prepend(list, 7);
   ioopm_linked_list_prepend(list, 4);
   ioopm_linked_list_prepend(list, 10);
-  int a = ioopm_linked_list_size(list);
+  size_t a = ioopm_linked_list_size(list);
   CU_ASSERT_EQUAL(a, 3);
   ioopm_linked_list_destroy(list); // Destroy our linked structure.
 }
@@ -180,7 +180,7 @@ void test_sizeoflist()
 void test_emptysizeoflist()
 {
   ioopm_list_t *list = ioopm_linked_list_create();
-  int a = ioopm_linked_list_size(list);
+  size_t a = ioopm_linked_list_size(list);
   CU_ASSERT_EQUAL(a, 0);
   ioopm_linked_list_destroy(list); // Destroy our linked structure.
 }
@@ -250,12 +250,26 @@ void test_anyfalse()
   ioopm_linked_list_destroy(list);
 }
 
-/*
-void changeallvaluestoarg(int value, void *arg) // arg = "7"
+void changeallbad(int value, void *arg)
 {
- value = (int) arg;
+  value = *(int *) arg;
+  //ändrar value i changeallbad-funktionen. deklarerar om. får bara in värdet (inte adressen i minnet)
+  //kopierar valuet från vår link, men inte SAMMA value! (adress). tar en kopia av värdet men inte faktiska referensen
+  //bara innuti denna funktion som value ändras, inte i test_applytoall
 }
 
+
+void changeallvaluestoarg(int *value, void *arg) // arg = "7"
+{
+ *value = *(int*) arg; //värdeöverföring med pekare
+ //skickar med adressen till värdet som existerar i linken, då går vi till det adressen pekar på och skriver om det till det vi får in som argument
+ //kopia av adressen
+ //avreferera - går till platsen som adressen pekar på (alltså vårt value)
+ //skriver om värdet i den platsen till värdet som arg pekar på
+ //int * = själva adressen. vi sätter inte value till adressen
+ //*(int *) = då hämtar vi ut värdet från adressen
+ //om det stått int *arg i argumentet hade vi kunnat skriva *value = *arg
+}
 
 void test_applytoall()
 {
@@ -263,11 +277,12 @@ void test_applytoall()
  ioopm_linked_list_prepend(list, 6);
  ioopm_linked_list_prepend(list, 5);
  ioopm_linked_list_prepend(list, 10);
- ioopm_linked_list_apply_to_all(list, changeallvaluestoarg, 7);
+ int x = 7;
+ ioopm_linked_list_apply_to_all(list, changeallvaluestoarg, &x);
  bool a = hasallvalues(list, 7);
  CU_ASSERT_TRUE(a);
  ioopm_linked_list_destroy(list);
-} */
+}
 
 int main()
 {
@@ -301,7 +316,6 @@ int main()
       (CU_add_test(my_test_suite, "Test remove", test_removeloop) == NULL) ||
       (CU_add_test(my_test_suite, "Test get", test_get) == NULL) ||
       (CU_add_test(my_test_suite, "Test get middle", test_getmiddle) == NULL) ||
-      //
       (CU_add_test(my_test_suite, "Test contains in empty list", test_containsempty) == NULL) ||
       (CU_add_test(my_test_suite, "Test contains true in list", test_containstrue) == NULL) ||
       (CU_add_test(my_test_suite, "Test contains not true", test_containsnot) == NULL) ||
@@ -313,10 +327,7 @@ int main()
       (CU_add_test(my_test_suite, "Test all", test_all) == NULL) ||
       (CU_add_test(my_test_suite, "Test any true", test_anytrue) == NULL) ||
       (CU_add_test(my_test_suite, "Test any false", test_anyfalse) == NULL) ||
-      //(CU_add_test(my_test_suite, "Test change all values to seven", test_applytoall) == NULL) || //TODO?????
-      //TODO????????????????????????????????????????????????????????????????????????????????????????????????????????
-      //-----------------------ITERATOR--------------------
-      //(CU_add_test(my_test_suite, "T...",) == NULL) ||
+      (CU_add_test(my_test_suite, "Test change all values to seven", test_applytoall) == NULL) ||
       0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit

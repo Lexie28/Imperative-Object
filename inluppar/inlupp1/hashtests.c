@@ -118,7 +118,7 @@ void test_remove_nonexistingkey()
 void test_countingemptyht()
 {                                                     // testing ioopm_hash_table_size for case where hash table is empty
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); // creates a new empty hashtable
-  int a = ioopm_hash_table_size(ht);                  // gets size of current hashtable
+  size_t a = ioopm_hash_table_size(ht);                  // gets size of current hashtable
   CU_ASSERT_EQUAL(a, 0);                              // checks that size = 0 if ht is empty
   ioopm_hash_table_destroy(ht);                       // destroys and frees hashtable
 }
@@ -129,7 +129,7 @@ void test_countingsingleht()
   char *v = "Lexie";                                  // creating variable v = "Lexie"
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); // create a new empty hash table ht
   ioopm_hash_table_insert(ht, k, v);                  // inserting (k,v) into hashtable ht
-  int a = ioopm_hash_table_size(ht);                  // get size of our current hash table
+  size_t a = ioopm_hash_table_size(ht);                  // get size of our current hash table
   CU_ASSERT_EQUAL(a, 1);                              // checks that size of hashtable is 1 if it has one entry
   ioopm_hash_table_destroy(ht);                       // destroys and frees hashtable
 }
@@ -146,7 +146,7 @@ void test_countingmanyht()
   int k3 = 3;                                         // creating variable k3 = 3
   char *v3 = "Ja";                                    // creating variable v3 = "Ja"
   ioopm_hash_table_insert(ht, k3, v3);                // inserting (k3,v3) into hashtable ht
-  int a = ioopm_hash_table_size(ht);                  // gets size of our current hashtable
+  size_t a = ioopm_hash_table_size(ht);                  // gets size of our current hashtable
   CU_ASSERT_EQUAL(a, 3);                              // checks that size of hashtable is 3 if it has three entries
   ioopm_hash_table_destroy(ht);                       // destroys and frees hashtable
 }
@@ -179,14 +179,14 @@ void test_get_all_keys()
   {
     ioopm_hash_table_insert(ht, keys[i], values[i]);
   }
-  int htSize = ioopm_hash_table_size(ht); // We find the hash table size.
+  size_t htSize = ioopm_hash_table_size(ht); // We find the hash table size.
   // FINE UP UNTIL HERE
-  int *foundKeys = ioopm_hash_table_keys(ht); // We set an array to all keys in the hash table.
+  ioopm_list_t *foundKeys = ioopm_hash_table_keys(ht); // We set an array to all keys in the hash table.
   for (int i = 0; i < htSize; i++)            // Iterate over the resulting array
   {
     for (int j = 0; j < htSize; j++)
     {
-      if (foundKeys[j] == keys[i]) // If they are equal, we set corresponding found position to true.
+      if (ioopm_linked_list_get(foundKeys, j) == keys[i]) // If they are equal, we set corresponding found position to true.
       {
         found[i] = true;
       }
@@ -201,8 +201,8 @@ void test_get_all_keys()
   {
     CU_ASSERT_TRUE(found[i]);
   }
-  free(foundKeys);              // Free memory used by foundKeys.
-  ioopm_hash_table_destroy(ht); // Free memory used by hash table.
+  ioopm_linked_list_destroy(foundKeys);              // Free memory used by foundKeys.
+  ioopm_hash_table_destroy(ht); // Free memory used by hash table. */
 }
 
 void test_get_all_values()
@@ -215,7 +215,7 @@ void test_get_all_values()
   {
     ioopm_hash_table_insert(ht, keys[i], values[i]);
   }
-  int htSize = ioopm_hash_table_size(ht); // We find the hash table size.
+  size_t htSize = ioopm_hash_table_size(ht); // We find the hash table size.
   // FINE UP UNTIL HERE
   char **foundValues = ioopm_hash_table_values(ht); // We set an array to all keys in the hash table.
   for (int i = 0; i < htSize; i++)                  // Iterate over the resulting array

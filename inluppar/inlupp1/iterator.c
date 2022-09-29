@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stddef.h>
 
 struct link
 {
@@ -22,7 +23,7 @@ typedef struct iterator ioopm_list_iterator_t;
 struct list
 {
     link_t *head;
-    int size;
+    size_t size;
 };
 
 typedef struct list ioopm_list_t;
