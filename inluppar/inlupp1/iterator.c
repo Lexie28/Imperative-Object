@@ -1,12 +1,12 @@
 #include "iterator.h"
+#include "common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <stddef.h>
 
 struct link
 {
-    int value;
+    elem_t value;
     struct link *next;
 };
 
@@ -39,7 +39,7 @@ ioopm_list_iterator_t *ioopm_list_iterator(ioopm_list_t *list)
 
 bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
 {
-    if(iter->current == NULL)
+    if (iter->current == NULL)
     {
         return false;
     }
@@ -54,11 +54,11 @@ bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
     }
 }
 
-int ioopm_iterator_next(ioopm_list_iterator_t *iter)
+elem_t ioopm_iterator_next(ioopm_list_iterator_t *iter)
 {
     if (ioopm_iterator_has_next(iter) == false)
     {
-        return -1; //TODO?????
+        return ptr_elem(NULL); //TODO????? -- We return void ptr null if there is no next element.
     }
     else
     {
@@ -85,7 +85,7 @@ void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
     iter->current = iter->list->head;
 }
 
-int ioopm_iterator_current(ioopm_list_iterator_t *iter)
+elem_t ioopm_iterator_current(ioopm_list_iterator_t *iter)
 {
     return iter->current->value;
 }

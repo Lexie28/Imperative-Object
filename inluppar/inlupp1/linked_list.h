@@ -1,15 +1,21 @@
 #pragma once
+#include "common.h"
 #include <stdbool.h>
 #include <stddef.h>
-
 typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
-typedef void (*ioopm_apply_int_function)(int *value, void *extra);
-typedef bool(*ioopm_int_predicate)(int value, void *extra);
+typedef struct link link_t;
 
+typedef bool (*ioopm_int_predicate)(elem_t value, void *extra);
+typedef void (*ioopm_apply_int_function)(elem_t *value, void *extra);
+bool elem_equality_func_int(elem_t a, elem_t b); //eq_func for int
+bool elem_equality_func_str(elem_t a, elem_t b); //eq_func for string
+bool elem_equality_func_unsig_int(elem_t a, elem_t b); //eq_func for unsigned int
+bool elem_equality_func_bool(elem_t a, elem_t b); //eq_func for bool
+bool elem_equality_func_float(elem_t a, elem_t b); //eq_func for float
 
 /// @brief Creates a new empty list
 /// @return an empty linked list
-ioopm_list_t *ioopm_linked_list_create(void);
+ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function func);
 
 /// @brief Tear down the linked list and return all its memory (but not the memory of the elements)
 /// @param list the list to be destroyed
@@ -18,12 +24,12 @@ void ioopm_linked_list_destroy(ioopm_list_t *list);
 /// @brief Insert at the end of a linked list in O(1) time
 /// @param list the linked list that will be appended
 /// @param value the value to be appended
-void ioopm_linked_list_append(ioopm_list_t *list, int value);
+void ioopm_linked_list_append(ioopm_list_t *list, elem_t value);
 
 /// @brief Insert at the front of a linked list in O(1) time
 /// @param list the linked list that will be prepended to
 /// @param value the value to be prepended
-void ioopm_linked_list_prepend(ioopm_list_t *list, int value);
+void ioopm_linked_list_prepend(ioopm_list_t *list, elem_t value);
 
 /// @brief Insert an element into a linked list in O(n) time.
 /// The valid values of index are [0,n] for a list of n elements,
@@ -32,7 +38,7 @@ void ioopm_linked_list_prepend(ioopm_list_t *list, int value);
 /// @param list the linked list that will be extended
 /// @param index the position in the list
 /// @param value the value to be inserted 
-void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value);
+void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value);
 
 /// @brief Remove an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
@@ -40,7 +46,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value);
 /// @param list the linked list
 /// @param index the position in the list
 /// @return the value removed
-int ioopm_linked_list_remove(ioopm_list_t *list, int index);
+elem_t ioopm_linked_list_remove(ioopm_list_t *list, int index);
 
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
@@ -48,13 +54,13 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index);
 /// @param list the linked list that will be extended
 /// @param index the position in the list
 /// @return the value at the given position
-int ioopm_linked_list_get(ioopm_list_t *list, int index);
+elem_t ioopm_linked_list_get(ioopm_list_t *list, int index);
 
 /// @brief Test if an element is in the list
 /// @param list the linked list
 /// @param element the element sought
 /// @return true if element is in the list, else false
-bool ioopm_linked_list_contains(ioopm_list_t *list, int element);
+bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t element);
 
 /// @brief Lookup the number of elements in the linked list in O(1) time
 /// @param list the linked list
@@ -69,6 +75,9 @@ bool ioopm_linked_list_is_empty(ioopm_list_t *list);
 /// @brief Remove all elements from a linked list
 /// @param list the linked list
 void ioopm_linked_list_clear(ioopm_list_t *list);
+
+bool hasallvalues(ioopm_list_t *list, elem_t value); //Check if value of entry is equal to extra.
+bool has_any_value(ioopm_list_t *list, elem_t value); //Check if value of entry is equal to extra.
 
 /// @brief Test if a supplied property holds for all elements in a list.
 /// The function returns as soon as the return value can be determined.
@@ -86,12 +95,10 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 /// @return true if prop holds for any elements in the list, else false
 bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *extra);
 
+void changeallvaluestoarg(elem_t *value, void *arg);
+
 /// @brief Apply a supplied function to all elements in a list.
 /// @param list the linked list
 /// @param fun the function to be applied
 /// @param extra an additional argument (may be NULL) that will be passed to all internal calls of fun
 void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra);
-
-bool hasallvalues(ioopm_list_t *list, int value);
-
-bool has_any_value(ioopm_list_t *list, int value);
