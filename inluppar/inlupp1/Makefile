@@ -15,8 +15,8 @@ coverage: hash_table.c hashtests.c
 iterator: iterator.c iteratortests.c
 	gcc $(FLAGS) iterator.c linked_list.c iteratortests.c common.c -o itests -lcunit
 
-all: //TODO
+freq_count: freq-count.c common.c linked_list.c hash_table.c iterator.c
+	gcc $(FLAGS) freq-count.c common.c linked_list.c hash_table.c iterator.c -o tests
 
-test: //TODO
-
-clean: //TODO
+freq_t: freq-count.c common.c linked_list.c hash_table.c iterator.c
+	gcc -Wall -pedantic -pg freq-count.c common.c hash_table.c linked_list.c iterator.c -o freq -g

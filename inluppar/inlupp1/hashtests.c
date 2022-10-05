@@ -66,6 +66,13 @@ void test_insert_invalidkey() // ELEM_T ADAPTED
   // test andra invalids också
 }
 
+/*
+void insert_same_bucketfirst() //insert in the same bucket 1 18 35
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int); // create a new empty hash table ht
+  ioopm_hash_table_insert(ht, int_elem(2), ptr_elem("Lexie"));
+} n*/
+
 void test_lookup_empty() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
@@ -86,7 +93,7 @@ void test_remove_entry() // ELEM_T ADAPTED
   char *v = "Anthony";                                           // Creating value
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);            // Creating hash table.
   ioopm_hash_table_insert(ht, int_elem(k), ptr_elem(v));         // Inserting key-value into hash table.
-  elem_t *removedVal = ioopm_hash_table_remove(ht, int_elem(k)); // Remove entry from hash table
+  char *removedVal = ioopm_hash_table_remove(ht, int_elem(k)).p; // Remove entry from hash table
   CU_ASSERT_STRING_EQUAL(removedVal, v);                         // Check that string val of entry removed = initial string value.
   option_t a_tmp = ioopm_hash_table_lookup(ht, int_elem(k));     // We look to see if we can find the key-value.
   CU_ASSERT_PTR_NULL(a_tmp.value.p);                             // We check if return value is NULL which it should be if we couldn't find it.

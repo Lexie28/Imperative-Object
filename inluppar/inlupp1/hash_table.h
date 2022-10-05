@@ -20,8 +20,8 @@ typedef struct option option_t;
 typedef struct entry entry_t;
 typedef union elem elem_t;
 typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra);
-typedef bool (*ioopm_predicate)(elem_t key, elem_t value, void *extra);
-typedef int (*ioopm_hash_map_func)(elem_t key); //We take a element and map it to a value of our choice.
+typedef int (*ioopm_hash_function)(elem_t key); //We take a element and map it to a value of our choice.
+typedef bool (*ioopm_predicate)(elem_t key, elem_t value, void *extra, ioopm_hash_function hash_func);
 
 struct option
 {
@@ -35,9 +35,11 @@ struct entry
     elem_t value;   // holds the value (char *)
     entry_t *next; // points to the next entry (possibly NULL)
 };
+
+
 /// @brief Create a new hash table
 /// @return A new empty hash table
-ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function ins_value_eq_fn, ioopm_hash_map_func ins_hash_func);
+ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function ins_value_eq_fn, ioopm_hash_function ins_hash_func);
 int hash_map_func_int(elem_t key); //Hash mapping function when elem_t is an integer.
 int hash_map_func_string(elem_t key); //Hash mapping function when elem_t is a string.
 
@@ -61,7 +63,7 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key);
 /// @param ht hash table operated upon
 /// @param key key to remove
 /// @return the value mapped to by key (FIXME: incomplete)
-elem_t *ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key);
+elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key);
 
 /// @brief returns the number of key => value entries in the hash table
 /// @param h hash table operated upon
@@ -116,3 +118,5 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
 
 bool hash_table_has_all_values(ioopm_hash_table_t *ht, elem_t value);
+
+void print_ht(ioopm_hash_table_t *ht);

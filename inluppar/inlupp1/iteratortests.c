@@ -102,6 +102,9 @@ void test_currentfirst()
     ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
     int a = ioopm_iterator_current(iter).i;
     CU_ASSERT_EQUAL(a,10);
+    ioopm_iterator_next(iter);
+    int b = ioopm_iterator_current(iter).i;
+    CU_ASSERT_EQUAL(b,4);
     ioopm_linked_list_destroy(list);
     ioopm_iterator_destroy(iter);  
 }
