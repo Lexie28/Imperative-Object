@@ -20,3 +20,6 @@ freq_count: freq-count.c common.c linked_list.c hash_table.c iterator.c
 
 freq_t: freq-count.c common.c linked_list.c hash_table.c iterator.c
 	gcc -Wall -pedantic -pg freq-count.c common.c hash_table.c linked_list.c iterator.c -o freq
+
+clean:
+	rm -f *.gcda *.gcno
