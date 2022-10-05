@@ -60,12 +60,6 @@ int hash_map_func_int(elem_t key) // Hash mapping function when elem_t is an int
     
 }
 
-int hash_map_func_string(elem_t key) // Hash mapping function when elem_t is a character/string.
-{
-    int int_key = strlen(key.p); // The key is simply the length of the string.
-    return int_key;
-}
-
 static entry_t *find_previous_entry_for_key(entry_t *entry, elem_t key, ioopm_eq_function key_eq_fun)
 {
     // ctrl + F to search for things
@@ -330,53 +324,22 @@ bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *x)
     ioopm_linked_list_destroy(keys);
     ioopm_linked_list_destroy(values);
     return true;
-    /*
-    {
-      result = result && pred(keys[i], values[i], x);
-    } */
 }
 
 bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
-{
-    return ioopm_hash_table_any(ht, key_equiv, &key);
-}
-
+{return ioopm_hash_table_any(ht, key_equiv, &key);}
 bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, elem_t value)
-{
-    return ioopm_hash_table_any(ht, value_equiv, &value);
-}
-
+{return ioopm_hash_table_any(ht, value_equiv, &value);}
 bool hash_table_has_all_values(ioopm_hash_table_t *ht, elem_t value)
-{
-    return ioopm_hash_table_all(ht, value_equiv, &value);
-}
-
+{return ioopm_hash_table_all(ht, value_equiv, &value);}
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg) // tar in ht, funktion, och om det ska ta argument till funktionen
 {
     for (int i = 0; i < No_Buckets; i++)
     {
         entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
         entry = entry->next;              // för att skippa dummy entryt
-
         while (entry != NULL)
         {
             apply_fun(entry->key, &entry->value, arg);
             entry = entry->next;
-        }
-    }
-}
-
-
-void print_ht(ioopm_hash_table_t *ht) {
-    for (int i = 0; i < No_Buckets; i++) {
-        entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
-        entry = entry->next;              // för att skippa dummy entryt
-        printf("Bucket[%d]->", i);
-        while (entry != NULL)
-        {
-            printf("[%s, %d]->", (char *) entry->key.p, entry->value.i);
-            entry = entry->next;
-        }
-        printf("\n");
-    }
-}
+        }}}

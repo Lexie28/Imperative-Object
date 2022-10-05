@@ -21,14 +21,14 @@ int clean_suite(void)
 
 // TEST CASES BELOW
 
-void test_create_destroy() // Testing to create and destroy a linked list.
+void lltest_create_destroy() // Testing to create and destroy a linked list.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     CU_ASSERT_PTR_NOT_NULL(linklist);                    // Check that we now have a pointer to where the linked structure is.
     ioopm_linked_list_destroy(linklist);                 // Destroy our linked structure.
 }
 
-void test_append() // Testing to insert element to the end of linked list.
+void lltest_append() // Testing to insert element to the end of linked list.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int);          // Create a linked list.
     ioopm_linked_list_append(linklist, int_elem(1));                        // Append a first element into the linked structure.
@@ -40,7 +40,7 @@ void test_append() // Testing to insert element to the end of linked list.
     ioopm_linked_list_destroy(linklist);                          // Free up memory used by linked structure.
 }
 
-void test_prepend() // Testing to insert an element to the start of a linked list.
+void lltest_prepend() // Testing to insert an element to the start of a linked list.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int);       // Create a linked list.
     ioopm_linked_list_prepend(linklist, int_elem(1));                    // Prepend 1 to beginning of linked structure.
@@ -50,7 +50,7 @@ void test_prepend() // Testing to insert an element to the start of a linked lis
     ioopm_linked_list_destroy(linklist);                       // Free up memory used by linked structure.
 }
 
-void test_insert() // Testing to insert an element into random places in linked structure.
+void lltest_insert() // Testing to insert an element into random places in linked structure.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     for (int i = 0; i <= 10; i++)
@@ -70,7 +70,7 @@ void test_insert() // Testing to insert an element into random places in linked 
     ioopm_linked_list_destroy(linklist);                      // Free up memory used by linked structure.
 }
 
-void test_remove() // Testing to remove an element from random places in the linked structure.
+void lltest_remove() // Testing to remove an element from random places in the linked structure.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     for (int i = 0; i <= 10; i++)
@@ -93,7 +93,7 @@ void test_remove() // Testing to remove an element from random places in the lin
     ioopm_linked_list_destroy(linklist);                     // Free up memory used by linked structure.
 }
 
-void test_get() // Testing to get elements of different indexes in the linked structure.
+void lltest_get() // Testing to get elements of different indexes in the linked structure.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     for (int i = 0; i <= 10; i++)
@@ -109,7 +109,7 @@ void test_get() // Testing to get elements of different indexes in the linked st
     ioopm_linked_list_destroy(linklist);                     // Free up memory used by linked structure.
 }
 
-void test_contain() // Test if an element is in a linked structure.
+void lltest_contain() // Test if an element is in a linked structure.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int);      // Create a linked list.
     CU_ASSERT_FALSE(ioopm_linked_list_contains(linklist, int_elem(8))); // Test if we can find an random number in an empty list.
@@ -122,7 +122,7 @@ void test_contain() // Test if an element is in a linked structure.
     ioopm_linked_list_destroy(linklist);                       // Destroy our linked structure.
 }
 
-void test_size_of_list() // Test the size of a linked structure.
+void lltest_size_of_list() // Test the size of a linked structure.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     size_t a = ioopm_linked_list_size(linklist);         // Get size of an empty linked list.
@@ -136,7 +136,7 @@ void test_size_of_list() // Test the size of a linked structure.
     ioopm_linked_list_destroy(linklist);  // Free memory used by linked list.
 }
 
-void test_is_empty() // Test if a linked structure is empty or not.
+void lltest_is_empty() // Test if a linked structure is empty or not.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     bool a = ioopm_linked_list_is_empty(linklist);
@@ -150,7 +150,7 @@ void test_is_empty() // Test if a linked structure is empty or not.
     ioopm_linked_list_destroy(linklist); // Destroy our linked structure.
 }
 
-void test_clear() // Testing to clear a linked structure.
+void lltest_clear() // Testing to clear a linked structure.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     bool a = ioopm_linked_list_is_empty(linklist);
@@ -167,7 +167,7 @@ void test_clear() // Testing to clear a linked structure.
     ioopm_linked_list_destroy(linklist); // Destroy our linked structure.
 }
 
-void test_all() // Test that checks if something holds for all values of linked structure.
+void lltest_all() // Test that checks if something holds for all values of linked structure.
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     int value = 7;                                       // Set a value for our extra.
@@ -191,7 +191,7 @@ void test_all() // Test that checks if something holds for all values of linked 
     // Free memory used by linked list.
 }
 
-void test_any()
+void lltest_any()
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
     ioopm_linked_list_prepend(list, int_elem(7));
@@ -206,7 +206,12 @@ void test_any()
     ioopm_linked_list_destroy(list);
 }
 
-void test_apply_to_all()
+void llchangeallvaluestoarg(elem_t *value, void *arg) // arg = "7"
+{
+    *value = *(elem_t *)arg;
+}
+
+void lltest_apply_to_all()
 {
     ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
     int x = 7;                                           // Set the value we want to change to.
@@ -216,11 +221,52 @@ void test_apply_to_all()
     }
     bool a = hasallvalues(linklist, int_elem(7));
     CU_ASSERT_FALSE(a);                                                 // Check if all entries have value 7 (false).
-    ioopm_linked_list_apply_to_all(linklist, changeallvaluestoarg, &x); // Change all entries values to 7.
+    ioopm_linked_list_apply_to_all(linklist, llchangeallvaluestoarg, &x); // Change all entries values to 7.
     a = hasallvalues(linklist, int_elem(7));
     CU_ASSERT_TRUE(a);                   // Check if all entries have value 7 now (true)
     ioopm_linked_list_destroy(linklist); // Free memory used by linked list.
 }
+
+void lltest_insertappend()
+{
+    ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
+    ioopm_linked_list_prepend(list, int_elem(7));
+    ioopm_linked_list_prepend(list, int_elem(5));
+    ioopm_linked_list_prepend(list, int_elem(10));
+    ioopm_linked_list_insert(list, 3, int_elem(25));
+    CU_ASSERT_TRUE(ioopm_linked_list_get(list, 3).i == 25); // Check if middle element (spot 4)  is 75.
+    ioopm_linked_list_destroy(list);
+}
+
+void lltest_insert_invalid()
+{
+    ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
+    ioopm_linked_list_insert(linklist, -8, int_elem(25));                      // insert an element into invalid position.
+    bool a = ioopm_linked_list_contains(linklist, int_elem(25));
+    CU_ASSERT_FALSE(a);
+    ioopm_linked_list_destroy(linklist);
+}
+
+void lltest_remove_invalid()
+{
+    ioopm_list_t *linklist = ioopm_linked_list_create(elem_equality_func_int); // Create a linked list.
+    for (int i = 0; i <= 10; i++)
+    {
+        ioopm_linked_list_append(linklist, int_elem(i)); // Create a medium sized linked list.
+    }
+    elem_t removedElem = ioopm_linked_list_remove(linklist, -8);                      // insert an element into invalid position.
+    CU_ASSERT_PTR_NULL(removedElem.p); //Ensure that removed element is null (we were not able to remove anything).
+    ioopm_linked_list_destroy(linklist);
+}
+
+void lltest_getinvalid()
+{
+    ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
+    elem_t a = ioopm_linked_list_get(list, -21);
+    CU_ASSERT_PTR_NULL(a.p);
+    ioopm_linked_list_destroy(list);
+}
+
 int main()
 {
     // First we try to set up CUnit, and exit if we fail
@@ -243,19 +289,23 @@ int main()
     // the test in question. If you want to add another test, just
     // copy a line below and change the information
     if (
-        (CU_add_test(my_test_suite, "Test that creates and destroys a linked structure.", test_create_destroy) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that appends an entry to end of linked structure..", test_append) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that prepends an entry to beginning of linked structure.", test_prepend) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that inserts entries into linked structure.", test_insert) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that removes entries from linked structure.", test_remove) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that gets entries from a linked structure", test_get) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that checks if entries are in a linked structure", test_contain) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that checks size of linked structure.", test_size_of_list) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that checks if a linked structure is empty.", test_is_empty) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that clears a linked structure.", test_clear) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that checks if something holds for all entries in linked structure.", test_all) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that checks if something holds for atleast one entry in linked structure.", test_any) == NULL) ||
-        (CU_add_test(my_test_suite, "Test that applies a change to all entries in the linked structure.", test_apply_to_all) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that creates and destroys a linked structure.", lltest_create_destroy) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that appends an entry to end of linked structure..", lltest_append) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that prepends an entry to beginning of linked structure.", lltest_prepend) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that inserts entries into linked structure.", lltest_insert) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that removes entries from linked structure.", lltest_remove) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that gets entries from a linked structure", lltest_get) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks if entries are in a linked structure", lltest_contain) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks size of linked structure.", lltest_size_of_list) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks if a linked structure is empty.", lltest_is_empty) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that clears a linked structure.", lltest_clear) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks if something holds for all entries in linked structure.", lltest_all) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks if something holds for atleast one entry in linked structure.", lltest_any) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that applies a change to all entries in the linked structure.", lltest_apply_to_all) == NULL) ||
+        (CU_add_test(my_test_suite, "Test insert append.", lltest_insertappend) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks when inserting an invalid key.", lltest_insert_invalid) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks when removing an invalid key.", lltest_remove_invalid) == NULL) ||
+        (CU_add_test(my_test_suite, "Test that checks when getting an invalid key.", lltest_getinvalid) == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit

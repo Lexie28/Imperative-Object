@@ -20,14 +20,14 @@ int clean_suite(void)
 // These are example test functions. You should replace them with
 // functions of your own.
 
-void test_create_destroy()
+void httest_create_destroy()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
   CU_ASSERT_PTR_NOT_NULL(ht); //    Check that ht is not equal to NULL
   ioopm_hash_table_destroy(ht);
 }
 
-void test_insert_freshkey()                                  // ELEM_T ADAPTED
+void httest_insert_freshkey()                                  // ELEM_T ADAPTED
 {                                                            // stacken inom funktionen freshkey
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);        // create a new empty hash table ht. pekaren sparas i stacken. tablecreate allokerar minne i heapen (som vi pekar på med en variabel från stacken)
   option_t first = ioopm_hash_table_lookup(ht, int_elem(1)); // verify that key k is not in h using lookup //skapa en ny stack för lookup med ht och k. look-up stacken försvinner (man "poppar stacken")
@@ -42,7 +42,7 @@ void test_insert_freshkey()                                  // ELEM_T ADAPTED
   ioopm_hash_table_destroy(ht); // ny destroy-stack med kopia av ht. en till stack för clear. sista raden i destroy - freear heap-minnet för vårt hashtable
 }
 
-void test_insert_alreadythere() // ELEM_T ADAPTED
+void httest_insert_alreadythere() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int); // create a new empty hash table ht
   ioopm_hash_table_insert(ht, int_elem(2), ptr_elem("Lexie"));
@@ -55,7 +55,7 @@ void test_insert_alreadythere() // ELEM_T ADAPTED
   ioopm_hash_table_destroy(ht);     // destroy ht
 }
 
-void test_insert_invalidkey() // ELEM_T ADAPTED
+void httest_insert_invalidkey() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int); // create a new empty hash table ht
   ioopm_hash_table_insert(ht, int_elem(-67), ptr_elem("Lexie"));
@@ -73,21 +73,17 @@ void insert_same_bucketfirst() //insert in the same bucket 1 18 35
   ioopm_hash_table_insert(ht, int_elem(2), ptr_elem("Lexie"));
 } n*/
 
-void test_lookup_empty() // ELEM_T ADAPTED
+void httest_lookup_empty() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
-  for (int i = 0; i < 18; ++i) /// 18 is a bit magical
-  {
-    option_t a_tmp = ioopm_hash_table_lookup(ht, int_elem(i));
-    char *a = a_tmp.value.p;
-    CU_ASSERT_PTR_NULL(a);
-  }
-  option_t a_tmp = ioopm_hash_table_lookup(ht, int_elem(-1));
+  ioopm_hash_table_insert(ht, int_elem(2), ptr_elem("Lexie"));
+  ioopm_hash_table_insert(ht, int_elem(4), ptr_elem("Hej"));
+  option_t a_tmp = ioopm_hash_table_lookup(ht, int_elem(6));
   CU_ASSERT_PTR_NULL(a_tmp.value.p);
   ioopm_hash_table_destroy(ht);
 }
 
-void test_remove_entry() // ELEM_T ADAPTED
+void httest_remove_entry() // ELEM_T ADAPTED
 {
   int k = 12;                                                    // Creating key
   char *v = "Anthony";                                           // Creating value
@@ -100,7 +96,22 @@ void test_remove_entry() // ELEM_T ADAPTED
   ioopm_hash_table_destroy(ht);                                  // Free memory used by hash table.
 }
 
-void test_ht_size() // ELEM_T ADAPTED
+void httest_falseremove_entry() // ELEM_T ADAPTED
+{
+  int k = 12;                                                                                  // Creating key
+  char *v = "Anthony";                                                                         // Creating value
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int); // Creating hash table.
+  ioopm_hash_table_insert(ht, int_elem(k), ptr_elem(v));                                       // Inserting key-value into hash table.
+  char *removedVal = ioopm_hash_table_remove(ht, int_elem(k)).p;                               // Remove entry from hash table
+  CU_ASSERT_STRING_EQUAL(removedVal, v);                                                       // Check that string val of entry removed = initial string value.
+  option_t a_tmp = ioopm_hash_table_lookup(ht, int_elem(k));                                   // We look to see if we can find the key-value.
+  CU_ASSERT_PTR_NULL(a_tmp.value.p);
+  removedVal = ioopm_hash_table_remove(ht, int_elem(15)).p; // Try to remove an element that is not in the table.                                                           // We check if return value is NULL which it should be if we couldn't find it.
+  CU_ASSERT_PTR_NULL(removedVal);                           // Make sure that that the removed value is NULL (means we couldn't find it.)
+  ioopm_hash_table_destroy(ht);                             // Free memory used by hash table.
+}
+
+void httest_ht_size() // ELEM_T ADAPTED
 // Test that takes the size of empty hash table, hash table with one entry, and hash table with several entries.
 {
   ioopm_hash_table_t *emptyht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int); // Create an empty hash table.
@@ -129,7 +140,7 @@ void test_ht_size() // ELEM_T ADAPTED
   ioopm_hash_table_destroy(size3ht);                            // Free memory used by hash table with multiple entries (3).
 }
 
-void test_is_ht_empty() // ELEM_T ADAPTED
+void httest_is_ht_empty() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *emptyht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int); // Create an empty hash table.
   CU_ASSERT_TRUE(ioopm_hash_table_is_empty(emptyht));      // Check if hash table is empty or not (should be empty).
@@ -146,7 +157,7 @@ void test_is_ht_empty() // ELEM_T ADAPTED
   ioopm_hash_table_destroy(size3ht);                            // Free memory used by hash table.
 }
 
-void test_clear_ht() // ELEM_T ADAPTED
+void httest_clear_ht() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);      // Create an hash table.
   int k1 = 12;                                             // Creating key 1
@@ -158,7 +169,7 @@ void test_clear_ht() // ELEM_T ADAPTED
   ioopm_hash_table_destroy(ht);                            // Free memory used by hash table.
 }
 
-void test_get_all_keys() // ELEM_T ADAPTED
+void httest_get_all_keys() // ELEM_T ADAPTED
 {
   int keys[5] = {0, 10, 42, 3, 99};                                 // Creating an array of k to be inserted into hash table.
   char *values[5] = {"Anthony", "Lexie", "Marcus", "Anik", "Lowe"}; // Creating an array of v to be inserted into hash table.
@@ -194,7 +205,7 @@ void test_get_all_keys() // ELEM_T ADAPTED
   ioopm_hash_table_destroy(ht);         // Free memory used by hash table.
 }
 
-void test_get_all_values() // ELEM_T ADAPTED -- ADAPTED FOR LINKED LIST ALL VALUES
+void httest_get_all_values() // ELEM_T ADAPTED -- ADAPTED FOR LINKED LIST ALL VALUES
 {
   int keys[5] = {0, 10, 42, 3, 99};                                 // Creating an array of k to be inserted into hash table.
   char *values[5] = {"Anthony", "Lexie", "Marcus", "Anik", "Lowe"}; // Creating an array of v to be inserted into hash table.
@@ -229,7 +240,7 @@ void test_get_all_values() // ELEM_T ADAPTED -- ADAPTED FOR LINKED LIST ALL VALU
   ioopm_hash_table_destroy(ht); // Free memory used by hash table.
 }
 
-void test_has_key() // ELEM_T ADAPTED
+void httest_has_key() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);         // Create an hash table.
   int k1 = 12;                                                // Creating a key
@@ -240,7 +251,7 @@ void test_has_key() // ELEM_T ADAPTED
   CU_ASSERT_FALSE(ioopm_hash_table_has_key(ht,int_elem(k1)));  // Check now that we are not able to find the key.
   ioopm_hash_table_destroy(ht);                       // Free memory used by it.
 }
-void test_has_value() // ELEM_T ADAPTED
+void httest_has_value() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
   int k = 2;
@@ -255,7 +266,7 @@ void test_has_value() // ELEM_T ADAPTED
   ioopm_hash_table_destroy(ht);
 }
 
-void test_all_values()
+void httest_all_values()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
   char *v = "Lexie";           // Our key to insert across hash table.
@@ -271,6 +282,107 @@ void test_all_values()
 
 // END OF TEST CASES //
 // MAIN //
+
+void httest_allentriesisissamevalue()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
+  int k1 = 1;
+  char *v1 = "Lexie";
+  int k2 = 4;
+  char *v2 = "Lexie";
+  int k3 = 17;
+  char *v3 = "Lexie";
+  ioopm_hash_table_insert(ht, int_elem(k1), ptr_elem(v1));
+  ioopm_hash_table_insert(ht, int_elem(k2), ptr_elem(v2));
+  ioopm_hash_table_insert(ht, int_elem(k3), ptr_elem(v3));
+  char *v4 = "Lexie";
+  bool a = hash_table_has_all_values(ht, ptr_elem(v4));
+  CU_ASSERT_TRUE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void httest_allentriesfalse()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);  
+  int k1 = 1;
+  char *v1 = "Hej";
+  int k2 = 4;
+  char *v2 = "Lexie";
+  int k3 = 17;
+  char *v3 = "Lexie";
+  ioopm_hash_table_insert(ht, int_elem(k1), ptr_elem(v1));
+  ioopm_hash_table_insert(ht, int_elem(k2), ptr_elem(v2));
+  ioopm_hash_table_insert(ht, int_elem(k3), ptr_elem(v3));
+  char *v4 = "Lexie";
+  bool a = hash_table_has_all_values(ht, ptr_elem(v4));
+  CU_ASSERT_FALSE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void httest_allentriesempty()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);   
+  char *v4 = "Lexie";
+  bool a = hash_table_has_all_values(ht, ptr_elem(v4));
+  CU_ASSERT_FALSE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void htchangeallvaluestoarg(elem_t key, elem_t *value, void *arg) // arg = "A"
+{
+
+  *value = ptr_elem(arg);
+}
+
+void httest_applytoall()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);   
+  int k1 = 1;
+  char *v1 = "Hej";
+  int k2 = 4;
+  char *v2 = "Då";
+  int k3 = 17;
+  char *v3 = "Lexie";
+  ioopm_hash_table_insert(ht, int_elem(k1), ptr_elem(v1));
+  ioopm_hash_table_insert(ht, int_elem(k2), ptr_elem(v2));
+  ioopm_hash_table_insert(ht, int_elem(k3), ptr_elem(v3));
+  ioopm_hash_table_apply_to_all(ht, htchangeallvaluestoarg, "A");
+  bool a = hash_table_has_all_values(ht, ptr_elem("A"));
+  CU_ASSERT_TRUE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void httest_falseapplytoall()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);   
+  int k1 = 1;
+  char *v1 = "Hej";
+  int k2 = 4;
+  char *v2 = "Då";
+  int k3 = 17;
+  char *v3 = "Lexie";
+  ioopm_hash_table_insert(ht, int_elem(k1), ptr_elem(v1));
+  ioopm_hash_table_insert(ht, int_elem(k2), ptr_elem(v2));
+  ioopm_hash_table_insert(ht, int_elem(k3), ptr_elem(v3));
+  ioopm_hash_table_apply_to_all(ht, htchangeallvaluestoarg, "A");
+  int k4 = 17;
+  char *v4 = "Hej";
+  ioopm_hash_table_insert(ht, int_elem(k4), ptr_elem(v4));
+  bool a = hash_table_has_all_values(ht, ptr_elem("A"));
+  CU_ASSERT_FALSE(a);
+  ioopm_hash_table_destroy(ht);
+}
+
+void httest_lookup_samebucket() // ELEM_T ADAPTED
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
+  ioopm_hash_table_insert(ht, int_elem(1), ptr_elem("Anthony"));
+  ioopm_hash_table_insert(ht, int_elem(18), ptr_elem("Melinder"));
+  option_t a_tmp = ioopm_hash_table_lookup(ht, int_elem(35));
+  CU_ASSERT_PTR_NULL(a_tmp.value.p);
+  ioopm_hash_table_destroy(ht);
+}
+
 
 int main()
 {
@@ -294,21 +406,27 @@ int main()
   // the test in question. If you want to add another test, just
   // copy a line below and change the information
   if (
-      (CU_add_test(my_test_suite, "Test that create != destroy hash table.", test_create_destroy) == NULL) ||
-      (CU_add_test(my_test_suite, "Trying to insert a key not already in the hash table.", test_insert_freshkey) == NULL) ||
-      (CU_add_test(my_test_suite, "Trying to insert a key already in the hash table.", test_insert_alreadythere) == NULL) ||
-      (CU_add_test(my_test_suite, "Trying to lookup a key that is not in the hash table.", test_lookup_empty) == NULL) ||
-      (CU_add_test(my_test_suite, "Trying to insert an invalid key.", test_insert_invalidkey) == NULL) ||
-      (CU_add_test(my_test_suite, "Removing a key from the hash table.", test_remove_entry) == NULL) ||
-      (CU_add_test(my_test_suite, "Checking the size of different hash tables.", test_ht_size) == NULL) ||
-      (CU_add_test(my_test_suite, "Checking if the hash table is empty.", test_is_ht_empty) == NULL) ||
-      (CU_add_test(my_test_suite, "Trying to clear an hash table", test_clear_ht) == NULL) ||
-      (CU_add_test(my_test_suite, "Getting all the keys from a hash table.", test_get_all_keys) == NULL) ||
-      (CU_add_test(my_test_suite, "Getting all the values from a hash table.", test_get_all_values) == NULL) ||
-      //Tests below are leaking for unknown reason.
-      (CU_add_test(my_test_suite, "Testing if a key exists in a hash table.", test_has_key) == NULL) ||
-      (CU_add_test(my_test_suite, "Testing if a value exists in a hash table.", test_has_value) == NULL) ||
-      (CU_add_test(my_test_suite, "Testing if a value is equal to all values in a hash table.", test_all_values) == NULL) ||
+      (CU_add_test(my_test_suite, "Test that create != destroy hash table.", httest_create_destroy) == NULL) ||
+      (CU_add_test(my_test_suite, "Trying to insert a key not already in the hash table.", httest_insert_freshkey) == NULL) ||
+      (CU_add_test(my_test_suite, "Trying to insert a key already in the hash table.", httest_insert_alreadythere) == NULL) ||
+      (CU_add_test(my_test_suite, "Trying to lookup a key that is not in the hash table.", httest_lookup_empty) == NULL) ||
+      (CU_add_test(my_test_suite, "Trying to insert an invalid key.", httest_insert_invalidkey) == NULL) ||
+      (CU_add_test(my_test_suite, "Removing a key from the hash table.", httest_remove_entry) == NULL) ||
+      (CU_add_test(my_test_suite, "Removing a key from the hash table.", httest_falseremove_entry) == NULL) ||
+      (CU_add_test(my_test_suite, "Checking the size of different hash tables.", httest_ht_size) == NULL) ||
+      (CU_add_test(my_test_suite, "Checking if the hash table is empty.", httest_is_ht_empty) == NULL) ||
+      (CU_add_test(my_test_suite, "Trying to clear an hash table", httest_clear_ht) == NULL) ||
+      (CU_add_test(my_test_suite, "Getting all the keys from a hash table.", httest_get_all_keys) == NULL) ||
+      (CU_add_test(my_test_suite, "Getting all the values from a hash table.", httest_get_all_values) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing if a key exists in a hash table.", httest_has_key) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing if a value exists in a hash table.", httest_has_value) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing if a value is equal to all values in a hash table.", httest_all_values) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing if a all entries same value.", httest_allentriesisissamevalue) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_allentriesfalse) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_allentriesempty) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_applytoall) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_falseapplytoall) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_lookup_samebucket) == NULL) ||
       0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit

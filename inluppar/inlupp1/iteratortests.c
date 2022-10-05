@@ -18,7 +18,7 @@ int clean_suite(void)
     return 0;
 }
 
-void test_create_destroy() //TODO????
+void itest_create_destroy() //TODO????
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
     ioopm_list_iterator_t *it = ioopm_list_iterator(list);
@@ -28,7 +28,7 @@ void test_create_destroy() //TODO????
     //CU_ASSERT_PTR_NULL(it); varfÃ¶r funkar inte //TODO???????
 }
 
-void test_hasnexttrue()
+void itest_hasnexttrue()
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
     ioopm_linked_list_prepend(list, int_elem(7));
@@ -41,7 +41,7 @@ void test_hasnexttrue()
     ioopm_iterator_destroy(it);   
 }
 
-void test_hasnextfalse()
+void itest_hasnextfalse()
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
     ioopm_linked_list_prepend(list, int_elem(7));
@@ -52,7 +52,7 @@ void test_hasnextfalse()
     ioopm_iterator_destroy(it);   
 }
 
-void test_hasnextempty()
+void itest_hasnextempty()
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
     ioopm_list_iterator_t *it = ioopm_list_iterator(list);
@@ -62,7 +62,7 @@ void test_hasnextempty()
     ioopm_iterator_destroy(it);  
 }
 
-void test_nextexists()
+void itest_nextexists()
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
 
@@ -76,7 +76,7 @@ void test_nextexists()
     ioopm_iterator_destroy(it);  
 }
 
-void test_iteratorreset()
+void itest_iteratorreset()
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
     ioopm_linked_list_prepend(list, int_elem(7));
@@ -93,7 +93,7 @@ void test_iteratorreset()
     ioopm_iterator_destroy(iter);
 }
 
-void test_currentfirst()
+void itest_currentfirst()
 {
     ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
     ioopm_linked_list_prepend(list, int_elem(7));
@@ -107,6 +107,15 @@ void test_currentfirst()
     CU_ASSERT_EQUAL(b,4);
     ioopm_linked_list_destroy(list);
     ioopm_iterator_destroy(iter);  
+}
+void itest_next_empty()
+{
+    ioopm_list_t *list = ioopm_linked_list_create(elem_equality_func_int);
+    ioopm_list_iterator_t *it = ioopm_list_iterator(list);
+    elem_t a = ioopm_iterator_next(it);
+    CU_ASSERT_PTR_NULL(a.p);
+    ioopm_linked_list_destroy(list);
+    ioopm_iterator_destroy(it);   
 }
 
 int main()
@@ -131,13 +140,14 @@ int main()
     // the test in question. If you want to add another test, just
     // copy a line below and change the information
     if (
-        (CU_add_test(my_test_suite, "Test create/destroy iterator", test_create_destroy) == NULL) ||
-        (CU_add_test(my_test_suite, "Test has next true", test_hasnexttrue) == NULL) ||
-        (CU_add_test(my_test_suite, "Test has next false", test_hasnextfalse) == NULL) ||
-        (CU_add_test(my_test_suite, "Test has next empty", test_hasnextempty) == NULL) ||
-        (CU_add_test(my_test_suite, "Test next exists", test_nextexists) == NULL) ||
-        (CU_add_test(my_test_suite, "Test reset iterator", test_iteratorreset) == NULL) ||
-        (CU_add_test(my_test_suite, "Test current first", test_currentfirst) == NULL) ||
+        (CU_add_test(my_test_suite, "Test create/destroy iterator", itest_create_destroy) == NULL) ||
+        (CU_add_test(my_test_suite, "Test has next true", itest_hasnexttrue) == NULL) ||
+        (CU_add_test(my_test_suite, "Test has next false", itest_hasnextfalse) == NULL) ||
+        (CU_add_test(my_test_suite, "Test has next empty", itest_hasnextempty) == NULL) ||
+        (CU_add_test(my_test_suite, "Test next exists", itest_nextexists) == NULL) ||
+        (CU_add_test(my_test_suite, "Test reset iterator", itest_iteratorreset) == NULL) ||
+        (CU_add_test(my_test_suite, "Test current first", itest_currentfirst) == NULL) ||
+        (CU_add_test(my_test_suite, "Test current first", itest_next_empty) == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit
