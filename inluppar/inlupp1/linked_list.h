@@ -2,16 +2,22 @@
 #include "common.h"
 #include <stdbool.h>
 #include <stddef.h>
+
+/**
+ * @file linked_list.h
+ * @author Alexandra Dahlberg & Anthony Melinder
+ * @date 06 October 2022
+ * @brief Simple linked list that lists integer values and connect them in the way of a linked structure.
+ *
+This header-file lists and defines all functions that are written for and used to make our linked list structure. 
+ */
+
 typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
 typedef struct link link_t;
 
 typedef bool (*ioopm_int_predicate)(elem_t value, void *extra);
 typedef void (*ioopm_apply_int_function)(elem_t *value, void *extra);
-bool elem_equality_func_int(elem_t a, elem_t b); //eq_func for int
-bool elem_equality_func_str(elem_t a, elem_t b); //eq_func for string
-bool elem_equality_func_unsig_int(elem_t a, elem_t b); //eq_func for unsigned int
-bool elem_equality_func_bool(elem_t a, elem_t b); //eq_func for bool
-bool elem_equality_func_float(elem_t a, elem_t b); //eq_func for float
+
 
 /// @brief Creates a new empty list
 /// @return an empty linked list
@@ -94,8 +100,6 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 /// @param extra an additional argument (may be NULL) that will be passed to all internal calls of prop
 /// @return true if prop holds for any elements in the list, else false
 bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *extra);
-
-void changeallvaluestoarg(elem_t *value, void *arg);
 
 /// @brief Apply a supplied function to all elements in a list.
 /// @param list the linked list

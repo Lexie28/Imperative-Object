@@ -66,13 +66,6 @@ void httest_insert_invalidkey() // ELEM_T ADAPTED
   // test andra invalids också
 }
 
-/*
-void insert_same_bucketfirst() //insert in the same bucket 1 18 35
-{
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int); // create a new empty hash table ht
-  ioopm_hash_table_insert(ht, int_elem(2), ptr_elem("Lexie"));
-} n*/
-
 void httest_lookup_empty() // ELEM_T ADAPTED
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create(elem_equality_func_int, hash_map_func_int);
@@ -257,8 +250,8 @@ void httest_has_value() // ELEM_T ADAPTED
   int k = 2;
   char *v = "Lexie";
   ioopm_hash_table_insert(ht, int_elem(k), ptr_elem(v));
-  char *copy = strdup(v);                                         // TODO???? VARFÖR FUNKAR INTE STRING COPY?????????????
-  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, ptr_elem(v)));    // Kollar ekvivalens med og value.
+  char *copy = strdup(v);                                        
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, ptr_elem(v)));    // Kollar ekvivalens med original value.
   CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, ptr_elem(copy))); // Kollar ekvivalens med kopia av
   ioopm_hash_table_clear(ht);
   CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, ptr_elem(v)));
@@ -423,10 +416,10 @@ int main()
       (CU_add_test(my_test_suite, "Testing if a value is equal to all values in a hash table.", httest_all_values) == NULL) ||
       (CU_add_test(my_test_suite, "Testing if a all entries same value.", httest_allentriesisissamevalue) == NULL) ||
       (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_allentriesfalse) == NULL) ||
-      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_allentriesempty) == NULL) ||
-      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_applytoall) == NULL) ||
-      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_falseapplytoall) == NULL) ||
-      (CU_add_test(my_test_suite, "Testing false if a all entries same value.", httest_lookup_samebucket) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing if a all entries same value in empty ht.", httest_allentriesempty) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing applying a function to all entries across a ht.", httest_applytoall) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing false applying a function to all entries across a ht.", httest_falseapplytoall) == NULL) ||
+      (CU_add_test(my_test_suite, "Testing looking up an entry within a bucket of other entries.", httest_lookup_samebucket) == NULL) ||
       0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit

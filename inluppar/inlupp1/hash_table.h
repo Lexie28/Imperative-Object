@@ -5,22 +5,19 @@
 #include "common.h"
 /**
  * @file hash_table.h
- * @author write both your names here
- * @date 1 Sep 2022
+ * @author Alexandra Dahlberg & Anthony Melinder
+ * @date 06 October 2022
  * @brief Simple hash table that maps integer keys to string values.
  *
- * Here typically goes a more extensive explanation of what the header
- * defines. Doxygens tags are words preceeded by either a backslash @\
- * or by an at symbol @@.
- *
- * @see https://uppsala.instructure.com/courses/68435/assignments/130155
+This header-file lists and defines all functions that are written for and used to make our hash table structure. 
  */
 typedef struct hash_table ioopm_hash_table_t;
 typedef struct option option_t;
 typedef struct entry entry_t;
 typedef union elem elem_t;
+
 typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra);
-typedef int (*ioopm_hash_function)(elem_t key); //We take a element and map it to a value of our choice.
+typedef int (*ioopm_hash_function)(elem_t key); 
 typedef bool (*ioopm_predicate)(elem_t key, elem_t value, void *extra, ioopm_hash_function hash_func);
 
 struct option
@@ -36,11 +33,18 @@ struct entry
     entry_t *next; // points to the next entry (possibly NULL)
 };
 
-
 /// @brief Create a new hash table
 /// @return A new empty hash table
 ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function ins_value_eq_fn, ioopm_hash_function ins_hash_func);
+
+/// @brief map elem_t (expect integer) key as an integer
+/// @param key key value operated upon
+/// @return key as an int
 int hash_map_func_int(elem_t key); //Hash mapping function when elem_t is an integer.
+
+/// @brief map elem_t (expect char *) key as an integer
+/// @param key key value operated upon
+/// @return key as an int
 int hash_map_func_string(elem_t key); //Hash mapping function when elem_t is a string.
 
 /// @brief Delete a hash table and free its memory
@@ -65,20 +69,6 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key);
 /// @return the value mapped to by key (FIXME: incomplete)
 elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key);
 
-/// @brief returns the number of key => value entries in the hash table
-/// @param h hash table operated upon
-/// @return the number of key => value entries in the hash table
-size_t ioopm_hash_table_size(ioopm_hash_table_t *ht);
-
-/// @brief checks if the hash table is empty
-/// @param h hash table operated upon
-/// @return true is size == 0, else false
-bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht);
-
-/// @brief clear all the entries in a hash table
-/// @param h hash table operated upon
-void ioopm_hash_table_clear(ioopm_hash_table_t *ht);
-
 /// @brief return the keys for all entries in a hash map (in no particular order, but same as ioopm_hash_table_values)
 /// @param h hash table operated upon
 /// @return an array of keys for hash table h
@@ -88,6 +78,20 @@ ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht);
 /// @param h hash table operated upon
 /// @return an array of values for hash table h
 ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht);
+
+/// @brief clear all the entries in a hash table
+/// @param h hash table operated upon
+void ioopm_hash_table_clear(ioopm_hash_table_t *ht);
+
+/// @brief returns the number of key => value entries in the hash table
+/// @param h hash table operated upon
+/// @return the number of key => value entries in the hash table
+size_t ioopm_hash_table_size(ioopm_hash_table_t *ht);
+
+/// @brief checks if the hash table is empty
+/// @param h hash table operated upon
+/// @return true is size == 0, else false
+bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht);
 
 /// @brief check if a hash table has an entry with a given key
 /// @param h hash table operated upon
@@ -117,6 +121,8 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 /// @param arg extra argument to apply_fun
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
 
+/// @brief check if all ht entry values are equal to value.
+/// @param ht hash table operated upon
+/// @param value the value that all value entries should equal
+/// @return boolean true or false.
 bool hash_table_has_all_values(ioopm_hash_table_t *ht, elem_t value);
-
-void print_ht(ioopm_hash_table_t *ht);

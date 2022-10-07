@@ -35,11 +35,13 @@ ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function func)
     result->eq_func = func; //We set the equality function from our input.
     return result;
 }
+
 void ioopm_linked_list_destroy(ioopm_list_t *list)
 {
     ioopm_linked_list_clear(list);
     free(list);
 }
+
 static link_t *create_link(elem_t v, link_t *n)
 {
     link_t *newlink = calloc(1, sizeof(link_t));
@@ -47,6 +49,7 @@ static link_t *create_link(elem_t v, link_t *n)
     newlink->next = n;
     return newlink;
 }
+
 void addfirstlink(ioopm_list_t *list, elem_t value) //adds first link in empty list. defines head and last pointer.
 {
     link_t *firstlink = create_link(value, NULL);
@@ -54,6 +57,7 @@ void addfirstlink(ioopm_list_t *list, elem_t value) //adds first link in empty l
     list->tail = firstlink;
     list->size++;
 }
+
 void ioopm_linked_list_append(ioopm_list_t *list, elem_t value)
 {
     if (list->size == 0)
@@ -68,6 +72,7 @@ void ioopm_linked_list_append(ioopm_list_t *list, elem_t value)
         list->size++;
     }
 }
+
 void ioopm_linked_list_prepend(ioopm_list_t *list, elem_t value)
 {
     if (list->size == 0)
@@ -82,6 +87,7 @@ void ioopm_linked_list_prepend(ioopm_list_t *list, elem_t value)
     list->size++;
     }
 }
+
 void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value) // index = 1
 {
     if (index < 0 || index > list->size)
@@ -104,6 +110,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value) // in
     link->next = create_link(value, next);
     list->size++;
 }
+
 elem_t ioopm_linked_list_remove(ioopm_list_t *list, int index)
 {
     link_t *link = list->head;
@@ -138,6 +145,7 @@ elem_t ioopm_linked_list_remove(ioopm_list_t *list, int index)
         return result;                 // Return deleted value of entry.
     }
 }
+
 elem_t ioopm_linked_list_get(ioopm_list_t *list, int index)
 {
     if (index < 0 || index > list->size)
@@ -151,6 +159,7 @@ elem_t ioopm_linked_list_get(ioopm_list_t *list, int index)
     }
     return link->value;
 }
+
 bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t element)
 {
     link_t *link = list->head;
@@ -167,10 +176,12 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t element)
     }
     return false;
 }
+
 size_t ioopm_linked_list_size(ioopm_list_t *list)
 {
     return list->size;
 }
+
 bool ioopm_linked_list_is_empty(ioopm_list_t *list)
 {
     if (ioopm_linked_list_size(list) == 0)
@@ -182,6 +193,7 @@ bool ioopm_linked_list_is_empty(ioopm_list_t *list)
         return false;
     }
 }
+
 void ioopm_linked_list_clear(ioopm_list_t *list)
 {
     if (ioopm_linked_list_is_empty(list) == true)
@@ -207,6 +219,7 @@ bool has_any_value(ioopm_list_t *list, elem_t value) // Check if value of entry 
 {
     return ioopm_linked_list_any(list, value_equiv, &value);
 }
+
 bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
 {
     int j = 0;
@@ -222,6 +235,7 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *e
         return false;
     return true;
 }
+
 bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
 {
     link_t *link = list->head;
@@ -233,6 +247,7 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *e
     }
     return false;
 }
+
 void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra)
 {
     link_t *link = list->head;

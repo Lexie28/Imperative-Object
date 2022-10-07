@@ -59,7 +59,7 @@ void process_file(char *filename, ioopm_hash_table_t *ht)
         free(buf);
     }
     fclose(f);
-}
+}   
 
 int string_sum_hash(elem_t e) // tar en sträng och ger den ett hash-värde. värde som sen bestämmer vilken bucket vi lägger in varje ord i
 {
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
             option_t freqopt = ioopm_hash_table_lookup(ht, ptr_elem(keys_arr[i]));
             int freq = freqopt.value.i;
             printf("%s: %d\n", keys_arr[i], freq);
-            //totalSum = totalSum + freq;
+        //totalSum = totalSum + freq;
         }
         //printf("Total number of words: %d\n", totalSum);
         //print_ht(ht);
@@ -133,7 +133,5 @@ int main(int argc, char *argv[])
     {
         puts("Usage: freq-count file1 ... filen");
     }
-    // FIXME: Leaks memory! Use valgrind to find out where that memory is
-    // being allocated, and then insert code here to free it.
     ioopm_hash_table_destroy(ht);
 }

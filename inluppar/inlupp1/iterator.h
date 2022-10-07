@@ -2,6 +2,15 @@
 #include "common.h"
 #include <stdbool.h>
 
+/**
+ * @file iterator.h
+ * @author Alexandra Dahlberg & Anthony Melinder
+ * @date 06 October 2022
+ * @brief Simple iterator used as a pointer on linked lists
+ *
+This header-file lists and defines all functions that are written for and used to make our iterator structure. 
+ */
+
 typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
 typedef struct link link_t;
 typedef struct iterator ioopm_list_iterator_t;

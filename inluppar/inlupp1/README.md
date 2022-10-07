@@ -1,9 +1,50 @@
-# Initial Profiling Results
+# DOCUMENTATION OF PROGRAM
 
+Here we will list and describe decisions we have made about our data structures, and how we handle errors.
+1. In our hash table there cannot be negative keys, and we have handled this errors in ways such that when we try to for example insert a negative key into our hash table, we immediately exit the function and return the hash table as it was previously, with no changes. Similarly, if we try to look-up a negative key, it will immediately return a ‘Failure()’-value. We have similar situations (with invalid keys and value) in linked_list.c where we handle the errors exactly the same (i.e. by exiting the insert-function and returning the previous and unchanged list). Similarly, when we try to remove and invalid input we return NULL. 
+2. We assume when we use our hash_map functions that an input will be of specific type, for e.g when hash_map_func_int is used we assumed that the input type will be an elem_t of integer type. Same is true for hash_map_func_string, were we assume input type to be elem_t of char *, and so on.
+3. We have limited the number of buckets in our hash table structure to 17 buckets.
 
+# RUNNING THE PROGRAM & TESTS
 
+Running frequency count on .txt file
+Makefile:
+FLAGS = -g -Wall -pedantic
 
-COVERAGE ANALYSIS
+freq_count: freq-count.c common.c linked_list.c hash_table.c iterator.c
+    gcc $(FLAGS) freq-count.c common.c linked_list.c hash_table.c iterator.c -o tests
+
+In terminal:
+make freq_count
+./tests <file you want to test> (e.g. 1k-long-words.txt, 10k-words.txt etc.)
+
+Running Linked List tests:
+In Makefile:
+linked_list: linked_list.c common.c linked_tests.c   
+gcc -g -Wall -pedantic linked_list.c common.c linked_tests.c  -lcunit -o tests
+In terminal:
+make linked_list
+./tests
+
+Running Hash Table tests:
+In Makefile:
+hash_table: linked_list.c common.c hash_table.c hash_tests.c
+   gcc -g -Wall -pedantic -Ilinked_list.c common.c hash_table.c hash_tests.c  -lcunit -o tests
+In terminal:
+make hash_table
+./tests
+
+Running Iterator tests
+In Makefile:
+iterator: linked_list.c common.c iterator.c iterator_tests.c
+   gcc -g -Wall -pedantic linked_list.c common.c iterator.c iterator_tests.c  -lcunit -o tests
+In terminal:
+make iterator
+./tests
+
+# Profiling Results
+
+# COVERAGE ANALYSIS
 
 LCOV
 
@@ -26,7 +67,7 @@ We have attempted to write our test such that it achieves high quality with rega
 If our code and corresponding tests are written in such a way that they only consider simple cases, the test coverage does not tell us much.
 
 
-GPROF
+# GPROF
 
 Gprof was used to test how many calls and the time consumed by each function. Gprof was used upon the test-files: small.txt, 1k-long-words.txt, 10k-words.txt and 16k-words.txt.
 

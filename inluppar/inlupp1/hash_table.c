@@ -17,8 +17,8 @@ typedef struct option option_t;
 
 struct hash_table
 {
-    entry_t buckets[No_Buckets];               // The buckets
-    ioopm_eq_function key_eq_fn;     // Function for checking if keys are equal.
+    entry_t buckets[No_Buckets];       // The buckets
+    ioopm_eq_function key_eq_fn;       // Function for checking if keys are equal.
     ioopm_hash_function hash_function; // Function for determining the keys of inputs elem_t.
 };
 
@@ -42,7 +42,6 @@ static bool value_equiv(elem_t key_ignored, elem_t value, void *x, ioopm_hash_fu
     return false;
 }
 
-
 int hash_map_func_int(elem_t key) // Hash mapping function when elem_t is an integer.
 {
     int int_key = key.i;
@@ -56,16 +55,13 @@ int hash_map_func_int(elem_t key) // Hash mapping function when elem_t is an int
     {
     }
     */
-
-    
 }
 
 static entry_t *find_previous_entry_for_key(entry_t *entry, elem_t key, ioopm_eq_function key_eq_fun)
 {
-    // ctrl + F to search for things
     while (entry->next != NULL)
     {
-        if (key_eq_fun(entry->next->key, key)) 
+        if (key_eq_fun(entry->next->key, key))
         {
             return entry;
         }
@@ -75,18 +71,12 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, elem_t key, ioopm_eq
         }
     }
     return entry;
-
-    /*while (entry->next != NULL && (entry->next->key) < hash_func(key))
-    {
-        entry = entry->next;
-    }
-    return entry; */
 }
 
 static entry_t *entry_create(elem_t insertedKey, elem_t v, entry_t *next)
 {
     entry_t *new_entry = calloc(1, sizeof(entry_t));
-    new_entry->key = insertedKey; //The key value.
+    new_entry->key = insertedKey; // The key value.
     new_entry->value = v;
     new_entry->next = next;
     return new_entry;
@@ -110,9 +100,11 @@ ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function ins_key_eq_fn, ioo
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t insertedKey, elem_t value)
 {
     int mappedKey = ht->hash_function(insertedKey);
+    // assert(mappedkey > 0 && return); //mappedkey måste vara större än noll, annars return
     if (mappedKey < 0)
     {
         return;
+        
     }
     /// Calculate the bucket for this entry
     int bucket = mappedKey % No_Buckets;
@@ -132,47 +124,32 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t insertedKey, elem_t 
     else
     {
         previousentry->next = entry_create(insertedKey, value, next); // entrycreate returnerar pekaren till det nya entryt.
-                                                                     // previousentry pekar till lådan med elementet innan där vi vill sätta in
-                                                                     // previousentry->next = pekaren i sista lådan som vi ändrar till att peka på vårt nya element
+                                                                      // previousentry pekar till lådan med elementet innan där vi vill sätta in
+                                                                      // previousentry->next = pekaren i sista lådan som vi ändrar till att peka på vårt nya element
     }
 }
 
 option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t insertedKey)
 {
     int mappedKey = ht->hash_function(insertedKey);
-    int bucket = mappedKey % No_Buckets;
-    entry_t *tmp = find_previous_entry_for_key(&ht->buckets[bucket], insertedKey, ht->key_eq_fn);
-    entry_t *next = tmp->next;
-
-    if (next && ht->key_eq_fn(next->key, insertedKey)) //kolla både att vi fick ut en pekare, men också att dom är samma!! så next->key faktiskt är samma som insertedKey som vi vill kolla
-    {
-        return Success(next->value);
-    }
-    else
-    {
-        return Failure();
-    }
-    /*
-    /// Find the previous entry for key
-    int mappedKey = ht->hash_function(insertedKey);
+    //assert(mappedKey > 0 && "You want to look-up an invalid key");
     if (mappedKey < 0)
     {
         return Failure();
     }
+    int bucket = mappedKey % No_Buckets;
+    entry_t *tmp = find_previous_entry_for_key(&ht->buckets[bucket], insertedKey, ht->key_eq_fn);
+    entry_t *next = tmp->next;
 
-    entry_t *temp = find_previous_entry_for_key(&ht->buckets[mappedKey%No_Buckets], insertedKey, ht->hash_function);
-    entry_t *next = temp->next;
-    if (next && next->value.p)
+    if (next && ht->key_eq_fn(next->key, insertedKey)) // kolla både att vi fick ut en pekare, men också att dom är samma!! så next->key faktiskt är samma som insertedKey som vi vill kolla
     {
         return Success(next->value);
-
     }
     else
     {
         return Failure();
-    } */
+    }
 }
-
 
 elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t insertedKey)
 {
@@ -180,15 +157,15 @@ elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t insertedKey)
     int mapped_key = ht->hash_function(insertedKey);
     int bucket = mapped_key % No_Buckets;
     entry_t *prev_entry = find_previous_entry_for_key(&ht->buckets[bucket], insertedKey, ht->key_eq_fn); // finds previous entry to the entry we want to remove
-    entry_t *entry_remove = prev_entry->next;                                                        // entry_remove is pointer to entry we wish to remove (the one after our previous entry)
-    option_t entry_exist = ioopm_hash_table_lookup(ht, insertedKey);                                         // we look if our entry exists in our hashtable
-    if (entry_exist.success == true)                                                                         // if our entry that we want to remove does exist
+    entry_t *entry_remove = prev_entry->next;                                                            // entry_remove is pointer to entry we wish to remove (the one after our previous entry)
+    option_t entry_exist = ioopm_hash_table_lookup(ht, insertedKey);                                     // we look if our entry exists in our hashtable
+    if (entry_exist.success == true)                                                                     // if our entry that we want to remove does exist
     {
 
         prev_entry->next = entry_remove->next; // we make the previous entry next pointer point to the adress of the entry AFTER the one we want to remove
         free(entry_remove);                    // we free the entry we want to remove
         elem_t returnVal = entry_exist.value;
-        return returnVal;          // we return the value belonging together with the key in the entry we removed (as requested on studium)
+        return returnVal; // we return the value belonging together with the key in the entry we removed (as requested on studium)
     }
 
     return ptr_elem(NULL); // if the entry we wanted to remove didn't even exist in our hashtable we return NULL
@@ -327,11 +304,20 @@ bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *x)
 }
 
 bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
-{return ioopm_hash_table_any(ht, key_equiv, &key);}
+{
+    return ioopm_hash_table_any(ht, key_equiv, &key);
+}
+
 bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, elem_t value)
-{return ioopm_hash_table_any(ht, value_equiv, &value);}
+{
+    return ioopm_hash_table_any(ht, value_equiv, &value);
+}
+
 bool hash_table_has_all_values(ioopm_hash_table_t *ht, elem_t value)
-{return ioopm_hash_table_all(ht, value_equiv, &value);}
+{
+    return ioopm_hash_table_all(ht, value_equiv, &value);
+}
+
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg) // tar in ht, funktion, och om det ska ta argument till funktionen
 {
     for (int i = 0; i < No_Buckets; i++)
@@ -342,4 +328,20 @@ void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function 
         {
             apply_fun(entry->key, &entry->value, arg);
             entry = entry->next;
-        }}}
+        }
+    }
+}
+
+void print_ht(ioopm_hash_table_t *ht) {
+    for (int i = 0; i < No_Buckets; i++) {
+        entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
+        entry = entry->next;              // för att skippa dummy entryt
+        printf("Bucket[%d]->", i);
+        while (entry != NULL)
+        {
+            printf("[%s, %d]->", (char *) entry->key.p, entry->value.i);
+            entry = entry->next;
+        }
+        printf("\n");
+    }
+}
