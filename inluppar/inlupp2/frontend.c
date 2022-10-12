@@ -30,23 +30,35 @@ void ui_list_merchandise(db_t *db) //TODO?? FUNKAR INTE ATT SE MER ÄN 20!!
     listtype_t *merch = get_merchandise(db); //option-type med char ** (array av strängar) och en size
     int j = 0;
     int i = 0;
-    while (merch->arr[j + i] != NULL)
+    while (merch->arr[j] != NULL)
     {
-        for (i = 0; i < 20 && i < merch->size; i++) // antingen mindre än 20, eller om listan är kortare, tills vi läser av något som är NULL aka slutet av arrayen
+        for (i = 0; i < 20 && j < merch->size; i++) // antingen mindre än 20, eller om listan är kortare, tills vi läser av något som är NULL aka slutet av arrayen
         {
+            if (merch->arr[j+i] != NULL)
+            {
             char *name = merch->arr[j + i];
             printf("%d. %s \n", j + i + 1, name);
+            }
+            else
+            {
+                break;
+            }
         }
         j += i;
+        //printf("j = %d", j);
         if (i < 20)
         {
             break;
         }
         char *answer = ask_question_string("Would you like to see more merchandise? y/n");
-        if (!(strcmp(answer, "y") == 0 || strcmp(answer, "Y") == 0))
+        char ans = toupper(answer[0]);
+        if (ans != 'Y') // (strcmp(answer, "y") != 0 || strcmp(answer, "Y") != 0)
         {
+            //printf("jag är här!");
             break;
         }
+
+        // printf("BOOL: %d", merch->arr[j] != NULL); // 0 betyder att det är false
     }
     free(merch->arr);
 }
@@ -79,6 +91,29 @@ void ui_edit_merchanidse(db_t *db)
     }
 }
 
+
+void ui_show_stock(db_t *db)
+{
+    ui_list_merchandise(db);
+    char *name = ask_question_string("For which item would you like to see the stock?");
+    return show_stock(db, name);   
+}
+
+void ui_replenish_stock(db_t *db)
+{
+    ui_list_merchandise(db);
+    char *name = ask_question_string("Which item would you like to replenish?");
+    if (replenish_stock(db, name) == true)
+    {
+        printf("Stock successfully replenished!");
+    }
+    else
+    {
+        printf("Stock could not be replenished!");
+    }
+}
+
+
 char *print_menu()
 {
     return(
@@ -104,7 +139,7 @@ int main()
     add_merchandise(db, "a", "co", 3);
     add_merchandise(db, "bej", "cool", 1);
     add_merchandise(db, "be", "coo", 2);
-    /*add_merchandise(db, "b", "co", 3);
+    add_merchandise(db, "b", "co", 3);
     add_merchandise(db, "cej", "cool", 1);
     add_merchandise(db, "ce", "coo", 2);
     add_merchandise(db, "c", "co", 3);
@@ -116,7 +151,13 @@ int main()
     add_merchandise(db, "e", "co", 3);
     add_merchandise(db, "fej", "cool", 1);
     add_merchandise(db, "fe", "coo", 2);
-    add_merchandise(db, "f", "co", 3); */
+    add_merchandise(db, "f", "co", 3);
+    add_merchandise(db, "gej", "cool", 1);
+    add_merchandise(db, "ge", "coo", 2);
+    add_merchandise(db, "g", "co", 3);
+    add_merchandise(db, "tej", "cool", 1);
+    add_merchandise(db, "te", "coo", 2);
+    add_merchandise(db, "t", "co", 3);
 
     char ans = toupper(ask_question_menu(print_menu())); //remember to change askquestionmenu when you add options
 

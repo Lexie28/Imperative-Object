@@ -118,3 +118,21 @@ char ask_question_menu(char *question)
 {
     return ask_question(question, is_menu_answer, (convert_func) strdup).string_value[0];
 }
+
+bool is_shelf(char *shelf)
+{
+    if (strlen(shelf) >= 2 && isalpha(shelf[0]))
+    {
+        for (int i = 1; i < strlen(shelf); i++)
+        {
+            if (isdigit(shelf[i]) == false)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}

@@ -7,7 +7,7 @@
 
 struct link
 {
-    elem_t value;
+    elem_t value; //kan vara en pointer??
     struct link *next;
 };
 

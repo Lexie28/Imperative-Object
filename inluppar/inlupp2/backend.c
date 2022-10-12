@@ -115,6 +115,30 @@ bool remove_merchandise(db_t *db, char *name)
     }
 }
 
+bool edit_remove_merchandise(db_t *db, char *name)
+{
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    bool success = lookup.success;
+    if (success == false)
+    {
+        return false;
+    }
+    merch_t *merch = lookup.value.p;
+    ioopm_list_t *list = merch->locs;
+        ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+        for (int i=0; i > ioopm_linked_list_size(list); i++)
+        {
+            char *nameofshelf = ioopm_iterator_current(iter).p;
+            ioopm_iterator_next(iter);
+            ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
+        }
+        ioopm_iterator_destroy(iter);
+        destroy_merch(merch);
+        ioopm_hash_table_remove(ht, ptr_elem(name));
+        return true;
+}
+
 static int cmpstringp(const void *p1, const void *p2)
 {
     return strcmp(*(char *const *)p1, *(char *const *)p2);
@@ -148,6 +172,7 @@ listtype_t *get_merchandise(db_t *db) //remake so that it returns size and array
     ioopm_iterator_destroy(iter);
     sort_keys(keys_arr, size); //return keys_arr
     listtype_t *result = makelisttype(keys_arr, size);
+    free(keys_arr);
     return result;
 }
 
@@ -168,26 +193,81 @@ bool edit_merchandise(db_t *db, char *name) //TODO behövs det ändras till elem
     {
         char *name = ask_question_string("Edit name: \n");
         add_merchandise(db, name, merch->description, merch->price);
-        remove_merchandise(db, merch->name);
+        edit_remove_merchandise(db, merch->name);
         return true;
     }
     else if (choice == 'D')
     {
         char *description = ask_question_string("Edit description: \n");
-        remove_merchandise(db, merch->name);
-        add_merchandise(db, merch->name, description, merch->price);        
+        merch->description = description;        
         return true;
     }
     else if (choice == 'P')
     {
         int price = ask_question_int("Edit price: \n");
-        remove_merchandise(db, merch->name);
-        add_merchandise(db, merch->name, merch->description, price); 
+        merch->price = price;
         return true;
     }
     else
     {
         printf("You did not pick a valid option to edit the merchandise! \n");
         return false;
+    }
+}
+
+//linked_list är en lista med shelf_t som entries
+
+void show_stock(db_t *db, char *name) 
+{
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    bool success = lookup.success;
+    if (success == false)
+    {
+        printf("This item does not exist!");
+        return;
+    }
+    merch_t *merch = lookup.value.p;
+    ioopm_list_t *listoflocations = merch->locs;
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
+    while (ioopm_iterator_has_next(iter))
+    {
+        elem_t shelf_elem = ioopm_iterator_current(iter);
+        shelf_t *shelf = shelf_elem.p;
+        printf("%s: %d\n", shelf->shelf, shelf->quantity);
+        ioopm_iterator_next(iter);
+        
+        /*
+        elem_t shelf_elem = ioopm_iterator_next(iter); //har en dummy i början, osäker om vår linked list har det??
+        shelf_t *shelf = shelf_elem.p;
+        printf("%s: %d\n", shelf->shelf, shelf->quanitity); */
+    }
+}
+
+
+bool replenish_stock(db_t *db, char *name)
+{
+    show_stock(db, name);
+    char *shelftoremove = ask_question_string("Which stock would you like to replenish, if new, write new shelf number");
+    bool isshelf = is_shelf(shelftoremove); //kollar att tar rätt input
+    if (isshelf == true)
+    {
+        ioopm_hash_table_t *ht = db->namemerch;
+        option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
+        merch_t *merch = lookup.value.p;
+        ioopm_list_t *listoflocations = merch->locs;
+        ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
+        while (ioopm_iterator_has_next(iter))
+        {
+            elem_t shelf_elem = ioopm_iterator_current(iter);
+            shelf_t *shelf = shelf_elem.p;
+            if (strcmp(shelftoremove, shelf->shelf) == 0)
+            {
+                shelf->quantity++;
+                return true;
+            }
+            ioopm_iterator_next(iter);
+        }
+        //TO DO!!?? OFÄRDIG!! om den stocken inte redan finns i listan, inserta ny i listan med quantity 1!!!
     }
 }
