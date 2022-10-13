@@ -52,4 +52,14 @@ bool remove_merchandise(db_t *db, char *name);
 
 listtype_t *get_merchandise(db_t *db);
 
-bool edit_merchandise(db_t *db, char *name);
+bool edit_merchandise_name(db_t *db, char *name, char *newname);
+
+bool edit_merchandise_description(db_t *db, char *name, char *newdescription);
+
+bool edit_merchandise_price(db_t *db, char *name, int newprice);
+
+void show_stock(db_t *db, char *name);
+
+shelf_t *create_shelf(char *newshelf, int newquantity);
+
+bool replenish_stock(db_t *db, char *name, char *shelftoreplenish);

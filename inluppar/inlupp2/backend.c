@@ -93,26 +93,18 @@ bool remove_merchandise(db_t *db, char *name)
         return false;
     }
     merch_t *merch = lookup.value.p;
-    char *sure = ask_question_string("Are you sure you want to remove this merchandise? y/n");
-    if (strcmp(sure, "y") == 0 || strcmp(sure, "Y") == 0)
+    ioopm_list_t *list = merch->locs;
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+    for (int i = 0; i > ioopm_linked_list_size(list); i++)
     {
-        ioopm_list_t *list = merch->locs;
-        ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
-        for (int i=0; i > ioopm_linked_list_size(list); i++)
-        {
-            char *nameofshelf = ioopm_iterator_current(iter).p;
-            ioopm_iterator_next(iter);
-            ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
-        }
-        ioopm_iterator_destroy(iter);
-        destroy_merch(merch);
-        ioopm_hash_table_remove(ht, ptr_elem(name));
-        return true;
+        char *nameofshelf = ioopm_iterator_current(iter).p;
+        ioopm_iterator_next(iter);
+        ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
     }
-    else
-    {
-        return false;
-    }
+    ioopm_iterator_destroy(iter);
+    destroy_merch(merch);
+    ioopm_hash_table_remove(ht, ptr_elem(name));
+    return true;
 }
 
 bool edit_remove_merchandise(db_t *db, char *name)
@@ -172,11 +164,11 @@ listtype_t *get_merchandise(db_t *db) //remake so that it returns size and array
     ioopm_iterator_destroy(iter);
     sort_keys(keys_arr, size); //return keys_arr
     listtype_t *result = makelisttype(keys_arr, size);
-    free(keys_arr);
+    //free(keys_arr);
     return result;
 }
 
-bool edit_merchandise(db_t *db, char *name) //TODO behövs det ändras till elem_t??
+bool edit_merchandise_name(db_t *db, char *name, char *newname)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -185,34 +177,38 @@ bool edit_merchandise(db_t *db, char *name) //TODO behövs det ändras till elem
     {
         return false;
     }
-    //if it exists, ask what they would like to edit (name, description, price)
-    //for each thing, if "N" then change name, if "D" then change d, if "P" then change price and return true
-    char choice = toupper(ask_question_char("Would you like to edit this merchandise's [N]ame, [D]escription or [P]rice? \n"));
     merch_t *merch = lookup.value.p;
-    if (choice == 'N')
+    add_merchandise(db, newname, merch->description, merch->price);
+    edit_remove_merchandise(db, name);
+    return true;
+}
+
+bool edit_merchandise_description(db_t *db, char *name, char *newdescription)
+{
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    bool success = lookup.success;
+    if (success == false)
     {
-        char *name = ask_question_string("Edit name: \n");
-        add_merchandise(db, name, merch->description, merch->price);
-        edit_remove_merchandise(db, merch->name);
-        return true;
-    }
-    else if (choice == 'D')
-    {
-        char *description = ask_question_string("Edit description: \n");
-        merch->description = description;        
-        return true;
-    }
-    else if (choice == 'P')
-    {
-        int price = ask_question_int("Edit price: \n");
-        merch->price = price;
-        return true;
-    }
-    else
-    {
-        printf("You did not pick a valid option to edit the merchandise! \n");
         return false;
     }
+    merch_t *merch = lookup.value.p;
+    merch->description = newdescription;
+    return true;
+}
+
+bool edit_merchandise_price(db_t *db, char *name, int newprice)
+{
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    bool success = lookup.success;
+    if (success == false)
+    {
+        return false;
+    }
+    merch_t *merch = lookup.value.p;
+    merch->price = newprice;
+    return true;
 }
 
 //linked_list är en lista med shelf_t som entries
@@ -244,12 +240,18 @@ void show_stock(db_t *db, char *name)
     }
 }
 
+shelf_t *create_shelf(char *newshelf, int newquantity)
+{
+    shelf_t *sh = calloc(1, sizeof(shelf_t));
+    sh->shelf = newshelf;
+    sh->quantity = newquantity;
+    return sh;
+}
 
-bool replenish_stock(db_t *db, char *name)
+bool replenish_stock(db_t *db, char *name, char *shelftoreplenish)
 {
     show_stock(db, name);
-    char *shelftoremove = ask_question_string("Which stock would you like to replenish, if new, write new shelf number");
-    bool isshelf = is_shelf(shelftoremove); //kollar att tar rätt input
+    bool isshelf = is_shelf(shelftoreplenish); //kollar att tar rätt input
     if (isshelf == true)
     {
         ioopm_hash_table_t *ht = db->namemerch;
@@ -261,13 +263,20 @@ bool replenish_stock(db_t *db, char *name)
         {
             elem_t shelf_elem = ioopm_iterator_current(iter);
             shelf_t *shelf = shelf_elem.p;
-            if (strcmp(shelftoremove, shelf->shelf) == 0)
+            if (strcmp(shelftoreplenish, shelf->shelf) == 0)
             {
                 shelf->quantity++;
                 return true;
             }
             ioopm_iterator_next(iter);
         }
-        //TO DO!!?? OFÄRDIG!! om den stocken inte redan finns i listan, inserta ny i listan med quantity 1!!!
+        shelf_t *shelf = create_shelf(shelftoreplenish, 1);
+        ioopm_linked_list_append(listoflocations, ptr_elem(shelf));
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
+

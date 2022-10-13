@@ -23,4 +23,5 @@ int ask_question_int(char *question);
 bool is_menu_answer(char *menuans);
 char ask_question_menu(char *question);
 char ask_question_char(char *question);
+bool is_shelf(char *shelf);
 

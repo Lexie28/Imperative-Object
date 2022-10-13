@@ -19,6 +19,19 @@ int clean_suite(void)
     return 0;
 }
 
+void test_add_merchandise()
+{
+    db_t *db = db_create();
+    ioopm_hash_table_t *ht = db->namemerch;
+    char *name = "Lexie";
+    char *description = "Cool kid";
+    int price = 55;
+    add_merchandise(db, name, description, price);
+    option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(a.success == true);
+    //FORTSÄTTA ATT KOLLA ATT DET ÄR EXAKT VÅRT ELEMENT
+    //TODO! BEHÖVER EN DB_DESTROY
+}
 
 int main()
 {
@@ -42,7 +55,7 @@ int main()
     // the test in question. If you want to add another test, just
     // copy a line below and change the information
     if (
-        //(CU_add_test(my_test_suite, "Test create/destroy iterator", itest_create_destroy) == NULL) ||
+        (CU_add_test(my_test_suite, "Test adding merchandise to database", test_add_merchandise) == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit

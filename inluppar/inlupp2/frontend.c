@@ -67,13 +67,21 @@ void ui_remove_merchandise(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("The item name:");
-    if (remove_merchandise(db, name) == true)
+    char *sure = ask_question_string("Are you sure you want to remove this merchandise? y/n");
+    if (strcmp(sure, "y") == 0 || strcmp(sure, "Y") == 0)
     {
-        printf("Item successfully removed! \n");
+        if (remove_merchandise(db, name) == true)
+        {
+            printf("Item successfully removed! \n");
+        }
+        else
+        {
+            printf("Item could not be removed! \n");
+        }
     }
     else
     {
-        printf("Item could not be removed! \n");
+        return;
     }
 }
 
@@ -81,13 +89,47 @@ void ui_edit_merchanidse(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("Which item would you like to edit?");
-    if (edit_merchandise(db, name) == true)
+    char choice = toupper(ask_question_char("Would you like to edit this merchandise's [N]ame, [D]escription or [P]rice? \n"));
+    if (choice == 'N')
     {
-        printf("Item successfully edited! \n");
+        char *newname = ask_question_string("Edit name: \n");
+        if (edit_merchandise_name(db, name, newname) == true)
+        {
+            printf("Item successfully edited! \n");
+        }
+        else
+        {
+            printf("Item could not be edited! \n");
+        }
+    }
+    else if (choice == 'D')
+    {
+        char *newdescription = ask_question_string("Edit description: \n");
+        if (edit_merchandise_description(db, name, newdescription) == true)
+        {
+            printf("Item successfully edited! \n");
+        }
+        else
+        {
+            printf("Item could not be edited! \n");
+        }
+    }
+    else if (choice == 'P')
+    {
+        int newprice = ask_question_int("Edit price: \n");
+        if (edit_merchandise_price(db, name, newprice) == true)
+        {
+            printf("Item successfully edited! \n");
+        }
+        else
+        {
+            printf("Item could not be edited! \n");
+        }
     }
     else
     {
-        printf("Item would not be edited! \n");
+        printf("You did not pick a valid option to edit the merchandise! \n");
+        return;
     }
 }
 
@@ -96,14 +138,16 @@ void ui_show_stock(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("For which item would you like to see the stock?");
-    return show_stock(db, name);   
+    show_stock(db, name);   
 }
 
 void ui_replenish_stock(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("Which item would you like to replenish?");
-    if (replenish_stock(db, name) == true)
+    show_stock(db, name);
+    char *shelftoreplenish = ask_question_string("Which stock would you like to replenish, if new, write new shelf number");
+    if (replenish_stock(db, name, shelftoreplenish) == true)
     {
         printf("Stock successfully replenished!");
     }
@@ -113,6 +157,18 @@ void ui_replenish_stock(db_t *db)
     }
 }
 
+/*
+void ui_create_cart(db_t *db)
+{
+    if (create_cart(db) == true)
+    {
+        printf("Cart successfully created!");
+    }
+    else
+    {
+        printf("Cart could not be created!");
+    }
+} */
 
 char *print_menu()
 {
