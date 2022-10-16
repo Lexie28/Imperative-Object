@@ -250,5 +250,6 @@ int main()
         }
         ans = toupper(ask_question_menu(print_menu()));
     }
+    db_destroy(db);
     return 0;
 }

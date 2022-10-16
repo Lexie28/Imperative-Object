@@ -18,8 +18,8 @@ struct merch
 {
     char *name;
     char *description;
-    int price;
     ioopm_list_t *locs;
+    int price;
 };
 
 typedef struct merch merch_t;
@@ -38,6 +38,7 @@ struct db
     ioopm_hash_table_t *namemerch;
     ioopm_hash_table_t *shelftoname; //we map shelf (key) to name of the merchandise at the shelf (value)
     ioopm_hash_table_t *carts;
+    int carts_amnt; // mängden carts i systemet
 };
 
 typedef struct db db_t;
@@ -123,7 +124,7 @@ shelf_t *create_shelf(char *newshelf, int newquantity);
 /// @param name is the name of our merchandise
 /// @param shelftoreplenish is the specific shelf belonging to our merchandise which we wish to replenish
 /// @return a bool indicating whether we could replenish the shelf for our merchandise
-bool replenish_stock(db_t *db, char *name, char *shelftoreplenish);
+bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount);
 
 void db_destroy(db_t *db);
 

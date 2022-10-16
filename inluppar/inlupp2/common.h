@@ -20,11 +20,11 @@ typedef union elem elem_t;
 union elem
 {
   /// TODO: update the names of the fields to something better? 
+  void *p;
   int i;
   unsigned int u;
   bool b;
   float f;
-  void *p;
   /// other choices certainly possible
 };
 

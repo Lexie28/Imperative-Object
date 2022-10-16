@@ -4,14 +4,7 @@
 
 bool elem_equality_func_int(elem_t a, elem_t b)
 {    
-    if (a.i == b.i) //If the integers are equal, return true.
-    { 
-        return true;
-    }
-    else // If it is not true for any of these, return false.
-    {
-        return false;
-    }
+    return a.i == b.i;
 }
 
 bool elem_equality_func_str(elem_t a, elem_t b)

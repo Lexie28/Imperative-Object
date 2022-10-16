@@ -45,12 +45,17 @@ bool string_eq(elem_t e1, elem_t e2)
     return (strcmp((char *)e1.p, (char *)e2.p) == 0);
 }
 
+int int_hash(elem_t key) {
+    return key.i % 17;
+}
+
 db_t *db_create()
 {
     db_t *db = calloc(1, sizeof(db_t));
     db->namemerch = ioopm_hash_table_create(string_eq, string_sum_hash);
     db->shelftoname = ioopm_hash_table_create(string_eq, string_sum_hash);
-    db->carts = ioopm_hash_table_create(string_eq, string_sum_hash);
+    db->carts = ioopm_hash_table_create(elem_equality_func_int, int_hash);
+    db->carts_amnt = 0;
     return db;
 }
 
@@ -60,13 +65,9 @@ merch_t *create_merch(char *name, char *description, int price)
     merch->name = name;
     merch->description = description;
     merch->price = price;
-    merch->locs = ioopm_linked_list_create(NULL); //TODO???
+    ioopm_list_t *locs = ioopm_linked_list_create(string_eq); //TODO???
+    merch->locs = locs;
     return merch;
-}
-
-void destroy_merch(merch_t *merch)
-{
-    free(merch);
 }
 
 void destroy_shelf(shelf_t *shelf)
@@ -74,32 +75,31 @@ void destroy_shelf(shelf_t *shelf)
     free(shelf);
 }
 
-static void destroylocslist(elem_t key, elem_t value, void *x)
+static void destroylocslist(elem_t key, elem_t *value, void *x)
 {
-    destroy_shelf(value.p);
+    destroy_shelf((*value).p);
 }
 
 
-static void destroyhtnamemerch(elem_t key, elem_t value, void *x)
+static void destroyhtnamemerch(elem_t key, elem_t *value, void *x)
 {
-    ioopm_merch_destroy(value.p);
+    destroy_merch((*value).p);
 }
 
-void ioopm_merch_destroy(merch_t *merch)
+void destroy_merch(merch_t *merch)
 {
     ioopm_linked_list_apply_to_all(merch->locs, destroylocslist, NULL);
     ioopm_linked_list_destroy(merch->locs);
-    //free(merch->name);
-    //free(merch->description);
+    free(merch->name);
+    free(merch->description);
     free(merch);
 }
 
 void db_destroy(db_t *db)
 {
     ioopm_hash_table_apply_to_all(db->namemerch, destroyhtnamemerch, NULL);
-
     ioopm_hash_table_destroy(db->shelftoname);
-    //ioopm_hash_table_destroy(carts); //TODO
+    ioopm_hash_table_destroy(db->carts); //TODO
     ioopm_hash_table_destroy(db->namemerch);
     free(db);
 }
@@ -136,8 +136,8 @@ bool remove_merchandise(db_t *db, char *name)
         ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
     }
     ioopm_iterator_destroy(iter);
-    destroy_merch(merch);
     ioopm_hash_table_remove(ht, ptr_elem(name));
+    destroy_merch(merch);
     return true;
 }
 
@@ -160,8 +160,8 @@ bool edit_remove_merchandise(db_t *db, char *name)
             ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
         }
         ioopm_iterator_destroy(iter);
-        destroy_merch(merch);
         ioopm_hash_table_remove(ht, ptr_elem(name));
+        destroy_merch(merch);
         return true;
 }
 
@@ -212,7 +212,7 @@ bool edit_merchandise_name(db_t *db, char *name, char *newname)
         return false;
     }
     merch_t *merch = lookup.value.p;
-    add_merchandise(db, newname, merch->description, merch->price);
+    add_merchandise(db, newname, strdup(merch->description), merch->price);
     edit_remove_merchandise(db, name);
     return true;
 }
@@ -227,6 +227,7 @@ bool edit_merchandise_description(db_t *db, char *name, char *newdescription)
         return false;
     }
     merch_t *merch = lookup.value.p;
+    free(merch->description);
     merch->description = newdescription;
     return true;
 }
@@ -247,7 +248,7 @@ bool edit_merchandise_price(db_t *db, char *name, int newprice)
 
 //linked_list är en lista med shelf_t som entries
 
-void show_stock(db_t *db, char *name) 
+void show_stock(db_t *db, char *name) //bygg om så den blir som get-funktionen o returnar en array så att vi kan keys_sort-a den också
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -259,7 +260,7 @@ void show_stock(db_t *db, char *name)
     merch_t *merch = lookup.value.p;
     ioopm_list_t *listoflocations = merch->locs;
     ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
-    while (ioopm_iterator_has_next(iter))
+    while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN
     {
         elem_t shelf_elem = ioopm_iterator_current(iter);
         shelf_t *shelf = shelf_elem.p;
@@ -279,31 +280,41 @@ shelf_t *create_shelf(char *newshelf, int newquantity)
     return sh;
 }
 
-bool replenish_stock(db_t *db, char *name, char *shelftoreplenish)
+bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) //for-loop med i=0, i++, i < size så vi når sista grejen
 {
     show_stock(db, name);
+
     bool isshelf = is_shelf(shelftoreplenish); //kollar att tar rätt input
-    if (isshelf == true)
+    if (isshelf == false) return false;
+
+    option_t name_lookup = ioopm_hash_table_lookup(db->namemerch, ptr_elem(name));
+    if (!name_lookup.success) return false;
+    merch_t *merch = name_lookup.value.p;
+
+    option_t lookup = ioopm_hash_table_lookup(db->shelftoname, ptr_elem(shelftoreplenish));
+    if (!lookup.success)
     {
-        ioopm_hash_table_t *ht = db->namemerch;
-        option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
-        merch_t *merch = lookup.value.p;
+        shelf_t *shelf = create_shelf(shelftoreplenish, amount);
+        ioopm_linked_list_append(merch->locs, ptr_elem(shelf));
+        ioopm_hash_table_insert(db->shelftoname, ptr_elem(shelftoreplenish), ptr_elem(name));
+        return true;
+    }
+    else if (strcmp(lookup.value.p, name))
+    {
         ioopm_list_t *listoflocations = merch->locs;
         ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
-        while (ioopm_iterator_has_next(iter))
+        while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN
         {
             elem_t shelf_elem = ioopm_iterator_current(iter);
             shelf_t *shelf = shelf_elem.p;
             if (strcmp(shelftoreplenish, shelf->shelf) == 0)
             {
-                shelf->quantity++;
+                shelf->quantity += amount;
                 return true;
             }
             ioopm_iterator_next(iter);
         }
-        shelf_t *shelf = create_shelf(shelftoreplenish, 1);
-        ioopm_linked_list_append(listoflocations, ptr_elem(shelf));
-        return true;
+        return false;
     }
     else
     {
@@ -311,3 +322,68 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish)
     }
 }
 
+void cart_create(db_t *db)
+{
+    ioopm_hash_table_t *ht = db->carts; //outer hashtable. int (vilket cart) till lilla hashtablet
+    ioopm_hash_table_t *cart = ioopm_hash_table_create(string_eq, string_sum_hash); //inner hashtable. name of merch till amount to order
+    db->carts_amnt++;
+    ioopm_hash_table_insert(ht, int_elem(db->carts_amnt), ptr_elem(cart));
+}
+
+//REMOVE
+//ta in carts_amnt vilken du vill ta bort
+bool cart_remove (db_t *db, int carttoremove)
+{
+    //lookup carttoremove
+    //om inte finns return false
+    //annars, htdestroy det lilla och htremova entry't i stora ht'et.
+}
+
+int totalstockofmerch(db_t *db, char *nameofmerch)
+{
+    //count up total stock number of merch across its stock locations
+}
+
+int totalordersofmerch(db_t *db, char *nameofmerch)
+{
+    //count up how many in the carts currently
+}
+
+bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
+{
+    //if total stock - total order - quantity >= 0, då får vi lägga till till carten
+    //annars fail
+}
+
+bool remove_from_cart(db_t *db, int cart, char *nameofmerch, int quantity)
+{
+    //lookup i lilla hashtable på hur många orders du har på said vara i din cart
+    //om mängden orders - quantity > 0, så behlver vi bara ändra quantityn i lilla ht (eller ny ht-insert med samma key (denna kommer replacas - det är så vi gjorde ht-insert))
+    //annars gör ht remove i lilla ht
+}
+
+int calc_costofmerch(db_t *db, char *name, int quantity)
+{
+    //lookup på namnet och hitta dess pris
+    //returnera pris x quantity
+}
+
+int calculate_cost(db_t *db, int cart)
+{
+    //gå igenom allt i carten
+    //för varje merch calculate cost of merch
+    //apply to all eller hämta ut keys and values och flr varje par calc cost of merch
+    //summa och returnera summa
+}
+
+void removestock(db_t *db, char *name, int quantity)
+{
+    //gör en lookup på namnet, hämta ut listan av shelves, och gå igenom listan och ta ut från de olika stocken tills det adds upp till hur mycket du vill ta bort
+}
+
+void checkout(db_t *db, int cart)
+{
+    //gå igenom allt i den carten vi har valt att checka ut
+
+
+}

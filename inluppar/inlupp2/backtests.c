@@ -26,9 +26,11 @@ void test_add_merchandise()
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
-    add_merchandise(db, name, description, price);
+    add_merchandise(db, strdup(name), strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
+    merch_t *merch = a.value.p;
+    CU_ASSERT_TRUE(strcmp(name, merch->name) == 0);
     db_destroy(db);
 }
 
@@ -40,7 +42,7 @@ void test_remove_merchandise()
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
-    add_merchandise(db, name, description, price);
+    add_merchandise(db, strdup(name), strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
     remove_merchandise(db, name);
@@ -56,11 +58,11 @@ void test_edit_name_merchandise()
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
-    add_merchandise(db, name, description, price);
+    add_merchandise(db, strdup(name), strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
     char *newname = "Vincent";
-    edit_merchandise_name(db, name, newname);
+    edit_merchandise_name(db, name, strdup(newname));
     option_t b = ioopm_hash_table_lookup(ht, ptr_elem(newname));
     CU_ASSERT_TRUE(b.success);
     option_t c = ioopm_hash_table_lookup(ht, ptr_elem(name));
