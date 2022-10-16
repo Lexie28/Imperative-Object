@@ -28,10 +28,64 @@ void test_add_merchandise()
     int price = 55;
     add_merchandise(db, name, description, price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
-    CU_ASSERT_TRUE(a.success == true);
-    //FORTSÄTTA ATT KOLLA ATT DET ÄR EXAKT VÅRT ELEMENT
-    //TODO! BEHÖVER EN DB_DESTROY
+    CU_ASSERT_TRUE(a.success);
+    db_destroy(db);
 }
+
+
+void test_remove_merchandise()
+{
+    db_t *db = db_create();
+    ioopm_hash_table_t *ht = db->namemerch;
+    char *name = "Lexie";
+    char *description = "Cool kid";
+    int price = 55;
+    add_merchandise(db, name, description, price);
+    option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(a.success);
+    remove_merchandise(db, name);
+    option_t b = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_FALSE(b.success);
+    db_destroy(db);
+}
+
+void test_edit_name_merchandise()
+{
+    db_t *db = db_create();
+    ioopm_hash_table_t *ht = db->namemerch;
+    char *name = "Lexie";
+    char *description = "Cool kid";
+    int price = 55;
+    add_merchandise(db, name, description, price);
+    option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(a.success);
+    char *newname = "Vincent";
+    edit_merchandise_name(db, name, newname);
+    option_t b = ioopm_hash_table_lookup(ht, ptr_elem(newname));
+    CU_ASSERT_TRUE(b.success);
+    option_t c = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_FALSE(c.success);
+    db_destroy(db);
+}
+
+/*
+void test_edit_description_merchandise()
+{
+    db_t *db = db_create();
+    ioopm_hash_table_t *ht = db->namemerch;
+    char *name = "Lexie";
+    char *description = "Cool kid";
+    int price = 55;
+    add_merchandise(db, name, description, price);
+    option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(a.success);
+    char *newdescription = "Not cool";
+    edit_merchandise_description(db, name, newdescription);
+
+    //TODO?? HOW TO CHECK IF DESCRIPTION IS CHANGED
+    db_destroy(db);
+} */
+
 
 int main()
 {
@@ -56,6 +110,8 @@ int main()
     // copy a line below and change the information
     if (
         (CU_add_test(my_test_suite, "Test adding merchandise to database", test_add_merchandise) == NULL) ||
+        (CU_add_test(my_test_suite, "Test removing merchandise to database", test_remove_merchandise) == NULL) ||
+        (CU_add_test(my_test_suite, "Test removing merchandise to database", test_edit_name_merchandise) == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit

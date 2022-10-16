@@ -25,7 +25,7 @@ void ui_add_merchandise(db_t *db) // typ alla ui/frontend-funktioner ska se ut s
     }
 }
 
-void ui_list_merchandise(db_t *db) //TODO?? FUNKAR INTE ATT SE MER ÄN 20!!
+void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
 {
     listtype_t *merch = get_merchandise(db); //option-type med char ** (array av strängar) och en size
     int j = 0;

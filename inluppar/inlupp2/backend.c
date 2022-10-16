@@ -66,8 +66,42 @@ merch_t *create_merch(char *name, char *description, int price)
 
 void destroy_merch(merch_t *merch)
 {
-    ioopm_linked_list_destroy(merch->locs);
     free(merch);
+}
+
+void destroy_shelf(shelf_t *shelf)
+{
+    free(shelf);
+}
+
+static void destroylocslist(elem_t key, elem_t value, void *x)
+{
+    destroy_shelf(value.p);
+}
+
+
+static void destroyhtnamemerch(elem_t key, elem_t value, void *x)
+{
+    ioopm_merch_destroy(value.p);
+}
+
+void ioopm_merch_destroy(merch_t *merch)
+{
+    ioopm_linked_list_apply_to_all(merch->locs, destroylocslist, NULL);
+    ioopm_linked_list_destroy(merch->locs);
+    //free(merch->name);
+    //free(merch->description);
+    free(merch);
+}
+
+void db_destroy(db_t *db)
+{
+    ioopm_hash_table_apply_to_all(db->namemerch, destroyhtnamemerch, NULL);
+
+    ioopm_hash_table_destroy(db->shelftoname);
+    //ioopm_hash_table_destroy(carts); //TODO
+    ioopm_hash_table_destroy(db->namemerch);
+    free(db);
 }
 
 bool add_merchandise(db_t *db, char *name, char *description, int price)
@@ -149,7 +183,7 @@ listtype_t *makelisttype(char **arr, int size)
     return listtype;
 }
 
-listtype_t *get_merchandise(db_t *db) //remake so that it returns size and array of keys
+listtype_t *get_merchandise(db_t *db)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     int size = ioopm_hash_table_size(ht);
@@ -220,7 +254,6 @@ void show_stock(db_t *db, char *name)
     bool success = lookup.success;
     if (success == false)
     {
-        printf("This item does not exist!");
         return;
     }
     merch_t *merch = lookup.value.p;
@@ -232,9 +265,7 @@ void show_stock(db_t *db, char *name)
         shelf_t *shelf = shelf_elem.p;
         printf("%s: %d\n", shelf->shelf, shelf->quantity);
         ioopm_iterator_next(iter);
-        
-        /*
-        elem_t shelf_elem = ioopm_iterator_next(iter); //har en dummy i början, osäker om vår linked list har det??
+        /*elem_t shelf_elem = ioopm_iterator_next(iter); //har en dummy i början, osäker om vår linked list har det??
         shelf_t *shelf = shelf_elem.p;
         printf("%s: %d\n", shelf->shelf, shelf->quanitity); */
     }
