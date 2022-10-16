@@ -34,6 +34,13 @@ void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
     {
         for (i = 0; i < 20 && j < merch->size; i++) // antingen mindre än 20, eller om listan är kortare, tills vi läser av något som är NULL aka slutet av arrayen
         {
+            //printf("i = %d, j = %d, i+j = %d \n", i, j, i+j);
+            if (merch->size == i+j)
+            {
+                //printf("i+j = %d + %d | size = %d", i,j,merch->size);
+                break;
+            }
+            
             if (merch->arr[j+i] != NULL)
             {
             char *name = merch->arr[j + i];
@@ -41,9 +48,12 @@ void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
             }
             else
             {
+                //printf("j2 = %d", j);
                 break;
             }
         }
+        //printf("Test 2 | i = %d, j = %d, i+j = %d \n", i, j, i+j);
+
         j += i;
         //printf("j = %d", j);
         if (i < 20)
@@ -57,7 +67,7 @@ void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
             //printf("jag är här!");
             break;
         }
-
+        printf("Going to access march->array value %d \n", j);
         // printf("BOOL: %d", merch->arr[j] != NULL); // 0 betyder att det är false
     }
     free(merch->arr);
@@ -214,6 +224,9 @@ int main()
     add_merchandise(db, "tej", "cool", 1);
     add_merchandise(db, "te", "coo", 2);
     add_merchandise(db, "t", "co", 3);
+
+    //printf("ADDINGF");
+    //ui_list_merchandise(db);
 
     char ans = toupper(ask_question_menu(print_menu())); //remember to change askquestionmenu when you add options
 
