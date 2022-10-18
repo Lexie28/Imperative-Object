@@ -22,8 +22,6 @@ bool is_number(char *str)
 }
 
 
-
-
 bool not_empty(char *str)
 {
   return strlen(str) > 0;
@@ -37,7 +35,6 @@ answer_t ask_question(char *question, check_func check, convert_func convert)
 
     do
     {
-    
     printf("%s", question);
     read_string(buf,buf_siz);
     } while (check(buf) == false);

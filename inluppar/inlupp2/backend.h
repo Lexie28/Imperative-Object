@@ -8,10 +8,15 @@
 /**
  * @file backend.h
  * @author Alexandra Dahlberg & Vincent Andersson
- * @date ---
+ * @date 18 Oktober 2022
  * @brief Backend functions for a functioning database (e.g. to be used by a store)
  *
 This header-file lists and defines all backend functions that are written for and used to make our database.
+Our database contains three hashtables:
+-1. mapping the name of merchandise to the merchandise struct
+-2. one mapping the shelf (key) to the name of merchandise
+-3. one mapping the number (index) of a cart to a cart (which itself is another hashtable containing the merchandise and quantity of that cart)
+Using these structures we define the backend functions supporting basic functionality of a database.
  */
 
 struct merch
@@ -126,6 +131,41 @@ shelf_t *create_shelf(char *newshelf, int newquantity);
 /// @return a bool indicating whether we could replenish the shelf for our merchandise
 bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount);
 
+/// @brief destroying the whole database structure
+/// @param db the entire database which we wish to destroy
 void db_destroy(db_t *db);
 
-void ioopm_merch_destroy(merch_t *merch);
+/// @brief creating an empty cart for the shopper
+/// @param db the database in which the cart exists
+void cart_create(db_t *db);
+
+/// @brief removing a cart from our database
+/// @param db the database in which the cart exists
+bool cart_remove (db_t *db, int carttoremove);
+
+/// @brief adding a merchandise of a certain quantity to a cart
+/// @param db the database in which our merchandise and our cart exists
+/// @param carttoaddto the number of the cart in our cart hashtable to add the merchandise (and quantity) to
+/// @param nameofmerch the name of the merchandise you wish to add to your cart
+/// @param quantity the quantity of merchandise you wish to add to your cart
+/// @return a bool indicating whether you were able to add the merchandise (of specified quantity) to your cart
+bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity);
+
+/// @brief removing a merchandise of a certain quantity to a cart
+/// @param db the database in which our merchandise and our cart exists
+/// @param cart the number of the cart in our cart hashtable to remove our merchandise from
+/// @param nameofmerch the name of the merchandise we wish to remove
+/// @param quantity the quantity of said merchandise we wish to remove
+/// @return a bool indicating whether you were able to remove the merchandise (of specified quantity) from your cart
+bool remove_from_cart(db_t *db, int cart, char *nameofmerch, int quantity);
+
+/// @brief calculating the cost of a certain cart
+/// @param db the database in which our cart exists
+/// @param cart the number of the cart in our cart hashtable we wish to calculate the cost of
+/// @return an integer representing the final cost of our cart
+int calculate_cost(db_t *db, int cart);
+
+/// @brief checking out a specific cart. it removes the shopping cart from the system and decreases the stock for the merchandise in the cart
+/// @param db the database in which our cart and the merchandise it contains exists
+/// @param cart the number of the cart in our cart hashtable we wish to check out
+void checkout(db_t *db, int cart);

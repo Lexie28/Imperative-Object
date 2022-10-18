@@ -1,0 +1,151 @@
+\hypertarget{frontend_8h}{}\doxysection{frontend.\+h File Reference}
+\label{frontend_8h}\index{frontend.h@{frontend.h}}
+
+
+Frontend functions for a functioning database (e.\+g. to be used by a store)  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$ctype.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}backend.\+h\char`\"{}}\newline
+Include dependency graph for frontend.\+h\+:
+% FIG 0
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{frontend_8h_aa2820603f351bda2d98962224f68262b}{ui\+\_\+add\+\_\+merchandise}} (\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$\mbox{\hyperlink{structdb}{db}})
+\begin{DoxyCompactList}\small\item\em adding a merchandise to our database \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{frontend_8h_afdc2a4da4afbf8ddebb35791e2b4a9a1}{ui\+\_\+list\+\_\+merchandise}} (\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$\mbox{\hyperlink{structdb}{db}})
+\begin{DoxyCompactList}\small\item\em listing all of the merchandise in our database \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{frontend_8h_a955e67f08606f339851a3e0fb38c70e7}{ui\+\_\+remove\+\_\+merchandise}} (\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$\mbox{\hyperlink{structdb}{db}})
+\begin{DoxyCompactList}\small\item\em removing a merchandise from our database \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{frontend_8h_a4fcb9359232e834cc2b96d31c9dfa093}{ui\+\_\+edit\+\_\+merchanidse}} (\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$\mbox{\hyperlink{structdb}{db}})
+\begin{DoxyCompactList}\small\item\em editing the name, description or price of a merchandise in our database \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{frontend_8h_af6644f54500933cc5efee8207a66d3db}{ui\+\_\+show\+\_\+stock}} (\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$\mbox{\hyperlink{structdb}{db}})
+\begin{DoxyCompactList}\small\item\em showing the stock of a merchandise in our database \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{frontend_8h_a48896bdda1af9ab7ef607b7cce57c822}{ui\+\_\+replenish\+\_\+stock}} (\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$\mbox{\hyperlink{structdb}{db}})
+\begin{DoxyCompactList}\small\item\em replenishing the stock of a merchandise in our database \end{DoxyCompactList}\item 
+char $\ast$ \mbox{\hyperlink{frontend_8h_af5c7fd74ecbb0b5173f2d0773b8e4b07}{print\+\_\+menu}} ()
+\begin{DoxyCompactList}\small\item\em a menu of all of the options possible to do to our database \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Frontend functions for a functioning database (e.\+g. to be used by a store) 
+
+\begin{DoxyAuthor}{Author}
+Alexandra Dahlberg \& Vincent Andersson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+---
+\end{DoxyDate}
+This header-\/file lists and defines all frontend functions that are written for and used to make our database. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{frontend_8h_af5c7fd74ecbb0b5173f2d0773b8e4b07}\label{frontend_8h_af5c7fd74ecbb0b5173f2d0773b8e4b07}} 
+\index{frontend.h@{frontend.h}!print\_menu@{print\_menu}}
+\index{print\_menu@{print\_menu}!frontend.h@{frontend.h}}
+\doxysubsubsection{\texorpdfstring{print\_menu()}{print\_menu()}}
+{\footnotesize\ttfamily char$\ast$ print\+\_\+menu (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+a menu of all of the options possible to do to our database 
+
+\begin{DoxyReturn}{Returns}
+a string menu 
+\end{DoxyReturn}
+\mbox{\Hypertarget{frontend_8h_aa2820603f351bda2d98962224f68262b}\label{frontend_8h_aa2820603f351bda2d98962224f68262b}} 
+\index{frontend.h@{frontend.h}!ui\_add\_merchandise@{ui\_add\_merchandise}}
+\index{ui\_add\_merchandise@{ui\_add\_merchandise}!frontend.h@{frontend.h}}
+\doxysubsubsection{\texorpdfstring{ui\_add\_merchandise()}{ui\_add\_merchandise()}}
+{\footnotesize\ttfamily void ui\+\_\+add\+\_\+merchandise (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$}]{db }\end{DoxyParamCaption})}
+
+
+
+adding a merchandise to our database 
+
+
+\begin{DoxyParams}{Parameters}
+{\em db} & the database we add our merchandise to \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{frontend_8h_a4fcb9359232e834cc2b96d31c9dfa093}\label{frontend_8h_a4fcb9359232e834cc2b96d31c9dfa093}} 
+\index{frontend.h@{frontend.h}!ui\_edit\_merchanidse@{ui\_edit\_merchanidse}}
+\index{ui\_edit\_merchanidse@{ui\_edit\_merchanidse}!frontend.h@{frontend.h}}
+\doxysubsubsection{\texorpdfstring{ui\_edit\_merchanidse()}{ui\_edit\_merchanidse()}}
+{\footnotesize\ttfamily void ui\+\_\+edit\+\_\+merchanidse (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$}]{db }\end{DoxyParamCaption})}
+
+
+
+editing the name, description or price of a merchandise in our database 
+
+
+\begin{DoxyParams}{Parameters}
+{\em db} & the database from which we want to edit a merchandise \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{frontend_8h_afdc2a4da4afbf8ddebb35791e2b4a9a1}\label{frontend_8h_afdc2a4da4afbf8ddebb35791e2b4a9a1}} 
+\index{frontend.h@{frontend.h}!ui\_list\_merchandise@{ui\_list\_merchandise}}
+\index{ui\_list\_merchandise@{ui\_list\_merchandise}!frontend.h@{frontend.h}}
+\doxysubsubsection{\texorpdfstring{ui\_list\_merchandise()}{ui\_list\_merchandise()}}
+{\footnotesize\ttfamily void ui\+\_\+list\+\_\+merchandise (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$}]{db }\end{DoxyParamCaption})}
+
+
+
+listing all of the merchandise in our database 
+
+
+\begin{DoxyParams}{Parameters}
+{\em db} & the database from which we list our merchandise \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{frontend_8h_a955e67f08606f339851a3e0fb38c70e7}\label{frontend_8h_a955e67f08606f339851a3e0fb38c70e7}} 
+\index{frontend.h@{frontend.h}!ui\_remove\_merchandise@{ui\_remove\_merchandise}}
+\index{ui\_remove\_merchandise@{ui\_remove\_merchandise}!frontend.h@{frontend.h}}
+\doxysubsubsection{\texorpdfstring{ui\_remove\_merchandise()}{ui\_remove\_merchandise()}}
+{\footnotesize\ttfamily void ui\+\_\+remove\+\_\+merchandise (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$}]{db }\end{DoxyParamCaption})}
+
+
+
+removing a merchandise from our database 
+
+
+\begin{DoxyParams}{Parameters}
+{\em db} & the database we want to remove our database from \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{frontend_8h_a48896bdda1af9ab7ef607b7cce57c822}\label{frontend_8h_a48896bdda1af9ab7ef607b7cce57c822}} 
+\index{frontend.h@{frontend.h}!ui\_replenish\_stock@{ui\_replenish\_stock}}
+\index{ui\_replenish\_stock@{ui\_replenish\_stock}!frontend.h@{frontend.h}}
+\doxysubsubsection{\texorpdfstring{ui\_replenish\_stock()}{ui\_replenish\_stock()}}
+{\footnotesize\ttfamily void ui\+\_\+replenish\+\_\+stock (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$}]{db }\end{DoxyParamCaption})}
+
+
+
+replenishing the stock of a merchandise in our database 
+
+
+\begin{DoxyParams}{Parameters}
+{\em db} & the database containing the merchandise for which we want to replenish its stock \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{frontend_8h_af6644f54500933cc5efee8207a66d3db}\label{frontend_8h_af6644f54500933cc5efee8207a66d3db}} 
+\index{frontend.h@{frontend.h}!ui\_show\_stock@{ui\_show\_stock}}
+\index{ui\_show\_stock@{ui\_show\_stock}!frontend.h@{frontend.h}}
+\doxysubsubsection{\texorpdfstring{ui\_show\_stock()}{ui\_show\_stock()}}
+{\footnotesize\ttfamily void ui\+\_\+show\+\_\+stock (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdb}{db\+\_\+t}} $\ast$}]{db }\end{DoxyParamCaption})}
+
+
+
+showing the stock of a merchandise in our database 
+
+
+\begin{DoxyParams}{Parameters}
+{\em db} & the database containing the merchandise for which we want to show its stock \\
+\hline
+\end{DoxyParams}

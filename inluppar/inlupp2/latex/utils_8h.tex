@@ -1,0 +1,233 @@
+\hypertarget{utils_8h}{}\doxysection{utils.\+h File Reference}
+\label{utils_8h}\index{utils.h@{utils.h}}
+
+
+Utility functions for a functioning database (e.\+g. to be used by a store)  
+
+
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+Include dependency graph for utils.\+h\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+union \mbox{\hyperlink{unionanswer__t}{answer\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{utils_8h_a126cc34d094a5ec8ad35d0bd0efe2a5e}\label{utils_8h_a126cc34d094a5ec8ad35d0bd0efe2a5e}} 
+typedef bool($\ast$ {\bfseries check\+\_\+func}) (char $\ast$)
+\item 
+\mbox{\Hypertarget{utils_8h_aa7a0a834ee98c9a71e0895205fef5c1b}\label{utils_8h_aa7a0a834ee98c9a71e0895205fef5c1b}} 
+typedef \mbox{\hyperlink{unionanswer__t}{answer\+\_\+t}}($\ast$ {\bfseries convert\+\_\+func}) (char $\ast$)
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{utils_8h_a18f59995e71d037e1fcef19531f6b840}\label{utils_8h_a18f59995e71d037e1fcef19531f6b840}} 
+char $\ast$ {\bfseries strdup} (const char $\ast$)
+\item 
+\mbox{\Hypertarget{utils_8h_ac1a1309d385acff44647a826db4d2f75}\label{utils_8h_ac1a1309d385acff44647a826db4d2f75}} 
+int {\bfseries read\+\_\+string} (char $\ast$buf, int buf\+\_\+siz)
+\item 
+bool \mbox{\hyperlink{utils_8h_acb036bd509f16309b2d3ee1201d006cd}{is\+\_\+number}} (char $\ast$str)
+\begin{DoxyCompactList}\small\item\em checking if our input is a number \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utils_8h_a11e7ddc1e420c97fc11f830222914d55}{not\+\_\+empty}} (char $\ast$str)
+\begin{DoxyCompactList}\small\item\em checking if our string is an empty string \end{DoxyCompactList}\item 
+\mbox{\hyperlink{unionanswer__t}{answer\+\_\+t}} \mbox{\hyperlink{utils_8h_acddcaccbbb72725a81b2504f3ca44649}{ask\+\_\+question}} (char $\ast$question, check\+\_\+func check, convert\+\_\+func convert)
+\begin{DoxyCompactList}\small\item\em a compressed way to answer a question, check that our input is valid, and eventually convert the input \end{DoxyCompactList}\item 
+char $\ast$ \mbox{\hyperlink{utils_8h_aef2bbb84a9ad13cc5319c7bcdd7f3f21}{ask\+\_\+question\+\_\+string}} (char $\ast$question)
+\begin{DoxyCompactList}\small\item\em asking a question that takes a string as an input \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8h_a968d3e8120a7d81ccac4e0ae50478446}{ask\+\_\+question\+\_\+int}} (char $\ast$question)
+\begin{DoxyCompactList}\small\item\em asking a question that takes an int as an input \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utils_8h_a407d7e8f1adce19ab4b23bf1cb5a166b}{is\+\_\+menu\+\_\+answer}} (char $\ast$menuans)
+\begin{DoxyCompactList}\small\item\em checking that the input is of correct type and structure for our menu\textquotesingle{}s options \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{utils_8h_af3616c180c31c7aeb29b3af387ea2b11}{ask\+\_\+question\+\_\+menu}} (char $\ast$question)
+\begin{DoxyCompactList}\small\item\em asking a question for an input that is valid for our menu \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{utils_8h_ada2ef1337f21d81dff0029c8158d5529}{ask\+\_\+question\+\_\+char}} (char $\ast$question)
+\begin{DoxyCompactList}\small\item\em asking a question which takes a character as an input \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utils_8h_acf700079abaa476021778550a91ef7c5}{is\+\_\+shelf}} (char $\ast$\mbox{\hyperlink{structshelf}{shelf}})
+\begin{DoxyCompactList}\small\item\em checking that a string is a valid input as a shelf (written correctly, e.\+g. \char`\"{}\+A45\char`\"{}) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Utility functions for a functioning database (e.\+g. to be used by a store) 
+
+\begin{DoxyAuthor}{Author}
+Alexandra Dahlberg \& Vincent Andersson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+18 Oktober 2022
+\end{DoxyDate}
+This header-\/file lists and defines all utility functions that are written for and used to make our database. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utils_8h_acddcaccbbb72725a81b2504f3ca44649}\label{utils_8h_acddcaccbbb72725a81b2504f3ca44649}} 
+\index{utils.h@{utils.h}!ask\_question@{ask\_question}}
+\index{ask\_question@{ask\_question}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{ask\_question()}{ask\_question()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{unionanswer__t}{answer\+\_\+t}} ask\+\_\+question (\begin{DoxyParamCaption}\item[{char $\ast$}]{question,  }\item[{check\+\_\+func}]{check,  }\item[{convert\+\_\+func}]{convert }\end{DoxyParamCaption})}
+
+
+
+a compressed way to answer a question, check that our input is valid, and eventually convert the input 
+
+
+\begin{DoxyParams}{Parameters}
+{\em question} & the question we ask the user \\
+\hline
+{\em check} & a function checking that our input is valid \\
+\hline
+{\em convert} & a function that converts the user input to the type we want \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the answer to the question we asked 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_ada2ef1337f21d81dff0029c8158d5529}\label{utils_8h_ada2ef1337f21d81dff0029c8158d5529}} 
+\index{utils.h@{utils.h}!ask\_question\_char@{ask\_question\_char}}
+\index{ask\_question\_char@{ask\_question\_char}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{ask\_question\_char()}{ask\_question\_char()}}
+{\footnotesize\ttfamily char ask\+\_\+question\+\_\+char (\begin{DoxyParamCaption}\item[{char $\ast$}]{question }\end{DoxyParamCaption})}
+
+
+
+asking a question which takes a character as an input 
+
+
+\begin{DoxyParams}{Parameters}
+{\em question} & the question that is asked \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the character-\/answer 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a968d3e8120a7d81ccac4e0ae50478446}\label{utils_8h_a968d3e8120a7d81ccac4e0ae50478446}} 
+\index{utils.h@{utils.h}!ask\_question\_int@{ask\_question\_int}}
+\index{ask\_question\_int@{ask\_question\_int}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{ask\_question\_int()}{ask\_question\_int()}}
+{\footnotesize\ttfamily int ask\+\_\+question\+\_\+int (\begin{DoxyParamCaption}\item[{char $\ast$}]{question }\end{DoxyParamCaption})}
+
+
+
+asking a question that takes an int as an input 
+
+
+\begin{DoxyParams}{Parameters}
+{\em question} & the question that is asked \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the int-\/answer 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_af3616c180c31c7aeb29b3af387ea2b11}\label{utils_8h_af3616c180c31c7aeb29b3af387ea2b11}} 
+\index{utils.h@{utils.h}!ask\_question\_menu@{ask\_question\_menu}}
+\index{ask\_question\_menu@{ask\_question\_menu}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{ask\_question\_menu()}{ask\_question\_menu()}}
+{\footnotesize\ttfamily char ask\+\_\+question\+\_\+menu (\begin{DoxyParamCaption}\item[{char $\ast$}]{question }\end{DoxyParamCaption})}
+
+
+
+asking a question for an input that is valid for our menu 
+
+
+\begin{DoxyParams}{Parameters}
+{\em question} & the question that is asked \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the character-\/answer 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_aef2bbb84a9ad13cc5319c7bcdd7f3f21}\label{utils_8h_aef2bbb84a9ad13cc5319c7bcdd7f3f21}} 
+\index{utils.h@{utils.h}!ask\_question\_string@{ask\_question\_string}}
+\index{ask\_question\_string@{ask\_question\_string}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{ask\_question\_string()}{ask\_question\_string()}}
+{\footnotesize\ttfamily char$\ast$ ask\+\_\+question\+\_\+string (\begin{DoxyParamCaption}\item[{char $\ast$}]{question }\end{DoxyParamCaption})}
+
+
+
+asking a question that takes a string as an input 
+
+
+\begin{DoxyParams}{Parameters}
+{\em question} & the question that is asked \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the string-\/answer 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a407d7e8f1adce19ab4b23bf1cb5a166b}\label{utils_8h_a407d7e8f1adce19ab4b23bf1cb5a166b}} 
+\index{utils.h@{utils.h}!is\_menu\_answer@{is\_menu\_answer}}
+\index{is\_menu\_answer@{is\_menu\_answer}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{is\_menu\_answer()}{is\_menu\_answer()}}
+{\footnotesize\ttfamily bool is\+\_\+menu\+\_\+answer (\begin{DoxyParamCaption}\item[{char $\ast$}]{menuans }\end{DoxyParamCaption})}
+
+
+
+checking that the input is of correct type and structure for our menu\textquotesingle{}s options 
+
+
+\begin{DoxyParams}{Parameters}
+{\em menuans} & the answer we\textquotesingle{}re checking if it is a valid input \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a bool returning true if the input is valid for our menu 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_acb036bd509f16309b2d3ee1201d006cd}\label{utils_8h_acb036bd509f16309b2d3ee1201d006cd}} 
+\index{utils.h@{utils.h}!is\_number@{is\_number}}
+\index{is\_number@{is\_number}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{is\_number()}{is\_number()}}
+{\footnotesize\ttfamily bool is\+\_\+number (\begin{DoxyParamCaption}\item[{char $\ast$}]{str }\end{DoxyParamCaption})}
+
+
+
+checking if our input is a number 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & a string which is our input (which we are checking if it is a number) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a bool indicating whether our string is a number. is\+\_\+number returns true if it is. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_acf700079abaa476021778550a91ef7c5}\label{utils_8h_acf700079abaa476021778550a91ef7c5}} 
+\index{utils.h@{utils.h}!is\_shelf@{is\_shelf}}
+\index{is\_shelf@{is\_shelf}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{is\_shelf()}{is\_shelf()}}
+{\footnotesize\ttfamily bool is\+\_\+shelf (\begin{DoxyParamCaption}\item[{char $\ast$}]{shelf }\end{DoxyParamCaption})}
+
+
+
+checking that a string is a valid input as a shelf (written correctly, e.\+g. \char`\"{}\+A45\char`\"{}) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shelf} & the shelf we want to check to be a valid input \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a bool returning true if the input is valid as a shelf 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a11e7ddc1e420c97fc11f830222914d55}\label{utils_8h_a11e7ddc1e420c97fc11f830222914d55}} 
+\index{utils.h@{utils.h}!not\_empty@{not\_empty}}
+\index{not\_empty@{not\_empty}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{not\_empty()}{not\_empty()}}
+{\footnotesize\ttfamily bool not\+\_\+empty (\begin{DoxyParamCaption}\item[{char $\ast$}]{str }\end{DoxyParamCaption})}
+
+
+
+checking if our string is an empty string 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & the string we want to check \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a bool returning true is the string is not empty 
+\end{DoxyReturn}

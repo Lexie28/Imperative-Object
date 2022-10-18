@@ -384,6 +384,4 @@ void removestock(db_t *db, char *name, int quantity)
 void checkout(db_t *db, int cart)
 {
     //gå igenom allt i den carten vi har valt att checka ut
-
-
 }
