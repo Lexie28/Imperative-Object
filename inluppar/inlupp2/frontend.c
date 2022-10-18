@@ -157,7 +157,8 @@ void ui_replenish_stock(db_t *db)
     char *name = ask_question_string("Which item would you like to replenish?");
     show_stock(db, name);
     char *shelftoreplenish = ask_question_string("Which stock would you like to replenish, if new, write new shelf number");
-    if (replenish_stock(db, name, shelftoreplenish) == true)
+    int amount = ask_question_int("How much would you like to replenish it by?");
+    if (replenish_stock(db, name, shelftoreplenish, amount) == true)
     {
         printf("Stock successfully replenished!");
     }

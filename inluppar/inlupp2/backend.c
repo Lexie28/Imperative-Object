@@ -65,7 +65,7 @@ merch_t *create_merch(char *name, char *description, int price)
     merch->name = name;
     merch->description = description;
     merch->price = price;
-    ioopm_list_t *locs = ioopm_linked_list_create(string_eq); //TODO???
+    ioopm_list_t *locs = ioopm_linked_list_create(string_eq);
     merch->locs = locs;
     return merch;
 }
