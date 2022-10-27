@@ -70,7 +70,6 @@ void test_edit_name_merchandise()
     db_destroy(db);
 }
 
-/*
 void test_edit_description_merchandise()
 {
     db_t *db = db_create();
@@ -78,15 +77,21 @@ void test_edit_description_merchandise()
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
-    add_merchandise(db, name, description, price);
+    add_merchandise(db, name, strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
+    merch_t *merch = a.value.p;
+    CU_ASSERT_STRING_EQUAL(merch->description, description);
     char *newdescription = "Not cool";
-    edit_merchandise_description(db, name, newdescription);
+    edit_merchandise_description(db, name, strdup(newdescription));
+    option_t b = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(b.success);
+    merch_t *merchupdated = b.value.p;
+    CU_ASSERT_STRING_EQUAL(merchupdated->description, newdescription);
 
     //TODO?? HOW TO CHECK IF DESCRIPTION IS CHANGED
-    db_destroy(db);
-} */
+    //db_destroy(db);
+}
 
 
 int main()
@@ -113,7 +118,8 @@ int main()
     if (
         (CU_add_test(my_test_suite, "Test adding merchandise to database", test_add_merchandise) == NULL) ||
         (CU_add_test(my_test_suite, "Test removing merchandise to database", test_remove_merchandise) == NULL) ||
-        (CU_add_test(my_test_suite, "Test removing merchandise to database", test_edit_name_merchandise) == NULL) ||
+        (CU_add_test(my_test_suite, "Test changing name of merchandise", test_edit_name_merchandise) == NULL) ||
+        (CU_add_test(my_test_suite, "Test changing description", test_edit_description_merchandise) == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit

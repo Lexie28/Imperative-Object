@@ -17,6 +17,14 @@ typedef struct merch merch_t;
 typedef struct shelf shelf_t;
 typedef struct listtype listtype_t;
 
+struct orderamnt
+{
+    int *totalstock;
+    char *merchname;
+};
+
+typedef struct orderamnt orderamnt_t;
+
 
 int string_sum_hash(elem_t e) // tar en sträng och ger den ett hash-värde. värde som sen bestämmer vilken bucket vi lägger in varje ord i
 //vi använder den här för att kunna bestämma vilken bucket vårt entry ska i när vår key är en sträng
@@ -303,7 +311,8 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
     {
         ioopm_list_t *listoflocations = merch->locs;
         ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
-        while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN
+        size_t size = ioopm_linked_list_size(listoflocations);
+        for (int i = 0; i < size; i++)
         {
             elem_t shelf_elem = ioopm_iterator_current(iter);
             shelf_t *shelf = shelf_elem.p;
@@ -337,21 +346,87 @@ bool cart_remove (db_t *db, int carttoremove)
     //lookup carttoremove
     //om inte finns return false
     //annars, htdestroy det lilla och htremova entry't i stora ht'et.
+    ioopm_hash_table_t *htc = db->carts;
+    option_t exists = ioopm_hash_table_lookup(htc, int_elem(carttoremove));
+    if (exists.success = false)
+    {
+        return false;
+    }
+    ioopm_hash_table_t *cart = exists.value.p;
+    ioopm_hash_table_destroy(cart);
+    ioopm_hash_table_remove(htc, int_elem(carttoremove));
 }
 
-int totalstockofmerch(db_t *db, char *nameofmerch)
+int totalstockofmerch(merch_t *merch)
 {
     //count up total stock number of merch across its stock locations
+    ioopm_list_t *list = merch->locs;
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+    size_t size = ioopm_linked_list_size(list);
+    int totalstock = 0;
+        for (int i = 0; i < size; i++)
+        {
+            elem_t shelf_elem = ioopm_iterator_current(iter);
+            shelf_t *shelf = shelf_elem.p;
+            totalstock += shelf->quantity;
+            ioopm_iterator_next(iter);
+        }
+    return totalstock;
+}
+
+void totalcartorderofmerch(elem_t key, elem_t *value, void *orderamnt)
+{
+    orderamnt_t *ordr = orderamnt;
+    char *nameofmerch = key.p;
+    if (strcmp(nameofmerch, ordr->merchname) == 0)
+    {
+       *ordr->totalstock += (*value).i;
+    }
+}
+
+void allcartorders(elem_t key, elem_t *value, void *orderamnt)
+{
+    ioopm_hash_table_t *cart = (*value).p;
+    ioopm_hash_table_apply_to_all(cart, totalcartorderofmerch, &orderamnt);
 }
 
 int totalordersofmerch(db_t *db, char *nameofmerch)
 {
     //count up how many in the carts currently
+    //void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
+    //typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra)
+
+    ioopm_hash_table_t *htc = db->carts;
+    int totalorders = 0;
+    orderamnt_t orderamnt;
+    (&orderamnt)->totalstock = &totalorders;
+    (&orderamnt)->merchname = nameofmerch;
+    ioopm_hash_table_apply_to_all(htc, allcartorders, &orderamnt);
+    return totalorders;
 }
 
 bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
 {
+    ioopm_hash_table_t *ht = db->namemerch;
+    ioopm_hash_table_t *carts = db->carts;
+    option_t merchlookup = ioopm_hash_table_lookup(ht, ptr_elem(nameofmerch));
+    option_t cartlookup = ioopm_hash_table_lookup(carts, int_elem(carttoaddto));
+    if (merchlookup.success == false || cartlookup.success == false)
+    {
+        return false;
+    }
+    merch_t *merch = merchlookup.value.p;
+    int totalstock = totalstockofmerch(merch);
+    int totalorders = totalordersofmerch(db, nameofmerch);
+    int result = totalstock - totalorders - quantity;
+    ioopm_hash_table_t *cart = cartlookup.value.p;
+    if (result >= 0)
+    {
+        ioopm_hash_table_insert(cart, ptr_elem(nameofmerch), int_elem(quantity));
+    }
+    return false;
     //if total stock - total order - quantity >= 0, då får vi lägga till till carten
+    //vi har tillräckligt med stocks med tanke på orders att lägga till den quantity'n vi vill ha i en cart
     //annars fail
 }
 
