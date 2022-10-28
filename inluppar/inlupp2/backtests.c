@@ -77,6 +77,7 @@ void test_edit_description_merchandise()
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
+    
     add_merchandise(db, name, strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
@@ -88,9 +89,7 @@ void test_edit_description_merchandise()
     CU_ASSERT_TRUE(b.success);
     merch_t *merchupdated = b.value.p;
     CU_ASSERT_STRING_EQUAL(merchupdated->description, newdescription);
-
-    //TODO?? HOW TO CHECK IF DESCRIPTION IS CHANGED
-    //db_destroy(db);
+    db_destroy(db);
 }
 
 

@@ -83,7 +83,7 @@ void destroy_shelf(shelf_t *shelf)
     free(shelf);
 }
 
-static void destroylocslist(elem_t key, elem_t *value, void *x)
+static void destroylocslist(elem_t *value, void *x)
 {
     destroy_shelf((*value).p);
 }
@@ -105,10 +105,15 @@ void destroy_merch(merch_t *merch)
 
 void db_destroy(db_t *db)
 {
+    //puts("apply");
     ioopm_hash_table_apply_to_all(db->namemerch, destroyhtnamemerch, NULL);
+    //puts("shelftoname");
     ioopm_hash_table_destroy(db->shelftoname);
+    //puts("carts");
     ioopm_hash_table_destroy(db->carts); //TODO
+    //puts("namemerch");
     ioopm_hash_table_destroy(db->namemerch);
+    //puts("db");
     free(db);
 }
 
@@ -348,13 +353,14 @@ bool cart_remove (db_t *db, int carttoremove)
     //annars, htdestroy det lilla och htremova entry't i stora ht'et.
     ioopm_hash_table_t *htc = db->carts;
     option_t exists = ioopm_hash_table_lookup(htc, int_elem(carttoremove));
-    if (exists.success = false)
+    if (exists.success == false)
     {
         return false;
     }
     ioopm_hash_table_t *cart = exists.value.p;
     ioopm_hash_table_destroy(cart);
     ioopm_hash_table_remove(htc, int_elem(carttoremove));
+    return true;
 }
 
 int totalstockofmerch(merch_t *merch)
@@ -435,12 +441,14 @@ bool remove_from_cart(db_t *db, int cart, char *nameofmerch, int quantity)
     //lookup i lilla hashtable på hur många orders du har på said vara i din cart
     //om mängden orders - quantity > 0, så behlver vi bara ändra quantityn i lilla ht (eller ny ht-insert med samma key (denna kommer replacas - det är så vi gjorde ht-insert))
     //annars gör ht remove i lilla ht
+    return false;
 }
 
 int calc_costofmerch(db_t *db, char *name, int quantity)
 {
     //lookup på namnet och hitta dess pris
     //returnera pris x quantity
+    return 0;
 }
 
 int calculate_cost(db_t *db, int cart)
@@ -449,6 +457,7 @@ int calculate_cost(db_t *db, int cart)
     //för varje merch calculate cost of merch
     //apply to all eller hämta ut keys and values och flr varje par calc cost of merch
     //summa och returnera summa
+    return 0;
 }
 
 void removestock(db_t *db, char *name, int quantity)
