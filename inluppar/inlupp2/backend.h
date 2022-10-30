@@ -37,7 +37,6 @@ struct shelf
 
 typedef struct shelf shelf_t;
 
-
 struct db
 {
     ioopm_hash_table_t *namemerch;

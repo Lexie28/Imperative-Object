@@ -19,6 +19,27 @@ int clean_suite(void)
     return 0;
 }
 
+// ------------------------------------------------------------------------
+
+void test_db_create()
+{
+    db_t *db = db_create();
+    CU_ASSERT_PTR_NOT_NULL(db);
+    db_destroy(db);
+}
+
+void test_merch_create()
+{
+    char *name        = "Test merch";
+    char *description = "Very cool";
+    int   price       = 101010;
+    merch_t *test     = create_merch(strdup(name), strdup(description), price);
+
+    CU_ASSERT_PTR_NOT_NULL(test);
+
+    destroy_merch(test);
+}
+
 void test_add_merchandise()
 {
     db_t *db = db_create();
@@ -33,7 +54,6 @@ void test_add_merchandise()
     CU_ASSERT_TRUE(strcmp(name, merch->name) == 0);
     db_destroy(db);
 }
-
 
 void test_remove_merchandise()
 {
@@ -77,20 +97,27 @@ void test_edit_description_merchandise()
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
-    
+
     add_merchandise(db, name, strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
     merch_t *merch = a.value.p;
     CU_ASSERT_STRING_EQUAL(merch->description, description);
     char *newdescription = "Not cool";
-    edit_merchandise_description(db, name, strdup(newdescription));
+    edit_merchandise_description(db, name, strdup(newdescription)); // FREE CRASHES
     option_t b = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(b.success);
     merch_t *merchupdated = b.value.p;
     CU_ASSERT_STRING_EQUAL(merchupdated->description, newdescription);
     db_destroy(db);
 }
+
+void test_get_merchandise()
+{
+    
+}
+
+// ------------------------------------------------------------------------
 
 
 int main()
@@ -113,8 +140,10 @@ int main()
     // For each call to CU_add_test we specify the test suite, the
     // name or description of the test, and the function that runs
     // the test in question. If you want to add another test, just
-    // copy a line below and change the information
+    // copy a line below and change the information test_merch_create
     if (
+        (CU_add_test(my_test_suite, "Test creating a database", test_db_create) == NULL) ||
+        (CU_add_test(my_test_suite, "Test creating merchandise", test_merch_create) == NULL) ||
         (CU_add_test(my_test_suite, "Test adding merchandise to database", test_add_merchandise) == NULL) ||
         (CU_add_test(my_test_suite, "Test removing merchandise to database", test_remove_merchandise) == NULL) ||
         (CU_add_test(my_test_suite, "Test changing name of merchandise", test_edit_name_merchandise) == NULL) ||

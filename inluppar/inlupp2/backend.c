@@ -73,8 +73,10 @@ merch_t *create_merch(char *name, char *description, int price)
     merch->name = name;
     merch->description = description;
     merch->price = price;
+
     ioopm_list_t *locs = ioopm_linked_list_create(string_eq);
     merch->locs = locs;
+
     return merch;
 }
 
@@ -88,7 +90,6 @@ static void destroylocslist(elem_t *value, void *x)
     destroy_shelf((*value).p);
 }
 
-
 static void destroyhtnamemerch(elem_t key, elem_t *value, void *x)
 {
     destroy_merch((*value).p);
@@ -98,6 +99,7 @@ void destroy_merch(merch_t *merch)
 {
     ioopm_linked_list_apply_to_all(merch->locs, destroylocslist, NULL);
     ioopm_linked_list_destroy(merch->locs);
+    
     free(merch->name);
     free(merch->description);
     free(merch);
@@ -105,15 +107,10 @@ void destroy_merch(merch_t *merch)
 
 void db_destroy(db_t *db)
 {
-    //puts("apply");
     ioopm_hash_table_apply_to_all(db->namemerch, destroyhtnamemerch, NULL);
-    //puts("shelftoname");
     ioopm_hash_table_destroy(db->shelftoname);
-    //puts("carts");
     ioopm_hash_table_destroy(db->carts); //TODO
-    //puts("namemerch");
     ioopm_hash_table_destroy(db->namemerch);
-    //puts("db");
     free(db);
 }
 
@@ -130,6 +127,7 @@ bool add_merchandise(db_t *db, char *name, char *description, int price)
     return true; 
 }
 
+// remove_merchandise and edit_remove_merchandise the same function?
 bool remove_merchandise(db_t *db, char *name)
 {
     ioopm_hash_table_t *ht = db->namemerch;
@@ -139,6 +137,7 @@ bool remove_merchandise(db_t *db, char *name)
     {
         return false;
     }
+
     merch_t *merch = lookup.value.p;
     ioopm_list_t *list = merch->locs;
     ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
@@ -154,6 +153,7 @@ bool remove_merchandise(db_t *db, char *name)
     return true;
 }
 
+// remove_merchandise and edit_remove_merchandise the same function?
 bool edit_remove_merchandise(db_t *db, char *name)
 {
     ioopm_hash_table_t *ht = db->namemerch;
@@ -163,19 +163,20 @@ bool edit_remove_merchandise(db_t *db, char *name)
     {
         return false;
     }
+
     merch_t *merch = lookup.value.p;
     ioopm_list_t *list = merch->locs;
-        ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
-        for (int i=0; i > ioopm_linked_list_size(list); i++)
-        {
-            char *nameofshelf = ioopm_iterator_current(iter).p;
-            ioopm_iterator_next(iter);
-            ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
-        }
-        ioopm_iterator_destroy(iter);
-        ioopm_hash_table_remove(ht, ptr_elem(name));
-        destroy_merch(merch);
-        return true;
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+    for (int i=0; i > ioopm_linked_list_size(list); i++)
+    {
+        char *nameofshelf = ioopm_iterator_current(iter).p;
+        ioopm_iterator_next(iter);
+        ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
+    }
+    ioopm_iterator_destroy(iter);
+    ioopm_hash_table_remove(ht, ptr_elem(name));
+    destroy_merch(merch);
+    return true;
 }
 
 static int cmpstringp(const void *p1, const void *p2)
@@ -202,16 +203,18 @@ listtype_t *get_merchandise(db_t *db)
     int size = ioopm_hash_table_size(ht);
     ioopm_list_t *listofkeys = ioopm_hash_table_keys(ht);
     ioopm_list_iterator_t *iter = ioopm_list_iterator(listofkeys);
+
     char **keys_arr = calloc(size, sizeof(char *));
     for (int i = 0; i < size; i++)
     {
         keys_arr[i] = ioopm_iterator_current(iter).p;
         ioopm_iterator_next(iter);
     }
+
     ioopm_iterator_destroy(iter);
+
     sort_keys(keys_arr, size); //return keys_arr
     listtype_t *result = makelisttype(keys_arr, size);
-    //free(keys_arr);
     return result;
 }
 
@@ -224,6 +227,7 @@ bool edit_merchandise_name(db_t *db, char *name, char *newname)
     {
         return false;
     }
+
     merch_t *merch = lookup.value.p;
     add_merchandise(db, newname, strdup(merch->description), merch->price);
     edit_remove_merchandise(db, name);
@@ -239,6 +243,7 @@ bool edit_merchandise_description(db_t *db, char *name, char *newdescription)
     {
         return false;
     }
+
     merch_t *merch = lookup.value.p;
     free(merch->description);
     merch->description = newdescription;
@@ -254,6 +259,7 @@ bool edit_merchandise_price(db_t *db, char *name, int newprice)
     {
         return false;
     }
+
     merch_t *merch = lookup.value.p;
     merch->price = newprice;
     return true;
@@ -270,6 +276,7 @@ void show_stock(db_t *db, char *name) //bygg om så den blir som get-funktionen 
     {
         return;
     }
+
     merch_t *merch = lookup.value.p;
     ioopm_list_t *listoflocations = merch->locs;
     ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
@@ -357,6 +364,7 @@ bool cart_remove (db_t *db, int carttoremove)
     {
         return false;
     }
+
     ioopm_hash_table_t *cart = exists.value.p;
     ioopm_hash_table_destroy(cart);
     ioopm_hash_table_remove(htc, int_elem(carttoremove));
@@ -370,13 +378,13 @@ int totalstockofmerch(merch_t *merch)
     ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
     size_t size = ioopm_linked_list_size(list);
     int totalstock = 0;
-        for (int i = 0; i < size; i++)
-        {
-            elem_t shelf_elem = ioopm_iterator_current(iter);
-            shelf_t *shelf = shelf_elem.p;
-            totalstock += shelf->quantity;
-            ioopm_iterator_next(iter);
-        }
+    for (int i = 0; i < size; i++)
+    {
+        elem_t shelf_elem = ioopm_iterator_current(iter);
+        shelf_t *shelf = shelf_elem.p;
+        totalstock += shelf->quantity;
+        ioopm_iterator_next(iter);
+    }
     return totalstock;
 }
 
