@@ -3,13 +3,13 @@ public class Store {
     int regAmount;
 
     public Store() {
-        this.registers[0] = new register();
+        this.registers = new Register[15];
         this.regAmount = 1;
     }
 
     public double getAverageQueueLength() {
         int totalCustomers = 0;
-        for (int i = 0; i < regAmount, i++)
+        for (int i = 0; i < regAmount; i++)
         {
             totalCustomers += registers[i].getQueueLength();
         }
@@ -17,11 +17,11 @@ public class Store {
     }
 
     public void newCustomer(Customer c) {
-        Queue shortest = registers[0];
-        for (int i = 0; i < regAmount, i++)
+        Queue shortest = registers[0].queue;
+        for (int i = 0; i < regAmount; i++)
         {
-            if (registers[i].getQueueLength() < shortest.getQueueLength()) {
-                shortest = registers[i]
+            if (registers[i].getQueueLength() < shortest.length()) {
+                shortest = registers[i].queue;
             }
         }
         shortest.enqueue(c);
@@ -34,14 +34,15 @@ public class Store {
     }
 
     public void openNewRegister() {
-        registers[regAmount] = new register();
+        registers[regAmount] = new Register();
         regAmount++;
     }
 
     public Customer[] getDoneCustomers() {
-        Customer[] doneCustomers;
-        for (int i = 0, int j = 0; i < regAmount; i++){
-            Customer current = registers[i].queue.first;
+        Customer doneCustomers[] = new Customer[15];
+        int j = 0;
+        for (int i = 0; i < regAmount; i++){
+            Customer current = registers[i].queue.first.element;
             if (current.isDone())
             {
                 doneCustomers[j] = current;
@@ -52,9 +53,9 @@ public class Store {
     }
 
     public int getDoneCustomerAmount() {
-        int count = 0
+        int count = 0;
         for (int i = 0; i < regAmount; i++){
-            Customer current = registers[i].queue.first;
+            Customer current = registers[i].queue.first.element;
             if (current.isDone())
             {
                 count++;

@@ -26,16 +26,16 @@ public class Register {
         }
         else
         {
-            queue.first.serve();
+            queue.first.element.serve();
         }
     }
 
     public boolean hasCustomers() {
-        return (queue.first != NULL);
+        return (queue.first != null);
     }
 
     public boolean currentCustomerIsDone() {
-        return(queue.first.isDone());
+        return(queue.first.element.isDone());
     }
 
     public void addToQueue(Customer c) {

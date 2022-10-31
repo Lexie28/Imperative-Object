@@ -4,8 +4,8 @@ public class Queue {
     int length;
     
     public Queue() {
-        this.first = NULL;
-        this.last = NULL;
+        this.first = null;
+        this.last = null;
         this.length = 0;
     }
 
@@ -14,8 +14,8 @@ public class Queue {
     }
 
     public void enqueue(Customer c) {
-        Node newLast = new Node(c, NULL);
-        last.setNode = newLast;
+        Node newLast = new Node(c, null);
+        last.next = newLast;
         last = newLast;
         if (length == 0)
         {
@@ -25,39 +25,39 @@ public class Queue {
     }
 
     public Customer dequeue() {
-        Customer result = first;
+        Customer result = first.element;
         first = first.next;
         length--;
         if (length == 0)
         {
-            last = NULL;
+            last = null;
         }
         return result;
     }
 
     public Customer first() {
-        return first;
+        return first.element;
     }
 }
 
-private class Node {
+class Node {
     Customer element;
     Node next;
 
-    private Node(Customer c, Node next) {
+    public Node(Customer c, Node next) {
         this.element = c;
         this.next = next;
     }
 
-    private Customer getCustomer() {
+    public Customer getCustomer() {
         return element;
     }
 
-    private Node getNode() {
+    public Node getNode() {
         return next;
     }
 
-    private void setNode(Node newNext) {
+    public void setNode(Node newNext) {
         next = newNext;
     }
 }

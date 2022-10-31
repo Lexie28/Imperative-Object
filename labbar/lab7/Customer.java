@@ -1,6 +1,6 @@
 public class Customer {
-    private int bornTime;
-    private int groceries;
+    public int bornTime;
+    public int groceries;
 
 
     public Customer(int bornTime, int groceries) {
