@@ -331,3 +331,17 @@ void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function 
         }
     }
 }
+
+void ioopm_hash_table_apply_to_all_acc(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg, void *acc) // tar in ht, funktion, och om det ska ta argument till funktionen
+{
+    for (int i = 0; i < No_Buckets; i++)
+    {
+        entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
+        entry = entry->next;              // för att skippa dummy entryt
+        while (entry != NULL)
+        {
+            apply_fun(entry->key, &entry->value, arg);
+            entry = entry->next;
+        }
+    }
+}

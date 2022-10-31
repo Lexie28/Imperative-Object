@@ -16,12 +16,29 @@
 typedef struct merch merch_t;
 typedef struct shelf shelf_t;
 typedef struct listtype listtype_t;
+typedef struct hash_table ioopm_hash_table_t;
+typedef struct entry entry_t;
 
 struct orderamnt
 {
     int *totalstock;
     char *merchname;
 };
+
+struct hash_table
+{
+    entry_t buckets[17];       // The buckets
+    ioopm_eq_function key_eq_fn;       // Function for checking if keys are equal.
+    ioopm_hash_function hash_function; // Function for determining the keys of inputs elem_t.
+};
+
+/*
+struct entry
+{
+    elem_t key;       // holds the key (int)
+    elem_t value;   // holds the value (char *)
+    entry_t *next; // points to the next entry (possibly NULL)
+};*/
 
 typedef struct orderamnt orderamnt_t;
 
@@ -436,28 +453,78 @@ bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
     //annars fail
 }
 
-bool remove_from_cart(db_t *db, int cart, char *nameofmerch, int quantity)
+bool remove_from_cart(db_t *db, int cartnmr, char *nameofmerch, int quantity)
 {
     //lookup i lilla hashtable på hur många orders du har på said vara i din cart
     //om mängden orders - quantity > 0, så behlver vi bara ändra quantityn i lilla ht (eller ny ht-insert med samma key (denna kommer replacas - det är så vi gjorde ht-insert))
-    //annars gör ht remove i lilla ht
+    //annars gör ht remove i lilla 
+    ioopm_hash_table_t *htc = db->carts;
+    option_t lookup = ioopm_hash_table_lookup(htc, int_elem(cartnmr));
+    ioopm_hash_table_t *cart = lookup.value.p;
+    option_t lookupincart = ioopm_hash_table_lookup(cart, ptr_elem(nameofmerch));
+    if (lookupincart.success == false)
+    {
+        return false;
+    }
+    int orders = lookupincart.value.i;
+    if (orders - quantity > 0)
+    {
+        ioopm_hash_table_insert(cart, ptr_elem(nameofmerch), int_elem(orders-quantity));
+        return true;
+    }
+    if (orders-quantity == 0)
+    {
+        ioopm_hash_table_remove(cart, ptr_elem(nameofmerch));
+        return true;
+    }
+    if (orders-quantity > 0)
+    {
+        return false;
+    }
     return false;
 }
 
-int calc_costofmerch(db_t *db, char *name, int quantity)
+int calc_costofmerch(ioopm_hash_table_t *ht, char *nameofmerch, int quantity)
 {
     //lookup på namnet och hitta dess pris
     //returnera pris x quantity
-    return 0;
+    option_t success = ioopm_hash_table_lookup(ht, ptr_elem(nameofmerch));
+    if (success.success == false)
+    {
+        return 0; //TODO? är 0 bäst
+    }
+    merch_t *merch = success.value.p;
+    int price = merch->price;
+    int costofmerch = price * quantity;
+    return costofmerch;
 }
 
-int calculate_cost(db_t *db, int cart)
+int calculate_cost(db_t *db, int cartnmr)
 {
     //gå igenom allt i carten
     //för varje merch calculate cost of merch
     //apply to all eller hämta ut keys and values och flr varje par calc cost of merch
     //summa och returnera summa
-    return 0;
+    ioopm_hash_table_t *htc = db->carts;
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t lookup = ioopm_hash_table_lookup(htc, int_elem(cartnmr));
+    ioopm_hash_table_t *cart = lookup.value.p; //the cart of which we want to calculate the cost
+    //ioopm_hash_table_apply_to_all_acc(cart, calc_costofmerch, );
+    int acc = 0;
+    for (int i = 0; i < 17; i++)
+    {
+        entry_t *entry = &cart->buckets[i]; // pekare till början av varje bucket
+        entry = entry->next;              // för att skippa dummy entryt
+        while (entry != NULL)
+        {
+            char *nameofmerch = entry->key.p;
+            int quantity = entry->value.i;
+            int price = calc_costofmerch(ht, nameofmerch, quantity);
+            acc += price;
+            entry = entry->next;
+        }
+    }
+return acc;
 }
 
 void removestock(db_t *db, char *name, int quantity)

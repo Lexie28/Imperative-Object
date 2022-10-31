@@ -26,12 +26,13 @@ struct option
     elem_t value;
 };
 
+
 struct entry
 {
     elem_t key;       // holds the key (int)
     elem_t value;   // holds the value (char *)
     entry_t *next; // points to the next entry (possibly NULL)
-};
+}; 
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
@@ -120,6 +121,12 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 /// @param apply_fun the function to be applied to all elements
 /// @param arg extra argument to apply_fun
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
+
+//// @brief apply a function to all entries in a hash table
+/// @param h hash table operated upon
+/// @param apply_fun the function to be applied to all elements
+/// @param arg extra argument to apply_fun
+void ioopm_hash_table_apply_to_all_acc(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg, void *acc);
 
 /// @brief check if all ht entry values are equal to value.
 /// @param ht hash table operated upon
