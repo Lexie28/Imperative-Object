@@ -144,33 +144,45 @@ bool add_merchandise(db_t *db, char *name, char *description, int price)
     return true; 
 }
 
-// remove_merchandise and edit_remove_merchandise the same function?
+
+void destroyingmerch(merch_t *merch)
+{
+    ioopm_list_t *list = merch->locs;
+    size_t size = ioopm_linked_list_size(list);
+    if (size != 0)
+    {
+        ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+        shelf_t *shelf = ioopm_iterator_current(iter).p;
+        free(shelf);
+        while (ioopm_iterator_has_next(iter))
+        {
+            shelf = ioopm_iterator_next(iter).p;
+            free(shelf);
+        }
+        ioopm_iterator_destroy(iter);
+    }
+    ioopm_linked_list_destroy(list);
+    free(merch);
+}
+
+
 bool remove_merchandise(db_t *db, char *name)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
-    bool success = lookup.success;
-    if (success == false)
+    if (lookup.success == true)
+    {
+        destroyingmerch(lookup.value.p);
+        ioopm_hash_table_remove(ht, ptr_elem(name));
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    merch_t *merch = lookup.value.p;
-    ioopm_list_t *list = merch->locs;
-    ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
-    for (int i = 0; i > ioopm_linked_list_size(list); i++)
-    {
-        char *nameofshelf = ioopm_iterator_current(iter).p;
-        ioopm_iterator_next(iter);
-        ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
-    }
-    ioopm_iterator_destroy(iter);
-    ioopm_hash_table_remove(ht, ptr_elem(name));
-    destroy_merch(merch);
-    return true;
 }
 
-// remove_merchandise and edit_remove_merchandise the same function?
+/*
 bool edit_remove_merchandise(db_t *db, char *name)
 {
     ioopm_hash_table_t *ht = db->namemerch;
@@ -184,7 +196,7 @@ bool edit_remove_merchandise(db_t *db, char *name)
     merch_t *merch = lookup.value.p;
     ioopm_list_t *list = merch->locs;
     ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
-    for (int i=0; i > ioopm_linked_list_size(list); i++)
+    for (int i = 0; i < ioopm_linked_list_size(list); i++)
     {
         char *nameofshelf = ioopm_iterator_current(iter).p;
         ioopm_iterator_next(iter);
@@ -194,7 +206,9 @@ bool edit_remove_merchandise(db_t *db, char *name)
     ioopm_hash_table_remove(ht, ptr_elem(name));
     destroy_merch(merch);
     return true;
-}
+} */
+
+// remove_merchandise and edit_remove_merchandise the same function?
 
 static int cmpstringp(const void *p1, const void *p2)
 {
@@ -260,10 +274,9 @@ bool edit_merchandise_description(db_t *db, char *name, char *newdescription)
     {
         return false;
     }
-
     merch_t *merch = lookup.value.p;
-    free(merch->description);
-    merch->description = newdescription;
+    edit_remove_merchandise(db, name);
+    add_merchandise(db, name, strdup(newdescription), merch->price);
     return true;
 }
 
@@ -535,9 +548,21 @@ int calculate_cost(db_t *db, int cartnmr)
 return acc;
 }
 
-void removestock(db_t *db, char *name, int quantity)
+void removestock(db_t *db, char *name, int removequantity)
 {
-    //gör en lookup på namnet, hämta ut listan av shelves, och gå igenom listan och ta ut från de olika stocken tills det adds upp till hur mycket du vill ta bort
+    //gör en lookup på namnet, hämta ut listan av shelves, och gå igenom listan 
+    //och ta ut från de olika stocken tills det adds upp till hur mycket du vill ta bort
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t success = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    merch_t *merch = success.value.p;
+    ioopm_list_t *list = merch->locs;
+    //gå igenom listan och kolla quantity och ta ut från varje elem tills vi tagit ut quantity
+    //if stock quantity > quantity = update stock till stock-quantity
+    //if stock quantity == quantity = remove this stock
+    //if stock quantity < quantity = remove this stock, update removequantity to quantity-stockquantity och move to next stock place
+    //iterate through the linked list
+    
+
 }
 
 void checkout(db_t *db, int cart)

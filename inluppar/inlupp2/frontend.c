@@ -23,6 +23,8 @@ void ui_add_merchandise(db_t *db) // typ alla ui/frontend-funktioner ska se ut s
     {
         printf("Item with that name already exists! \n");
     }
+    //free(name);
+    //free(description);
 }
 
 void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
@@ -65,12 +67,15 @@ void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
         if (ans != 'Y') // (strcmp(answer, "y") != 0 || strcmp(answer, "Y") != 0)
         {
             //printf("jag är här!");
+            free(answer);
             break;
         }
-        printf("Going to access march->array value %d \n", j);
+        //printf("Going to access march->array value %d \n", j);
+        free(answer);
         // printf("BOOL: %d", merch->arr[j] != NULL); // 0 betyder att det är false
     }
     free(merch->arr);
+
 }
 
 void ui_remove_merchandise(db_t *db)
@@ -93,6 +98,8 @@ void ui_remove_merchandise(db_t *db)
     {
         return;
     }
+    //free(name);
+    //free(sure);
 }
 
 void ui_edit_merchanidse(db_t *db)
@@ -111,6 +118,7 @@ void ui_edit_merchanidse(db_t *db)
         {
             printf("Item could not be edited! \n");
         }
+        free(newname);
     }
     else if (choice == 'D')
     {
@@ -123,6 +131,7 @@ void ui_edit_merchanidse(db_t *db)
         {
             printf("Item could not be edited! \n");
         }
+        free(newdescription);
     }
     else if (choice == 'P')
     {
@@ -141,6 +150,9 @@ void ui_edit_merchanidse(db_t *db)
         printf("You did not pick a valid option to edit the merchandise! \n");
         return;
     }
+    //free(name);
+    //free(choice);
+
 }
 
 
@@ -148,7 +160,8 @@ void ui_show_stock(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("For which item would you like to see the stock?");
-    show_stock(db, name);   
+    show_stock(db, name);
+    //free(name);
 }
 
 void ui_replenish_stock(db_t *db)
@@ -166,6 +179,8 @@ void ui_replenish_stock(db_t *db)
     {
         printf("Stock could not be replenished!");
     }
+    //free(name);
+    //free(shelftoreplenish);
 }
 
 /*
