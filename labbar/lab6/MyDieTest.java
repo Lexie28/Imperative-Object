@@ -13,6 +13,6 @@ public class MyDieTest {
         acc += d.roll();
       }
       System.out.println("Total count: " + acc);
-      System.out.println(d);
+      //System.out.println(d);
   }
 }

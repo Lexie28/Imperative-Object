@@ -20,7 +20,11 @@ public class Register {
     }
 
     public void step() {
-        if (currentCustomerIsDone())
+        if (queue.isEmpty() == true) //if queue is empty, return
+        {
+            return;
+        }
+        else if (currentCustomerIsDone())
         {
             queue.dequeue();
         }
@@ -31,11 +35,26 @@ public class Register {
     }
 
     public boolean hasCustomers() {
-        return (queue.first != null);
+        if (queue.isEmpty() == true)
+        {
+            return false;
+        }
+        else if (queue.first != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public boolean currentCustomerIsDone() {
-        return(queue.first.element.isDone());
+        if (queue.isEmpty())
+        {
+            return false;
+        }
+        return(queue.first.element.isDone()); //vi försöker accessa queue.first some inte finns
     }
 
     public void addToQueue(Customer c) {
@@ -49,5 +68,4 @@ public class Register {
     public int getQueueLength() {
         return queue.length;
     }
-
 }

@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class PairOfDice {
 
     private Die die1;
@@ -20,16 +22,26 @@ public class PairOfDice {
         return (die1.get() + die2.get());
       }
 
-    public int getdie1() {
+    public int getDie1() {
         return die1.get();
     }
 
-    public int getdie2() {
+    public int getDie2() {
         return die2.get();
     }
 
     public String toString() {
-        return "Die(" + value + ")";
+        return ("Die 1: " + this.getDie1() + "\nDie 2: " + this.getDie2());
         }
+    
+    public static void main(String [] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Number of sides: ");
+        int sides = sc.nextInt();
+        PairOfDice d = new PairOfDice(sides);
+        System.out.println("Total: " + d.roll());
+        System.out.println(d);
+
+    }
 
 }

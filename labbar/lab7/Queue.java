@@ -1,6 +1,6 @@
 public class Queue {
     Node first;
-    Node last;
+    private Node last;
     int length;
     
     public Queue() {
@@ -14,12 +14,17 @@ public class Queue {
     }
 
     public void enqueue(Customer c) {
-        Node newLast = new Node(c, null);
-        last.next = newLast;
-        last = newLast;
         if (length == 0)
         {
-            first = newLast;
+            Node newNode = new Node(c, null);
+            last = newNode;
+            first = newNode;
+        }
+        else
+        {
+            Node newLast = new Node(c, null);
+            last.next = newLast;
+            last = newLast;
         }
         length++;
     }
@@ -34,6 +39,18 @@ public class Queue {
         }
         return result;
     }
+
+    public boolean isEmpty() {
+        if (length == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
 
     public Customer first() {
         return first.element;

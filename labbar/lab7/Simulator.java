@@ -10,6 +10,10 @@ public class Simulator{
             System.out.print("\033[2J\033[;H");
             s.step();
             System.out.println(s);
+            System.out.println("Current time:         " + s.time);
+            System.out.println("Average queue length: " + s.store.getAverageQueueLength());
+            System.out.println("Average wait time:    " + s.averageTime());
+
             Thread.sleep(500);
         }
         System.out.println("");
