@@ -7,6 +7,7 @@ typedef union {
   int   int_value;
   float float_value;
   char *string_value;
+  char char_value;
 } answer_t;
 
 typedef bool(*check_func)(char *);
@@ -59,7 +60,7 @@ bool is_menu_answer(char *menuans);
 /// @brief
 /// @param 
 /// @return
-char ask_question_menu(char *question);
+char *ask_question_menu(char *question);
 
 /// @brief
 /// @param 

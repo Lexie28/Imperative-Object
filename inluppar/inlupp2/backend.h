@@ -168,3 +168,5 @@ void db_destroy(db_t *db);
 /// @param db the database in which our cart and the merchandise it contains exists
 /// @param cart the number of the cart in our cart hashtable we wish to check out
 //void checkout(db_t *db, int cart);
+
+merch_t *get_merch_info(db_t *db, char *name);

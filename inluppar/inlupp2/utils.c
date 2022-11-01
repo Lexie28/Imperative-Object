@@ -70,10 +70,16 @@ int ask_question_int(char *question)
     return answer.int_value; // svaret som ett heltal
 }
 
+char get_char(char *buf) {
+  return buf[0];
+}
+
 char ask_question_char(char *question)
 {
-    return ask_question(question, not_empty, (convert_func) strdup).string_value[0];
+    return ask_question(question, not_empty, (convert_func) get_char).char_value;
 }
+
+
 
 bool is_menu_answer(char *menuans)
 {
@@ -85,7 +91,7 @@ bool is_menu_answer(char *menuans)
     else 
     {
         char newans = toupper(menuans[0]);
-        char *correctanswers = "LETRGHAQ";
+        char *correctanswers = "LETRGHAQS";
 
         for (int i = 0; i < strlen(correctanswers); i++)
         {
@@ -95,9 +101,9 @@ bool is_menu_answer(char *menuans)
     return false;
 }
 
-char ask_question_menu(char *question)
+char *ask_question_menu(char *question)
 {
-    return ask_question(question, is_menu_answer, (convert_func) strdup).string_value[0];
+    return ask_question(question, is_menu_answer, (convert_func) strdup).string_value;
 }
 
 bool is_shelf(char *shelf)

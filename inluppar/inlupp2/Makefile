@@ -9,6 +9,9 @@ backtests: backend.c hash_table.c linked_list.c iterator.c common.c backtests.c 
 memtest:
 	valgrind --show-leak-kinds=all --leak-check=full ./backtests
 
+uitest:
+	valgrind --show-leak-kinds=all --leak-check=full ./frontend
+
 clean:
 	rm -rf backtests
 	rm -rf frontend

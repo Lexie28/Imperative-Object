@@ -7,6 +7,8 @@
 #include "utils.h"
 #include "frontend.h"
 #include "backend.h"
+#include "linked_list.h"
+#include "iterator.h"
 
 //namet på merch, location etc måste freeas. applytoall-free
 
@@ -75,6 +77,7 @@ void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
         // printf("BOOL: %d", merch->arr[j] != NULL); // 0 betyder att det är false
     }
     free(merch->arr);
+    free(merch);
 
 }
 
@@ -102,7 +105,7 @@ void ui_remove_merchandise(db_t *db)
     //free(sure);
 }
 
-void ui_edit_merchanidse(db_t *db)
+void ui_edit_merchandise(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("Which item would you like to edit?");
@@ -116,9 +119,9 @@ void ui_edit_merchanidse(db_t *db)
         }
         else
         {
+            free(newname);
             printf("Item could not be edited! \n");
         }
-        free(newname);
     }
     else if (choice == 'D')
     {
@@ -129,9 +132,9 @@ void ui_edit_merchanidse(db_t *db)
         }
         else
         {
+            free(newdescription);
             printf("Item could not be edited! \n");
         }
-        free(newdescription);
     }
     else if (choice == 'P')
     {
@@ -150,7 +153,7 @@ void ui_edit_merchanidse(db_t *db)
         printf("You did not pick a valid option to edit the merchandise! \n");
         return;
     }
-    //free(name);
+    free(name);
     //free(choice);
 
 }
@@ -196,6 +199,36 @@ void ui_create_cart(db_t *db)
     }
 } */
 
+void ui_show_merch(db_t *db) {
+    ui_list_merchandise(db);
+    char *name = ask_question_string("The item name:");
+    merch_t *merch = get_merch_info(db, name);
+    if (merch == NULL) {
+        printf("No merch with that name found\n");
+        return;
+    }
+    printf(
+        "Name: %s\n" 
+        "Description: %s\n"
+        "Price: %d\n"
+    , merch->name, merch->description, merch->price);
+    ioopm_list_t *locs = merch->locs;
+    if (ioopm_linked_list_size(locs) > 0) {
+        printf("Locations: ");
+        ioopm_list_iterator_t *iter = ioopm_list_iterator(locs);
+        while (ioopm_iterator_current(iter).p) {
+            shelf_t *shelf = ioopm_iterator_current(iter).p;
+            printf("%s:%d, ", shelf->shelf, shelf->quantity);
+            ioopm_iterator_next(iter);
+        }
+        printf("\n");
+        ioopm_iterator_destroy(iter);
+    } else {
+        printf("No stock for selected merch\n");
+    }
+    free(name);
+}
+
 char *print_menu()
 {
     return(
@@ -203,6 +236,8 @@ char *print_menu()
         "[L]ist merchandise \n"
         "[R]emove merchandise \n"
         "[E]dit merchandise \n"
+        "[S]how merchandise features \n"
+        "[Q]uit \n"
     );
 }
 
@@ -210,7 +245,7 @@ int main()
 {
     db_t *db = db_create();
     
-    add_merchandise(db, "hej", "cool", 1);
+    /*add_merchandise(db, "hej", "cool", 1);
     add_merchandise(db, "he", "coo", 2);
     add_merchandise(db, "h", "co", 3);
     add_merchandise(db, "nej", "cool", 1);
@@ -239,12 +274,13 @@ int main()
     add_merchandise(db, "g", "co", 3);
     add_merchandise(db, "tej", "cool", 1);
     add_merchandise(db, "te", "coo", 2);
-    add_merchandise(db, "t", "co", 3);
+    add_merchandise(db, "t", "co", 3);*/
 
     //printf("ADDINGF");
     //ui_list_merchandise(db);
 
-    char ans = toupper(ask_question_menu(print_menu())); //remember to change askquestionmenu when you add options
+    char ans = toupper(ask_question_char(print_menu()));
+    //char ans = toupper(to_free[0]); //remember to change askquestionmenu when you add options
 
     while (ans != 'Q')
     {
@@ -262,10 +298,18 @@ int main()
         }
         if (ans == 'E')
         {
-            ui_edit_merchanidse(db);
+            ui_edit_merchandise(db);
         }
-        ans = toupper(ask_question_menu(print_menu()));
+        if (ans == 'S')
+        {
+            ui_show_merch(db);
+        }
+        ans = toupper(ask_question_char(print_menu()));
+        /*free(to_free);
+        to_free = ask_question_menu(print_menu());
+        ans = toupper(to_free[0]);*/
     }
+    //free(to_free);
     db_destroy(db);
     return 0;
 }

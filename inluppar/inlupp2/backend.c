@@ -137,6 +137,8 @@ bool add_merchandise(db_t *db, char *name, char *description, int price)
     option_t hasname = ioopm_hash_table_lookup(ht, ptr_elem(name));
     if (hasname.success == true)
     {
+        free(name);
+        free(description);
         return false;
     }
     merch_t *merch = create_merch(name, description, price);
@@ -144,7 +146,8 @@ bool add_merchandise(db_t *db, char *name, char *description, int price)
     return true; 
 }
 
-
+//helper funktion till vår remove.. vet att det finns många funktioner här uppe men det 
+//är för att db_destroy är ganska så svår
 void destroyingmerch(merch_t *merch)
 {
     ioopm_list_t *list = merch->locs;
@@ -162,6 +165,8 @@ void destroyingmerch(merch_t *merch)
         ioopm_iterator_destroy(iter);
     }
     ioopm_linked_list_destroy(list);
+    free(merch->name);
+    free(merch->description);
     free(merch);
 }
 
@@ -243,7 +248,7 @@ listtype_t *get_merchandise(db_t *db)
     }
 
     ioopm_iterator_destroy(iter);
-
+    ioopm_linked_list_destroy(listofkeys);
     sort_keys(keys_arr, size); //return keys_arr
     listtype_t *result = makelisttype(keys_arr, size);
     return result;
@@ -261,7 +266,7 @@ bool edit_merchandise_name(db_t *db, char *name, char *newname)
 
     merch_t *merch = lookup.value.p;
     add_merchandise(db, newname, strdup(merch->description), merch->price);
-    edit_remove_merchandise(db, name);
+    remove_merchandise(db, name);
     return true;
 }
 
@@ -275,8 +280,9 @@ bool edit_merchandise_description(db_t *db, char *name, char *newdescription)
         return false;
     }
     merch_t *merch = lookup.value.p;
-    edit_remove_merchandise(db, name);
-    add_merchandise(db, name, strdup(newdescription), merch->price);
+    char *desc = merch->description;
+    merch->description = newdescription;
+    free(desc);
     return true;
 }
 
@@ -568,4 +574,24 @@ void removestock(db_t *db, char *name, int removequantity)
 void checkout(db_t *db, int cart)
 {
     //gå igenom allt i den carten vi har valt att checka ut
+}
+
+
+
+
+//------------------------------------------- helper functions for frontend testing
+
+merch_t *get_merch_info(db_t *db, char *name)
+{
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t success = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    if (success.success == false)
+    {
+        return NULL;
+    }
+    else
+    {
+        merch_t *merch = success.value.p;
+        return merch;
+    }
 }
