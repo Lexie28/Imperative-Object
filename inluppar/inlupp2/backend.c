@@ -303,29 +303,34 @@ bool edit_merchandise_price(db_t *db, char *name, int newprice)
 
 //linked_list är en lista med shelf_t som entries
 
-void show_stock(db_t *db, char *name) //bygg om så den blir som get-funktionen o returnar en array så att vi kan keys_sort-a den också
+ioopm_list_t *show_stock(db_t *db, char *name) //bygg om så den blir som get-funktionen o returnar en array så att vi kan keys_sort-a den också
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
     bool success = lookup.success;
     if (success == false)
     {
-        return;
+        return ioopm_linked_list_create(string_eq); // EMPTY LIST RETURNED IF LOOKUP FAILS
     }
 
     merch_t *merch = lookup.value.p;
     ioopm_list_t *listoflocations = merch->locs;
     ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
-    while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN
+    ioopm_list_t *result = ioopm_linked_list_create(string_eq);
+    while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN // GÖR DEN VERKLIGEN DET? V (2022-11-02) //
     {
         elem_t shelf_elem = ioopm_iterator_current(iter);
-        shelf_t *shelf = shelf_elem.p;
-        printf("%s: %d\n", shelf->shelf, shelf->quantity);
+        //shelf_t *shelf = shelf_elem.p; // COMMENTED
+
+        ioopm_linked_list_append(result, shelf_elem);
+
+        //printf("%s: %d\n", shelf->shelf, shelf->quantity); // USED TO PRINT HERE, NO MORE
         ioopm_iterator_next(iter);
         /*elem_t shelf_elem = ioopm_iterator_next(iter); //har en dummy i början, osäker om vår linked list har det??
         shelf_t *shelf = shelf_elem.p;
         printf("%s: %d\n", shelf->shelf, shelf->quanitity); */
     }
+    return result;
 }
 
 shelf_t *create_shelf(char *newshelf, int newquantity)

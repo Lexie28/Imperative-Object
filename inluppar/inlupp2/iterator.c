@@ -43,8 +43,7 @@ bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
     {
         return false;
     }
-
-    else if (iter-> current-> next == NULL)
+    else if (iter->current->next == NULL)
     {
         return false;
     }

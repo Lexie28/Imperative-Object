@@ -78,6 +78,7 @@ void test_edit_name_merchandise()
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
+
     add_merchandise(db, strdup(name), strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
@@ -98,7 +99,7 @@ void test_edit_description_merchandise()
     char *description = "Cool kid";
     int price = 55;
 
-    add_merchandise(db, name, strdup(description), price);
+    add_merchandise(db, strdup(name), strdup(description), price);
     option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
     CU_ASSERT_TRUE(a.success);
     merch_t *merch = a.value.p;

@@ -114,8 +114,8 @@ bool edit_merchandise_price(db_t *db, char *name, int newprice);
 /// @brief show all of the stock locations for a specific merchandise
 /// @param db is the database we enter into to find the relevant hash table
 /// @param name is the name of our merchandise for which we want to list all of its storage locations
-/// @return nothing. The function prints all of the storage locations.
-void show_stock(db_t *db, char *name);
+/// @return List of all obejcts to print
+ioopm_list_t *show_stock(db_t *db, char *name);
 
 /// @brief creating a new shelf
 /// @param newshelf is the new shelf placement for our shelf

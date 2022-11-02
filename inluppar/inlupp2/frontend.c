@@ -38,10 +38,10 @@ void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
     {
         for (i = 0; i < 20 && j < merch->size; i++) // antingen mindre än 20, eller om listan är kortare, tills vi läser av något som är NULL aka slutet av arrayen
         {
-            //printf("i = %d, j = %d, i+j = %d \n", i, j, i+j);
+            //printf("i = %d, j = %d, i+j = %d \n", i, j, i+j); 
             if (merch->size == i+j)
             {
-                //printf("i+j = %d + %d | size = %d", i,j,merch->size);
+                //printf("i+j = %d + %d | size = %d", i,j,merch->size); 
                 break;
             }
             
@@ -158,12 +158,20 @@ void ui_edit_merchandise(db_t *db)
 
 }
 
-
 void ui_show_stock(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("For which item would you like to see the stock?");
-    show_stock(db, name);
+    ioopm_list_t *shelf_list = show_stock(db, name);
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(shelf_list);
+    while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN // GÖR DEN VERKLIGEN DET? V (2022-11-02) //
+    {
+        elem_t shelf_elem = ioopm_iterator_current(iter);
+        shelf_t *shelf = shelf_elem.p;
+
+        printf("%s: %d\n", shelf->shelf, shelf->quantity);
+        ioopm_iterator_next(iter);
+    }
     //free(name);
 }
 
@@ -176,11 +184,11 @@ void ui_replenish_stock(db_t *db)
     int amount = ask_question_int("How much would you like to replenish it by?");
     if (replenish_stock(db, name, shelftoreplenish, amount) == true)
     {
-        printf("Stock successfully replenished!");
+        printf("Stock successfully replenished!\n");
     }
     else
     {
-        printf("Stock could not be replenished!");
+        printf("Stock could not be replenished!\n");
     }
     //free(name);
     //free(shelftoreplenish);
@@ -237,6 +245,7 @@ char *print_menu()
         "[R]emove merchandise \n"
         "[E]dit merchandise \n"
         "[S]how merchandise features \n"
+        "[F]ill / replenish merchandise stock\n"
         "[Q]uit \n"
     );
 }
@@ -303,6 +312,10 @@ int main()
         if (ans == 'S')
         {
             ui_show_merch(db);
+        }
+        if (ans == 'F')
+        {
+            ui_replenish_stock(db);            
         }
         ans = toupper(ask_question_char(print_menu()));
         /*free(to_free);
