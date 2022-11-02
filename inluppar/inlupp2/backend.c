@@ -148,7 +148,7 @@ bool add_merchandise(db_t *db, char *name, char *description, int price)
 
 //helper funktion till vår remove.. vet att det finns många funktioner här uppe men det 
 //är för att db_destroy är ganska så svår
-void destroyingmerch(merch_t *merch)
+void destroyingmerch(ioopm_hash_table_t *ht, merch_t *merch)
 {
     ioopm_list_t *list = merch->locs;
     size_t size = ioopm_linked_list_size(list);
@@ -165,6 +165,7 @@ void destroyingmerch(merch_t *merch)
         ioopm_iterator_destroy(iter);
     }
     ioopm_linked_list_destroy(list);
+    ioopm_hash_table_remove(ht, ptr_elem(merch->name));
     free(merch->name);
     free(merch->description);
     free(merch);
@@ -177,8 +178,7 @@ bool remove_merchandise(db_t *db, char *name)
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
     if (lookup.success == true)
     {
-        destroyingmerch(lookup.value.p);
-        ioopm_hash_table_remove(ht, ptr_elem(name));
+        destroyingmerch(ht, lookup.value.p);
         return true;
     }
     else
