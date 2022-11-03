@@ -162,14 +162,16 @@ void ui_show_stock(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("For which item would you like to see the stock?");
-    ioopm_list_t *shelf_list = show_stock(db, name);
+    //ioopm_list_t *shelf_list = show_stock(db, name);
+    merch_t *merch = get_merch_info(db, name);
+    ioopm_list_t *shelf_list = merch->locs;
     ioopm_list_iterator_t *iter = ioopm_list_iterator(shelf_list);
-    while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN // GÖR DEN VERKLIGEN DET? V (2022-11-02) //
+    size_t size = ioopm_linked_list_size(shelf_list);
+    for (int i = 0; i < size; i++)
+    //while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN // GÖR DEN VERKLIGEN DET? V (2022-11-02) //
     {
-        elem_t shelf_elem = ioopm_iterator_current(iter);
-        shelf_t *shelf = shelf_elem.p;
-
-        printf("%s: %d\n", shelf->shelf, shelf->quantity);
+        shelf_t *shelf = ioopm_iterator_current(iter).p;
+        printf("%s:%d, \n", shelf->shelf, shelf->quantity);
         ioopm_iterator_next(iter);
     }
     //free(name);
@@ -221,10 +223,11 @@ void ui_show_merch(db_t *db) {
         "Price: %d\n"
     , merch->name, merch->description, merch->price);
     ioopm_list_t *locs = merch->locs;
-    if (ioopm_linked_list_size(locs) > 0) {
+    size_t size = ioopm_linked_list_size(locs);
+    if (size > 0) {
         printf("Locations: ");
         ioopm_list_iterator_t *iter = ioopm_list_iterator(locs);
-        while (ioopm_iterator_current(iter).p) {
+        for (int i = 0; i < size; i++) {
             shelf_t *shelf = ioopm_iterator_current(iter).p;
             printf("%s:%d, ", shelf->shelf, shelf->quantity);
             ioopm_iterator_next(iter);
@@ -246,6 +249,7 @@ char *print_menu()
         "[E]dit merchandise \n"
         "[S]how merchandise features \n"
         "[F]ill / replenish merchandise stock\n"
+        "[I]nspect stock \n"
         "[Q]uit \n"
     );
 }
@@ -316,6 +320,10 @@ int main()
         if (ans == 'F')
         {
             ui_replenish_stock(db);            
+        }
+        if (ans == 'I')
+        {
+            ui_show_stock(db);
         }
         ans = toupper(ask_question_char(print_menu()));
         /*free(to_free);
