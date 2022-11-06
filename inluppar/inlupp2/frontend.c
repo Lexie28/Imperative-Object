@@ -5,10 +5,13 @@
 #include <ctype.h>
 #include <time.h>
 #include "utils.h"
+#include "hash_table.h"
+#include "linked_list.h"
+#include "common.h"
 #include "frontend.h"
 #include "backend.h"
-#include "linked_list.h"
 #include "iterator.h"
+
 
 //namet på merch, location etc måste freeas. applytoall-free
 
@@ -206,7 +209,7 @@ void ui_cart_create(db_t *db)
 void ui_cart_remove(db_t *db)
 {
     int carttoremove = ask_question_int("Which cart would you like to remove?");
-    if (cart_remove(db, carttoremove == true))
+    if (cart_remove(db, carttoremove) == true)
     {
         printf("Cart nr.%d was successfully removed! \n", carttoremove);
     }
@@ -220,6 +223,7 @@ void ui_add_to_cart(db_t *db)
 {
     int carttoaddto = ask_question_int("Which cart nr. would you like to add merchandise to? \n");
     //list all merchandise i databasen
+    ui_list_merchandise(db);
     char *nameofmerch = ask_question_string("Which merchandise would you like to add to this cart? \n");
     int quantity = ask_question_int("How much (/quantity) of this merchandise would you like to add?");
     if (add_to_cart(db, carttoaddto, nameofmerch, quantity) == true)
@@ -256,6 +260,11 @@ void ui_calculate_cost(db_t *db)
     printf("The cost of cart %d is: %d \n", cartnmr, cartcost);
 }
 
+void ui_checkout(db_t *db)
+{
+    int cartnmr = ask_question_int("Which cart would you like to check out?");
+    checkout(db, cartnmr);
+}
 
 
 void ui_show_merch(db_t *db) {
@@ -304,6 +313,7 @@ char *print_menu()
         "A[D]d to cart \n"
         "Rem[O]ve from cart \n"
         "Calc[U]late cost of cart \n"
+        "C[H]eckout \n"
         "[Q]uit \n"
     );
 }
@@ -398,6 +408,10 @@ int main()
         if (ans == 'U')
         {
             ui_calculate_cost(db);
+        }
+        if (ans == 'H')
+        {
+            ui_checkout(db);
         }
         ans = toupper(ask_question_char(print_menu()));
         /*free(to_free);

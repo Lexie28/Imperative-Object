@@ -364,6 +364,17 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
     bool isshelf = is_shelf(shelftoreplenish); //kollar att tar rätt input
     if (isshelf == false) return false;
 
+    ioopm_hash_table_t *shelftoname = db->shelftoname;
+    option_t shelf_lookup = ioopm_hash_table_lookup(shelftoname, ptr_elem(shelftoreplenish));
+    if (shelf_lookup.success == true)
+    {
+        if (strcmp(shelf_lookup.value.p, name) != 0)
+        {
+            printf("Shelf already has other merch\n");
+            return false;
+        }
+        //se till att det är samma namn, annars return false
+    }
     option_t name_lookup = ioopm_hash_table_lookup(db->namemerch, ptr_elem(name));
     if (!name_lookup.success) return false;
     merch_t *merch = name_lookup.value.p;
@@ -376,7 +387,7 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
         ioopm_hash_table_insert(db->shelftoname, ptr_elem(shelftoreplenish), ptr_elem(name));
         return true;
     }
-    else if (strcmp(lookup.value.p, name))
+    else if (strcmp(lookup.value.p, name) == 0)
     {
         ioopm_list_t *listoflocations = merch->locs;
         ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
@@ -392,6 +403,7 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
             }
             ioopm_iterator_next(iter);
         }
+        printf("Shelf could not be found\n");
         return false;
     }
     else
@@ -418,15 +430,17 @@ bool cart_remove (db_t *db, int carttoremove)
     //annars, htdestroy det lilla och htremova entry't i stora ht'et.
     ioopm_hash_table_t *htc = db->carts;
     option_t exists = ioopm_hash_table_lookup(htc, int_elem(carttoremove));
-    if (exists.success == false)
+    if (exists.success == true)
+    {
+        ioopm_hash_table_t *cart = exists.value.p;
+        ioopm_hash_table_destroy(cart);
+        ioopm_hash_table_remove(htc, int_elem(carttoremove));
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    ioopm_hash_table_t *cart = exists.value.p;
-    ioopm_hash_table_destroy(cart);
-    ioopm_hash_table_remove(htc, int_elem(carttoremove));
-    return true;
 }
 
 int totalstockofmerch(merch_t *merch)
@@ -617,8 +631,26 @@ void removestock(db_t *db, char *name, int removequantity)
     }
 }
 
-void checkout(db_t *db, int cart)
+void checkout(db_t *db, int cartnmr)
 {
+    ioopm_hash_table_t *htc = db->carts;
+    option_t lookup = ioopm_hash_table_lookup(htc, int_elem(cartnmr));
+    ioopm_hash_table_t *cart = lookup.value.p;
+
+    for (int i = 0; i < 17; i++)
+    {
+        entry_t *entry = &cart->buckets[i]; // pekare till början av varje bucket
+        entry = entry->next;              // för att skippa dummy entryt
+        while (entry != NULL)
+        {
+            char *nameofmerch = entry->key.p;
+            int quantity = entry->value.i;
+            removestock(db, nameofmerch, quantity);
+            entry = entry->next;
+        }
+    }
+    ioopm_hash_table_destroy(cart);
+    ioopm_hash_table_remove(htc, int_elem(cartnmr));
     //gå igenom allt i den carten vi har valt att checka ut
 }
 
