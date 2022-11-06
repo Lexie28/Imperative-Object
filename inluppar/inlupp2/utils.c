@@ -91,7 +91,7 @@ bool is_menu_answer(char *menuans)
     else 
     {
         char newans = toupper(menuans[0]);
-        char *correctanswers = "LETRGHAQS";
+        char *correctanswers = "LETRGHIAQS";
 
         for (int i = 0; i < strlen(correctanswers); i++)
         {

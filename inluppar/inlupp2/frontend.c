@@ -163,8 +163,8 @@ void ui_show_stock(db_t *db)
     ui_list_merchandise(db);
     char *name = ask_question_string("For which item would you like to see the stock?");
     //ioopm_list_t *shelf_list = show_stock(db, name);
-    merch_t *merch = get_merch_info(db, name);
-    ioopm_list_t *shelf_list = merch->locs;
+    //merch_t *merch = get_merch_info(db, name);
+    ioopm_list_t *shelf_list = show_stock(db, name);
     ioopm_list_iterator_t *iter = ioopm_list_iterator(shelf_list);
     size_t size = ioopm_linked_list_size(shelf_list);
     for (int i = 0; i < size; i++)
@@ -174,7 +174,7 @@ void ui_show_stock(db_t *db)
         printf("%s:%d, \n", shelf->shelf, shelf->quantity);
         ioopm_iterator_next(iter);
     }
-    //free(name);
+    free(name);
 }
 
 void ui_replenish_stock(db_t *db)
@@ -196,18 +196,42 @@ void ui_replenish_stock(db_t *db)
     //free(shelftoreplenish);
 }
 
-/*
-void ui_create_cart(db_t *db)
+
+void ui_cart_create(db_t *db)
 {
-    if (create_cart(db) == true)
+    int cartnmr = cart_create(db);
+    printf("You have created a new cart, number %d \n", cartnmr);
+}
+
+void ui_cart_remove(db_t *db)
+{
+    int carttoremove = ask_question_int("Which cart would you like to remove?");
+    if (cart_remove(db, carttoremove == true))
     {
-        printf("Cart successfully created!");
+        printf("Cart nr.%d was successfully removed! \n", carttoremove);
     }
     else
     {
-        printf("Cart could not be created!");
+        printf("Cart nr.%d could not be removed \n", carttoremove);
     }
-} */
+}
+
+void ui_add_to_cart(db_t *db)
+{
+    int carttoaddto = ask_question_int("Which cart nr. would you like to add merchandise to? \n");
+    char *nameofmerch = ask_question_string("Which merchandise would you like to add to this cart? \n");
+    int quantity = ask_question_int("How much (/quantity) of this merchandise would you like to add?");
+    if (add_to_cart(db, carttoaddto, nameofmerch, quantity) == true)
+    {
+        printf("Item was successfully added to cart! \n");
+    }
+    else
+    {
+        printf("Item could not be added to cart \n");
+    }
+}
+
+
 
 void ui_show_merch(db_t *db) {
     ui_list_merchandise(db);
@@ -251,6 +275,9 @@ char *print_menu()
         "[F]ill / replenish merchandise stock\n"
         "[I]nspect stock \n"
         "[Q]uit \n"
+        "[C]reate cart \n"
+        "Re[M]ove cart \n"
+        "A[D]d to cart \n"
     );
 }
 
@@ -324,6 +351,18 @@ int main()
         if (ans == 'I')
         {
             ui_show_stock(db);
+        }
+        if (ans == 'C')
+        {
+            ui_cart_create(db);
+        }
+        if (ans == 'M')
+        {
+            ui_cart_remove(db);
+        }
+        if (ans == 'D')
+        {
+            ui_add_to_cart(db);
         }
         ans = toupper(ask_question_char(print_menu()));
         /*free(to_free);

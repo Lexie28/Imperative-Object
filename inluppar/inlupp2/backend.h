@@ -136,11 +136,11 @@ void db_destroy(db_t *db);
 
 /// @brief creating an empty cart for the shopper
 /// @param db the database in which the cart exists
-//void cart_create(db_t *db);
+int cart_create(db_t *db);
 
 /// @brief removing a cart from our database
 /// @param db the database in which the cart exists
-//bool cart_remove (db_t *db, int carttoremove);
+bool cart_remove (db_t *db, int carttoremove);
 
 /// @brief adding a merchandise of a certain quantity to a cart
 /// @param db the database in which our merchandise and our cart exists
@@ -148,7 +148,7 @@ void db_destroy(db_t *db);
 /// @param nameofmerch the name of the merchandise you wish to add to your cart
 /// @param quantity the quantity of merchandise you wish to add to your cart
 /// @return a bool indicating whether you were able to add the merchandise (of specified quantity) to your cart
-//bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity);
+bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity);
 
 /// @brief removing a merchandise of a certain quantity to a cart
 /// @param db the database in which our merchandise and our cart exists
@@ -156,17 +156,17 @@ void db_destroy(db_t *db);
 /// @param nameofmerch the name of the merchandise we wish to remove
 /// @param quantity the quantity of said merchandise we wish to remove
 /// @return a bool indicating whether you were able to remove the merchandise (of specified quantity) from your cart
-//bool remove_from_cart(db_t *db, int cart, char *nameofmerch, int quantity);
+bool remove_from_cart(db_t *db, int cart, char *nameofmerch, int quantity);
 
 /// @brief calculating the cost of a certain cart
 /// @param db the database in which our cart exists
 /// @param cart the number of the cart in our cart hashtable we wish to calculate the cost of
 /// @return an integer representing the final cost of our cart
-//int calculate_cost(db_t *db, int cart);
+int calculate_cost(db_t *db, int cart);
 
 /// @brief checking out a specific cart. it removes the shopping cart from the system and decreases the stock for the merchandise in the cart
 /// @param db the database in which our cart and the merchandise it contains exists
 /// @param cart the number of the cart in our cart hashtable we wish to check out
-//void checkout(db_t *db, int cart);
+void checkout(db_t *db, int cart);
 
 merch_t *get_merch_info(db_t *db, char *name);

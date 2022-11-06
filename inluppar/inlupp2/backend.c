@@ -305,6 +305,23 @@ bool edit_merchandise_price(db_t *db, char *name, int newprice)
 
 ioopm_list_t *show_stock(db_t *db, char *name) //bygg om så den blir som get-funktionen o returnar en array så att vi kan keys_sort-a den också
 {
+
+    ioopm_hash_table_t *ht = db->namemerch;
+    option_t success = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    if (success.success == false)
+    {
+        return NULL;
+    }
+    else
+    {
+        merch_t *merch = success.value.p;
+        ioopm_list_t *shelflist = merch->locs;
+        return shelflist;
+    }
+}
+
+
+    /*
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
     bool success = lookup.success;
@@ -326,12 +343,11 @@ ioopm_list_t *show_stock(db_t *db, char *name) //bygg om så den blir som get-fu
 
         //printf("%s: %d\n", shelf->shelf, shelf->quantity); // USED TO PRINT HERE, NO MORE
         ioopm_iterator_next(iter);
-        /*elem_t shelf_elem = ioopm_iterator_next(iter); //har en dummy i början, osäker om vår linked list har det??
+        elem_t shelf_elem = ioopm_iterator_next(iter); //har en dummy i början, osäker om vår linked list har det??
         shelf_t *shelf = shelf_elem.p;
-        printf("%s: %d\n", shelf->shelf, shelf->quanitity); */
+        printf("%s: %d\n", shelf->shelf, shelf->quanitity); 
     }
-    return result;
-}
+    return result; */
 
 shelf_t *create_shelf(char *newshelf, int newquantity)
 {
@@ -384,12 +400,13 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
     }
 }
 
-void cart_create(db_t *db)
+int cart_create(db_t *db)
 {
     ioopm_hash_table_t *ht = db->carts; //outer hashtable. int (vilket cart) till lilla hashtablet
     ioopm_hash_table_t *cart = ioopm_hash_table_create(string_eq, string_sum_hash); //inner hashtable. name of merch till amount to order
     db->carts_amnt++;
     ioopm_hash_table_insert(ht, int_elem(db->carts_amnt), ptr_elem(cart));
+    return db->carts_amnt;
 }
 
 //REMOVE
@@ -572,8 +589,31 @@ void removestock(db_t *db, char *name, int removequantity)
     //if stock quantity == quantity = remove this stock
     //if stock quantity < quantity = remove this stock, update removequantity to quantity-stockquantity och move to next stock place
     //iterate through the linked list
-    
-
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+    size_t size = ioopm_linked_list_size(list);
+    int index = 0;
+    for (int i = 0; i < size; i++)
+    {
+        elem_t shelf_elem = ioopm_iterator_current(iter);
+        shelf_t *shelf = shelf_elem.p;
+        int thisstockquantity = shelf->quantity;
+        if (thisstockquantity == removequantity)
+        {
+            ioopm_linked_list_remove(list, index);
+            return;
+        }
+        if (thisstockquantity > removequantity)
+        {
+            shelf->quantity = thisstockquantity - removequantity;
+            return;
+        }
+        if (thisstockquantity < removequantity)
+        {
+            removequantity = removequantity - thisstockquantity;
+            ioopm_linked_list_remove(list, index);
+            ioopm_iterator_next(iter);
+        }
+    }
 }
 
 void checkout(db_t *db, int cart)
