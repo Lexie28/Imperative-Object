@@ -219,6 +219,7 @@ void ui_cart_remove(db_t *db)
 void ui_add_to_cart(db_t *db)
 {
     int carttoaddto = ask_question_int("Which cart nr. would you like to add merchandise to? \n");
+    //list all merchandise i databasen
     char *nameofmerch = ask_question_string("Which merchandise would you like to add to this cart? \n");
     int quantity = ask_question_int("How much (/quantity) of this merchandise would you like to add?");
     if (add_to_cart(db, carttoaddto, nameofmerch, quantity) == true)
@@ -229,6 +230,30 @@ void ui_add_to_cart(db_t *db)
     {
         printf("Item could not be added to cart \n");
     }
+}
+
+void ui_remove_from_cart(db_t *db)
+{
+    int cartnmr = ask_question_int("Which cart nr. would you like to remove from? \n");
+    //list allt i denna cart
+    char *nameofmerch = ask_question_string("Which merchandise would you like to remove from this cart? \n");
+    int quantity = ask_question_int("How much (/quantity) of this merchandise would you like to remove? \n");
+
+    if (remove_from_cart(db, cartnmr, nameofmerch, quantity) == true)
+    {
+        printf("Merchandise successfully removed from this cart!");
+    }
+    else
+    {
+        printf("Removal could not be done");
+    }
+}
+
+void ui_calculate_cost(db_t *db)
+{
+    int cartnmr = ask_question_int("For which cart number would you like to calculate the cost? \n");
+    int cartcost = calculate_cost(db, cartnmr);
+    printf("The cost of cart %d is: %d \n", cartnmr, cartcost);
 }
 
 
@@ -274,10 +299,12 @@ char *print_menu()
         "[S]how merchandise features \n"
         "[F]ill / replenish merchandise stock\n"
         "[I]nspect stock \n"
-        "[Q]uit \n"
         "[C]reate cart \n"
         "Re[M]ove cart \n"
         "A[D]d to cart \n"
+        "Rem[O]ve from cart \n"
+        "Calc[U]late cost of cart \n"
+        "[Q]uit \n"
     );
 }
 
@@ -363,6 +390,14 @@ int main()
         if (ans == 'D')
         {
             ui_add_to_cart(db);
+        }
+        if (ans == 'O')
+        {
+            ui_remove_from_cart(db);
+        }
+        if (ans == 'U')
+        {
+            ui_calculate_cost(db);
         }
         ans = toupper(ask_question_char(print_menu()));
         /*free(to_free);

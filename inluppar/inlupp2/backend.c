@@ -495,6 +495,7 @@ bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
     if (result >= 0)
     {
         ioopm_hash_table_insert(cart, ptr_elem(nameofmerch), int_elem(quantity));
+        return true;
     }
     return false;
     //if total stock - total order - quantity >= 0, då får vi lägga till till carten
