@@ -233,12 +233,14 @@ listtype_t *makelisttype(char **arr, int size)
     return listtype;
 }
 
-listtype_t *get_merchandise(db_t *db)
+listtype_t *get_merchandise(db_t *db, bool *is_empty)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     int size = ioopm_hash_table_size(ht);
     ioopm_list_t *listofkeys = ioopm_hash_table_keys(ht);
     ioopm_list_iterator_t *iter = ioopm_list_iterator(listofkeys);
+
+    *is_empty = (size == 0);
 
     char **keys_arr = calloc(size, sizeof(char *));
     for (int i = 0; i < size; i++)

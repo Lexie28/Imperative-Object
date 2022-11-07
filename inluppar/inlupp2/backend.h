@@ -88,7 +88,7 @@ bool remove_merchandise(db_t *db, char *name);
 /// @brief get an array of the keys (merchandise names) and size of said array from our hash table
 /// @param db is the database we enter into to find our hash table
 /// @return a listtype_t containing an array of the hash table's keys and its size
-listtype_t *get_merchandise(db_t *db);
+listtype_t *get_merchandise(db_t *db, bool *is_empty);
 
 /// @brief edit the name of a chosen merchandise
 /// @param db is the database we enter into to find our hash table

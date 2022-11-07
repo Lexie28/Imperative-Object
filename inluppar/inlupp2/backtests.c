@@ -115,7 +115,16 @@ void test_edit_description_merchandise()
 
 void test_get_merchandise()
 {
-    
+    db_t *db = db_create();
+    ioopm_hash_table_t *ht = db->namemerch;
+    char *name = "Lexie";
+    char *description = "Cool kid";
+    int price = 55;
+}
+
+void test_remove_merchandise()
+{
+
 }
 
 // ------------------------------------------------------------------------

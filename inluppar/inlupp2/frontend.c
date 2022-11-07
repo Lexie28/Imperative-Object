@@ -34,54 +34,60 @@ void ui_add_merchandise(db_t *db) // typ alla ui/frontend-funktioner ska se ut s
 
 void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
 {
-    listtype_t *merch = get_merchandise(db); //option-type med char ** (array av strängar) och en size
-    int j = 0;
-    int i = 0;
-    while (merch->arr[j] != NULL)
-    {
-        for (i = 0; i < 20 && j < merch->size; i++) // antingen mindre än 20, eller om listan är kortare, tills vi läser av något som är NULL aka slutet av arrayen
+    bool is_empty = false;
+    listtype_t *merch = get_merchandise(db, &is_empty); //option-type med char ** (array av strängar) och en size
+    if (!is_empty) {
+        int j = 0;
+        int i = 0;
+        while (merch->arr[j] != NULL)
         {
-            //printf("i = %d, j = %d, i+j = %d \n", i, j, i+j); 
-            if (merch->size == i+j)
+            for (i = 0; i < 20 && j < merch->size; i++) // antingen mindre än 20, eller om listan är kortare, tills vi läser av något som är NULL aka slutet av arrayen
             {
-                //printf("i+j = %d + %d | size = %d", i,j,merch->size); 
-                break;
+                //printf("i = %d, j = %d, i+j = %d \n", i, j, i+j); 
+                if (merch->size == i+j)
+                {
+                    //printf("i+j = %d + %d | size = %d", i,j,merch->size); 
+                    break;
+                }
+                
+                if (merch->arr[j+i] != NULL)
+                {
+                char *name = merch->arr[j + i];
+                printf("%d. %s \n", j + i + 1, name);
+                }
+                else
+                {
+                    //printf("j2 = %d", j);
+                    break;
+                }
             }
-            
-            if (merch->arr[j+i] != NULL)
-            {
-            char *name = merch->arr[j + i];
-            printf("%d. %s \n", j + i + 1, name);
-            }
-            else
-            {
-                //printf("j2 = %d", j);
-                break;
-            }
-        }
-        //printf("Test 2 | i = %d, j = %d, i+j = %d \n", i, j, i+j);
+            //printf("Test 2 | i = %d, j = %d, i+j = %d \n", i, j, i+j);
 
-        j += i;
-        //printf("j = %d", j);
-        if (i < 20)
-        {
-            break;
-        }
-        char *answer = ask_question_string("Would you like to see more merchandise? y/n");
-        char ans = toupper(answer[0]);
-        if (ans != 'Y') // (strcmp(answer, "y") != 0 || strcmp(answer, "Y") != 0)
-        {
-            //printf("jag är här!");
+            j += i;
+            //printf("j = %d", j);
+            if (i < 20)
+            {
+                break;
+            }
+            char *answer = ask_question_string("Would you like to see more merchandise? y/n");
+            char ans = toupper(answer[0]);
+            if (ans != 'Y') // (strcmp(answer, "y") != 0 || strcmp(answer, "Y") != 0)
+            {
+                //printf("jag är här!");
+                free(answer);
+                break;
+            }
+            //printf("Going to access march->array value %d \n", j);
             free(answer);
-            break;
+            // printf("BOOL: %d", merch->arr[j] != NULL); // 0 betyder att det är false
         }
-        //printf("Going to access march->array value %d \n", j);
-        free(answer);
-        // printf("BOOL: %d", merch->arr[j] != NULL); // 0 betyder att det är false
+    }
+    else
+    {
+        printf("No merch in store.\n");
     }
     free(merch->arr);
     free(merch);
-
 }
 
 void ui_remove_merchandise(db_t *db)
@@ -104,8 +110,8 @@ void ui_remove_merchandise(db_t *db)
     {
         return;
     }
-    //free(name);
-    //free(sure);
+    free(name);
+    free(sure);
 }
 
 void ui_edit_merchandise(db_t *db)
@@ -195,8 +201,8 @@ void ui_replenish_stock(db_t *db)
     {
         printf("Stock could not be replenished!\n");
     }
-    //free(name);
-    //free(shelftoreplenish);
+    free(name);
+    free(shelftoreplenish);
 }
 
 
@@ -265,7 +271,6 @@ void ui_checkout(db_t *db)
     int cartnmr = ask_question_int("Which cart would you like to check out?");
     checkout(db, cartnmr);
 }
-
 
 void ui_show_merch(db_t *db) {
     ui_list_merchandise(db);
