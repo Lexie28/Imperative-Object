@@ -113,17 +113,46 @@ void test_edit_description_merchandise()
     db_destroy(db);
 }
 
-void test_get_merchandise()
+void test_edit_price_merchandise()
 {
     db_t *db = db_create();
     ioopm_hash_table_t *ht = db->namemerch;
     char *name = "Lexie";
     char *description = "Cool kid";
     int price = 55;
+
+    add_merchandise(db, strdup(name), strdup(description), price);
+    option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(a.success);
+    merch_t *merch = a.value.p;
+    CU_ASSERT_EQUAL(merch->price, price);
+    int newprice = 10;
+    edit_merchandise_price(db, name, newprice);
+    option_t b = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(b.success);
+    merch_t *merchupdated = b.value.p;
+    CU_ASSERT_EQUAL(merchupdated->price, newprice);
+    db_destroy(db);
 }
 
-void test_remove_merchandise()
+
+void test_replenish_stock()
 {
+    db_t *db = db_create();
+    ioopm_hash_table_t *ht = db->namemerch;
+    char *name = "Lexie";
+    char *description = "Cool kid";
+    int price = 55;
+
+    add_merchandise(db, strdup(name), strdup(description), price);
+    option_t a = ioopm_hash_table_lookup(ht, ptr_elem(name));
+    CU_ASSERT_TRUE(a.success);
+    char *shelftoreplenish = "J44";
+    int amount = 10;
+    replenish_stock(db, name, shelftoreplenish, amount);
+    merch_t *merch = a.value.p;
+    ioopm_list_t *locs = merch->locs;
+    //shelf_t *shelf = locs->head->value;
 
 }
 
@@ -158,6 +187,7 @@ int main()
         (CU_add_test(my_test_suite, "Test removing merchandise to database", test_remove_merchandise) == NULL) ||
         (CU_add_test(my_test_suite, "Test changing name of merchandise", test_edit_name_merchandise) == NULL) ||
         (CU_add_test(my_test_suite, "Test changing description", test_edit_description_merchandise) == NULL) ||
+        (CU_add_test(my_test_suite, "Test changing price", test_edit_price_merchandise) == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit

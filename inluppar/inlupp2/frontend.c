@@ -174,6 +174,11 @@ void ui_show_stock(db_t *db)
     //ioopm_list_t *shelf_list = show_stock(db, name);
     //merch_t *merch = get_merch_info(db, name);
     ioopm_list_t *shelf_list = show_stock(db, name);
+    if (shelf_list == NULL)
+    {
+        printf("Invalid item");
+        return;
+    }
     ioopm_list_iterator_t *iter = ioopm_list_iterator(shelf_list);
     size_t size = ioopm_linked_list_size(shelf_list);
     for (int i = 0; i < size; i++)
@@ -199,11 +204,11 @@ void ui_replenish_stock(db_t *db)
         printf("Stock successfully replenished!\n");
     }
     else
-    {
+    {  
+        free(shelftoreplenish);   
+        free(name);
         printf("Stock could not be replenished!\n");
     }
-    free(name);
-    free(shelftoreplenish);
 }
 
 
@@ -239,9 +244,10 @@ void ui_add_to_cart(db_t *db)
     }
     else
     {
+        free(nameofmerch);
         printf("Item could not be added to cart \n");
     }
-    //free(nameofmerch);
+    //
 }
 
 void ui_remove_from_cart(db_t *db)
@@ -272,7 +278,14 @@ void ui_calculate_cost(db_t *db)
 void ui_checkout(db_t *db)
 {
     int cartnmr = ask_question_int("Which cart would you like to check out?");
-    checkout(db, cartnmr);
+    if (checkout(db, cartnmr) == true)
+    {
+        printf("Your cart has been checked out!");
+    }
+    else
+    {
+        printf("Your cart could not be checked out!");
+    }
 }
 
 void ui_show_merch(db_t *db) {
@@ -306,6 +319,24 @@ void ui_show_merch(db_t *db) {
     free(name);
 }
 
+void print_cart(elem_t key, elem_t *value, void *x)
+{
+    printf("Merch:%s, Quantity:%d \n", (char *) key.p, (*value).i);
+}
+
+void ui_show_cart(db_t *db)
+{
+    ioopm_hash_table_t *carts = db->carts;
+    int cartnmr = ask_question_int("Which cart would you like to view?");
+    option_t lookup = ioopm_hash_table_lookup(carts, int_elem(cartnmr));
+    if (lookup.success == false)
+    {
+        printf("This cart does not exist");
+    }
+    ioopm_hash_table_t *cart = lookup.value.p;
+    ioopm_hash_table_apply_to_all(cart, print_cart, NULL);
+}
+
 char *print_menu()
 {
     return(
@@ -321,6 +352,7 @@ char *print_menu()
         "A[D]d to cart \n"
         "Rem[O]ve from cart \n"
         "Calc[U]late cost of cart \n"
+        "Dis[P]lay cart \n"
         "C[H]eckout \n"
         "[Q]uit \n"
     );
@@ -420,6 +452,10 @@ int main()
         if (ans == 'H')
         {
             ui_checkout(db);
+        }
+        if (ans == 'P')
+        {
+            ui_show_cart(db);
         }
         ans = toupper(ask_question_char(print_menu()));
         /*free(to_free);

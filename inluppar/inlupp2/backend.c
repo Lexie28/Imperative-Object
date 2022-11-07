@@ -18,6 +18,7 @@ typedef struct shelf shelf_t;
 typedef struct listtype listtype_t;
 typedef struct hash_table ioopm_hash_table_t;
 typedef struct entry entry_t;
+typedef struct nametuple nametuple_t;
 
 struct orderamnt
 {
@@ -31,6 +32,14 @@ struct hash_table
     ioopm_eq_function key_eq_fn;       // Function for checking if keys are equal.
     ioopm_hash_function hash_function; // Function for determining the keys of inputs elem_t.
 };
+
+struct nametuple
+{
+    char *oldname;
+    char *newname;
+};
+
+
 
 /*
 struct entry
@@ -97,8 +106,20 @@ merch_t *create_merch(char *name, char *description, int price)
     return merch;
 }
 
+
+void free_cart_merch(elem_t key, elem_t *value, void *x)
+{
+    nametuple_t *freeptr = x;
+    char *nameofmerch = freeptr->oldname;
+    if (strcmp(key.p, nameofmerch) == 0)
+    {
+        freeptr->newname = key.p;
+    }
+}
+
 void destroy_shelf(shelf_t *shelf)
 {
+    free(shelf->shelf);
     free(shelf);
 }
 
@@ -122,10 +143,26 @@ static void destroyhtnamemerch(elem_t key, elem_t *value, void *x)
     destroy_merch((*value).p);
 }
 
+void free_all_cart_merch(elem_t key, elem_t *value, void *x)
+{
+    free(key.p);
+}
+
 
 void destroy_cart(ioopm_hash_table_t *ht)
 {
+    ioopm_list_t *keys = ioopm_hash_table_keys(ht);
     ioopm_hash_table_destroy(ht);
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(keys);
+    size_t size = ioopm_linked_list_size(keys);
+    for (int i = 0; i < size; i++)
+    {
+        char *tofree = ioopm_iterator_current(iter).p;
+        free(tofree);
+        ioopm_iterator_next(iter);
+    }
+    ioopm_iterator_destroy(iter);
+    ioopm_linked_list_destroy(keys);
 }
 
 void destroy_smaller_cartht(elem_t key, elem_t *value, void *x)
@@ -163,6 +200,8 @@ bool add_merchandise(db_t *db, char *name, char *description, int price)
 void destroyingmerch(ioopm_hash_table_t *ht, merch_t *merch)
 {
     ioopm_list_t *list = merch->locs;
+    if (list != NULL)
+    {
     size_t size = ioopm_linked_list_size(list);
     if (size != 0)
     {
@@ -177,6 +216,7 @@ void destroyingmerch(ioopm_hash_table_t *ht, merch_t *merch)
         ioopm_iterator_destroy(iter);
     }
     ioopm_linked_list_destroy(list);
+    }
     ioopm_hash_table_remove(ht, ptr_elem(merch->name));
     free(merch->name);
     free(merch->description);
@@ -268,6 +308,37 @@ listtype_t *get_merchandise(db_t *db, bool *is_empty)
     return result;
 }
 
+
+void change_name_shelfht(elem_t key, elem_t *value, void *x)
+{
+    nametuple_t *nametuple = x;
+    if (strcmp(nametuple->oldname, (*value).p) == 0)
+    {
+        free((*value).p);
+        (*value).p = nametuple->newname;
+    }
+}
+
+void change_name_cartht(elem_t key, elem_t *value, void *x)
+{
+    nametuple_t *nametuple = x; //skickar med båda namnen så vi kan jämföra genom carten och byta ut
+    ioopm_hash_table_t *cart = (*value).p;
+    option_t lookup = ioopm_hash_table_lookup(cart, ptr_elem(nametuple->oldname));
+    if (lookup.success == false)
+    {
+        return;
+    }
+    
+    nametuple_t tofree;
+    (&tofree)->oldname = nametuple->oldname;
+    int quantity = lookup.value.i;
+    ioopm_hash_table_apply_to_all(cart, free_cart_merch, &tofree);
+    ioopm_hash_table_remove(cart, ptr_elem(nametuple->oldname));
+    free(tofree.newname);
+    ioopm_hash_table_insert(cart, ptr_elem(strdup(nametuple->newname)), int_elem(quantity));
+
+}
+
 bool edit_merchandise_name(db_t *db, char *name, char *newname)
 {
     ioopm_hash_table_t *ht = db->namemerch;
@@ -279,7 +350,23 @@ bool edit_merchandise_name(db_t *db, char *name, char *newname)
     }
 
     merch_t *merch = lookup.value.p;
-    add_merchandise(db, newname, strdup(merch->description), merch->price);
+    merch_t *edited = create_merch(newname, strdup(merch->description), merch->price);
+    ioopm_linked_list_destroy(edited->locs);
+    edited->locs = merch->locs;
+    merch->locs = NULL;
+    ioopm_hash_table_insert(ht, ptr_elem(newname), ptr_elem(edited));
+    //apply to all på shelf-to-name ht
+    //ändrar namnet även i shelf-to-name ht'et
+
+    nametuple_t nametuple;
+    (&nametuple)->oldname = name;
+    (&nametuple)->newname = newname;
+    ioopm_hash_table_apply_to_all(db->shelftoname, change_name_shelfht, &nametuple);
+    //apply to all på alla carts
+    //ändrar namnet i cartsen
+
+
+    ioopm_hash_table_apply_to_all(db->carts, change_name_cartht, &nametuple);
     remove_merchandise(db, name);
     return true;
 }
@@ -366,6 +453,7 @@ ioopm_list_t *show_stock(db_t *db, char *name) //bygg om så den blir som get-fu
 shelf_t *create_shelf(char *newshelf, int newquantity)
 {
     shelf_t *sh = calloc(1, sizeof(shelf_t));
+    newshelf[0] = toupper(newshelf[0]);
     sh->shelf = newshelf;
     sh->quantity = newquantity;
     return sh;
@@ -413,11 +501,12 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
             if (strcmp(shelftoreplenish, shelf->shelf) == 0)
             {
                 shelf->quantity += amount;
+                free(name);
+                free(shelftoreplenish);
                 return true;
             }
             ioopm_iterator_next(iter);
         }
-        printf("Shelf could not be found\n");
         return false;
     }
     else
@@ -553,7 +642,11 @@ bool remove_from_cart(db_t *db, int cartnmr, char *nameofmerch, int quantity)
     }
     if (orders-quantity == 0)
     {
+        nametuple_t freeptr;
+        (&freeptr)->oldname = nameofmerch;
+        ioopm_hash_table_apply_to_all(cart, free_cart_merch, nameofmerch);
         ioopm_hash_table_remove(cart, ptr_elem(nameofmerch));
+        free(freeptr.newname);
         return true;
     }
     if (orders-quantity > 0)
@@ -649,12 +742,15 @@ void removestock(db_t *db, char *name, int removequantity)
     ioopm_iterator_destroy(iter);
 }
 
-void checkout(db_t *db, int cartnmr)
+bool checkout(db_t *db, int cartnmr)
 {
     ioopm_hash_table_t *htc = db->carts;
     option_t lookup = ioopm_hash_table_lookup(htc, int_elem(cartnmr));
+    if (lookup.success == false)
+    {
+        return false;
+    }
     ioopm_hash_table_t *cart = lookup.value.p;
-
     for (int i = 0; i < 17; i++)
     {
         entry_t *entry = &cart->buckets[i]; // pekare till början av varje bucket
@@ -667,8 +763,9 @@ void checkout(db_t *db, int cartnmr)
             entry = entry->next;
         }
     }
-    ioopm_hash_table_destroy(cart);
+    destroy_cart(cart);
     ioopm_hash_table_remove(htc, int_elem(cartnmr));
+    return true;
     //gå igenom allt i den carten vi har valt att checka ut
 }
 
