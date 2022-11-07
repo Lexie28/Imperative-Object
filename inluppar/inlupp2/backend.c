@@ -107,11 +107,6 @@ static void destroylocslist(elem_t *value, void *x)
     destroy_shelf((*value).p);
 }
 
-static void destroyhtnamemerch(elem_t key, elem_t *value, void *x)
-{
-    destroy_merch((*value).p);
-}
-
 void destroy_merch(merch_t *merch)
 {
     ioopm_linked_list_apply_to_all(merch->locs, destroylocslist, NULL);
@@ -122,11 +117,28 @@ void destroy_merch(merch_t *merch)
     free(merch);
 }
 
+static void destroyhtnamemerch(elem_t key, elem_t *value, void *x)
+{
+    destroy_merch((*value).p);
+}
+
+
+void destroy_cart(ioopm_hash_table_t *ht)
+{
+    ioopm_hash_table_destroy(ht);
+}
+
+void destroy_smaller_cartht(elem_t key, elem_t *value, void *x)
+{
+    destroy_cart((*value).p);
+}
+
 void db_destroy(db_t *db)
 {
     ioopm_hash_table_apply_to_all(db->namemerch, destroyhtnamemerch, NULL);
     ioopm_hash_table_destroy(db->shelftoname);
-    ioopm_hash_table_destroy(db->carts); //TODO
+    ioopm_hash_table_apply_to_all(db->carts, destroy_smaller_cartht, NULL);
+    ioopm_hash_table_destroy(db->carts);
     ioopm_hash_table_destroy(db->namemerch);
     free(db);
 }
@@ -459,6 +471,7 @@ int totalstockofmerch(merch_t *merch)
         totalstock += shelf->quantity;
         ioopm_iterator_next(iter);
     }
+    ioopm_iterator_destroy(iter);
     return totalstock;
 }
 
@@ -617,11 +630,13 @@ void removestock(db_t *db, char *name, int removequantity)
         if (thisstockquantity == removequantity)
         {
             ioopm_linked_list_remove(list, index);
+            ioopm_iterator_destroy(iter);
             return;
         }
         if (thisstockquantity > removequantity)
         {
             shelf->quantity = thisstockquantity - removequantity;
+            ioopm_iterator_destroy(iter);
             return;
         }
         if (thisstockquantity < removequantity)
@@ -631,6 +646,7 @@ void removestock(db_t *db, char *name, int removequantity)
             ioopm_iterator_next(iter);
         }
     }
+    ioopm_iterator_destroy(iter);
 }
 
 void checkout(db_t *db, int cartnmr)

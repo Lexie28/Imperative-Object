@@ -184,6 +184,7 @@ void ui_show_stock(db_t *db)
         ioopm_iterator_next(iter);
     }
     free(name);
+    ioopm_iterator_destroy(iter);
 }
 
 void ui_replenish_stock(db_t *db)
@@ -240,6 +241,7 @@ void ui_add_to_cart(db_t *db)
     {
         printf("Item could not be added to cart \n");
     }
+    //free(nameofmerch);
 }
 
 void ui_remove_from_cart(db_t *db)
@@ -257,6 +259,7 @@ void ui_remove_from_cart(db_t *db)
     {
         printf("Removal could not be done");
     }
+    free(nameofmerch);
 }
 
 void ui_calculate_cost(db_t *db)
