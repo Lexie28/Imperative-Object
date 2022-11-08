@@ -20,7 +20,7 @@ void ui_add_merchandise(db_t *db) // typ alla ui/frontend-funktioner ska se ut s
     char *name = ask_question_string("The item name:");
     char *description = ask_question_string("The item description:");
     int price = ask_question_int("The price:");
-    if (add_merchandise(db, name, description, price) == true)
+    if (ioopm_add_merchandise(db, name, description, price) == true)
     {
         printf("Item successfully added! \n");
     }
@@ -35,7 +35,7 @@ void ui_add_merchandise(db_t *db) // typ alla ui/frontend-funktioner ska se ut s
 void ui_list_merchandise(db_t *db) //TODO?? SEGFAULT MED OJÄMNA TAL
 {
     bool is_empty = false;
-    listtype_t *merch = get_merchandise(db, &is_empty); //option-type med char ** (array av strängar) och en size
+    listtype_t *merch = ioopm_get_merchandise(db, &is_empty); //option-type med char ** (array av strängar) och en size
     if (!is_empty) {
         int j = 0;
         int i = 0;
@@ -97,7 +97,7 @@ void ui_remove_merchandise(db_t *db)
     char *sure = ask_question_string("Are you sure you want to remove this merchandise? y/n");
     if (strcmp(sure, "y") == 0 || strcmp(sure, "Y") == 0)
     {
-        if (remove_merchandise(db, name) == true)
+        if (ioopm_remove_merchandise(db, name) == true)
         {
             printf("Item successfully removed! \n");
         }
@@ -122,7 +122,7 @@ void ui_edit_merchandise(db_t *db)
     if (choice == 'N')
     {
         char *newname = ask_question_string("Edit name: \n"); //allocd
-        if (edit_merchandise_name(db, name, newname) == true)
+        if (ioopm_edit_merchandise_name(db, name, newname) == true)
         {
             printf("Item successfully edited! \n");
         }
@@ -135,7 +135,7 @@ void ui_edit_merchandise(db_t *db)
     else if (choice == 'D')
     {
         char *newdescription = ask_question_string("Edit description: \n");
-        if (edit_merchandise_description(db, name, newdescription) == true)
+        if (ioopm_edit_merchandise_description(db, name, newdescription) == true)
         {
             printf("Item successfully edited! \n");
         }
@@ -148,7 +148,7 @@ void ui_edit_merchandise(db_t *db)
     else if (choice == 'P')
     {
         int newprice = ask_question_int("Edit price: \n");
-        if (edit_merchandise_price(db, name, newprice) == true)
+        if (ioopm_edit_merchandise_price(db, name, newprice) == true)
         {
             printf("Item successfully edited! \n");
         }
@@ -173,7 +173,7 @@ void ui_show_stock(db_t *db)
     char *name = ask_question_string("For which item would you like to see the stock?");
     //ioopm_list_t *shelf_list = show_stock(db, name);
     //merch_t *merch = get_merch_info(db, name);
-    ioopm_list_t *shelf_list = show_stock(db, name);
+    ioopm_list_t *shelf_list = ioopm_show_stock(db, name);
     if (shelf_list == NULL)
     {
         printf("Invalid item");
@@ -196,10 +196,10 @@ void ui_replenish_stock(db_t *db)
 {
     ui_list_merchandise(db);
     char *name = ask_question_string("Which item would you like to replenish?");
-    show_stock(db, name);
+    ioopm_show_stock(db, name);
     char *shelftoreplenish = ask_question_string("Which stock would you like to replenish, if new, write new shelf number");
     int amount = ask_question_int("How much would you like to replenish it by?");
-    if (replenish_stock(db, name, shelftoreplenish, amount) == true)
+    if (ioopm_replenish_stock(db, name, shelftoreplenish, amount) == true)
     {
         printf("Stock successfully replenished!\n");
     }
@@ -214,14 +214,14 @@ void ui_replenish_stock(db_t *db)
 
 void ui_cart_create(db_t *db)
 {
-    int cartnmr = cart_create(db);
+    int cartnmr = ioopm_cart_create(db);
     printf("You have created a new cart, number %d \n", cartnmr);
 }
 
 void ui_cart_remove(db_t *db)
 {
     int carttoremove = ask_question_int("Which cart would you like to remove?");
-    if (cart_remove(db, carttoremove) == true)
+    if (ioopm_cart_remove(db, carttoremove) == true)
     {
         printf("Cart nr.%d was successfully removed! \n", carttoremove);
     }
@@ -238,7 +238,7 @@ void ui_add_to_cart(db_t *db)
     ui_list_merchandise(db);
     char *nameofmerch = ask_question_string("Which merchandise would you like to add to this cart? \n");
     int quantity = ask_question_int("How much (/quantity) of this merchandise would you like to add?");
-    if (add_to_cart(db, carttoaddto, nameofmerch, quantity) == true)
+    if (ioopm_add_to_cart(db, carttoaddto, nameofmerch, quantity) == true)
     {
         printf("Item was successfully added to cart! \n");
     }
@@ -257,7 +257,7 @@ void ui_remove_from_cart(db_t *db)
     char *nameofmerch = ask_question_string("Which merchandise would you like to remove from this cart? \n");
     int quantity = ask_question_int("How much (/quantity) of this merchandise would you like to remove? \n");
 
-    if (remove_from_cart(db, cartnmr, nameofmerch, quantity) == true)
+    if (ioopm_remove_from_cart(db, cartnmr, nameofmerch, quantity) == true)
     {
         printf("Merchandise successfully removed from this cart!");
     }
@@ -271,14 +271,14 @@ void ui_remove_from_cart(db_t *db)
 void ui_calculate_cost(db_t *db)
 {
     int cartnmr = ask_question_int("For which cart number would you like to calculate the cost? \n");
-    int cartcost = calculate_cost(db, cartnmr);
+    int cartcost = ioopm_calculate_cost(db, cartnmr);
     printf("The cost of cart %d is: %d \n", cartnmr, cartcost);
 }
 
 void ui_checkout(db_t *db)
 {
     int cartnmr = ask_question_int("Which cart would you like to check out?");
-    if (checkout(db, cartnmr) == true)
+    if (ioopm_checkout(db, cartnmr) == true)
     {
         printf("Your cart has been checked out!");
     }
@@ -291,7 +291,7 @@ void ui_checkout(db_t *db)
 void ui_show_merch(db_t *db) {
     ui_list_merchandise(db);
     char *name = ask_question_string("The item name:");
-    merch_t *merch = get_merch_info(db, name);
+    merch_t *merch = ioopm_get_merch_info(db, name);
     if (merch == NULL) {
         printf("No merch with that name found\n");
         return;
@@ -360,7 +360,7 @@ char *print_menu()
 
 int main()
 {
-    db_t *db = db_create();
+    db_t *db = ioopm_db_create();
     
     /*add_merchandise(db, "hej", "cool", 1);
     add_merchandise(db, "he", "coo", 2);
@@ -463,6 +463,6 @@ int main()
         ans = toupper(to_free[0]);*/
     }
     //free(to_free);
-    db_destroy(db);
+    ioopm_db_destroy(db);
     return 0;
 }

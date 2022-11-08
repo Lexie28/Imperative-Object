@@ -84,7 +84,7 @@ int int_hash(elem_t key) {
     return key.i % 17;
 }
 
-db_t *db_create()
+db_t *ioopm_db_create()
 {
     db_t *db = calloc(1, sizeof(db_t));
     db->namemerch = ioopm_hash_table_create(string_eq, string_sum_hash);
@@ -176,7 +176,7 @@ void free_name_shelftoname(elem_t key, elem_t *value, void *x)
     free((*value).p);
 }
 
-void db_destroy(db_t *db)
+void ioopm_db_destroy(db_t *db)
 {
     ioopm_hash_table_apply_to_all(db->namemerch, destroyhtnamemerch, NULL);
     ioopm_hash_table_apply_to_all(db->shelftoname, free_name_shelftoname, NULL);
@@ -187,7 +187,7 @@ void db_destroy(db_t *db)
     free(db);
 }
 
-bool add_merchandise(db_t *db, char *name, char *description, int price)
+bool ioopm_add_merchandise(db_t *db, char *name, char *description, int price)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t hasname = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -242,7 +242,7 @@ void remove_bightc(elem_t key, elem_t *value, void *x)
 }
 
 
-bool remove_merchandise(db_t *db, char *name)
+bool ioopm_remove_merchandise(db_t *db, char *name)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -273,6 +273,8 @@ bool remove_merchandise(db_t *db, char *name)
             }
             ioopm_iterator_next(iter);
         }
+        ioopm_iterator_destroy(iter);
+        ioopm_linked_list_destroy(keys);
         return true;
     }
     else
@@ -301,7 +303,7 @@ listtype_t *makelisttype(char **arr, int size)
     return listtype;
 }
 
-listtype_t *get_merchandise(db_t *db, bool *is_empty)
+listtype_t *ioopm_get_merchandise(db_t *db, bool *is_empty)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     int size = ioopm_hash_table_size(ht);
@@ -355,7 +357,7 @@ void change_name_cartht(elem_t key, elem_t *value, void *x)
 
 }
 
-bool edit_merchandise_name(db_t *db, char *name, char *newname)
+bool ioopm_edit_merchandise_name(db_t *db, char *name, char *newname)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -383,11 +385,11 @@ bool edit_merchandise_name(db_t *db, char *name, char *newname)
 
 
     ioopm_hash_table_apply_to_all(db->carts, change_name_cartht, &nametuple);
-    remove_merchandise(db, name);
+    ioopm_remove_merchandise(db, name);
     return true;
 }
 
-bool edit_merchandise_description(db_t *db, char *name, char *newdescription)
+bool ioopm_edit_merchandise_description(db_t *db, char *name, char *newdescription)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -403,7 +405,7 @@ bool edit_merchandise_description(db_t *db, char *name, char *newdescription)
     return true;
 }
 
-bool edit_merchandise_price(db_t *db, char *name, int newprice)
+bool ioopm_edit_merchandise_price(db_t *db, char *name, int newprice)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -420,7 +422,7 @@ bool edit_merchandise_price(db_t *db, char *name, int newprice)
 
 //linked_list är en lista med shelf_t som entries
 
-ioopm_list_t *show_stock(db_t *db, char *name) //bygg om så den blir som get-funktionen o returnar en array så att vi kan keys_sort-a den också
+ioopm_list_t *ioopm_show_stock(db_t *db, char *name) //bygg om så den blir som get-funktionen o returnar en array så att vi kan keys_sort-a den också
 {
 
     ioopm_hash_table_t *ht = db->namemerch;
@@ -475,9 +477,9 @@ shelf_t *create_shelf(char *newshelf, int newquantity)
     return sh;
 }
 
-bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) //for-loop med i=0, i++, i < size så vi når sista grejen
+bool ioopm_replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) //for-loop med i=0, i++, i < size så vi når sista grejen
 {
-    show_stock(db, name);
+    ioopm_show_stock(db, name);
 
     bool isshelf = is_shelf(shelftoreplenish); //kollar att tar rätt input
     if (isshelf == false) return false;
@@ -531,7 +533,7 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
     }
 }
 
-int cart_create(db_t *db)
+int ioopm_cart_create(db_t *db)
 {
     ioopm_hash_table_t *ht = db->carts; //outer hashtable. int (vilket cart) till lilla hashtablet
     ioopm_hash_table_t *cart = ioopm_hash_table_create(string_eq, string_sum_hash); //inner hashtable. name of merch till amount to order
@@ -542,7 +544,7 @@ int cart_create(db_t *db)
 
 //REMOVE
 //ta in carts_amnt vilken du vill ta bort
-bool cart_remove (db_t *db, int carttoremove)
+bool ioopm_cart_remove (db_t *db, int carttoremove)
 {
     //lookup carttoremove
     //om inte finns return false
@@ -611,7 +613,7 @@ int totalordersofmerch(db_t *db, char *nameofmerch)
     return totalorders;
 }
 
-bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
+bool ioopm_add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     ioopm_hash_table_t *carts = db->carts;
@@ -637,7 +639,7 @@ bool add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
     //annars fail
 }
 
-bool remove_from_cart(db_t *db, int cartnmr, char *nameofmerch, int quantity)
+bool ioopm_remove_from_cart(db_t *db, int cartnmr, char *nameofmerch, int quantity)
 {
     //lookup i lilla hashtable på hur många orders du har på said vara i din cart
     //om mängden orders - quantity > 0, så behlver vi bara ändra quantityn i lilla ht (eller ny ht-insert med samma key (denna kommer replacas - det är så vi gjorde ht-insert))
@@ -687,7 +689,7 @@ int calc_costofmerch(ioopm_hash_table_t *ht, char *nameofmerch, int quantity)
     return costofmerch;
 }
 
-int calculate_cost(db_t *db, int cartnmr)
+int ioopm_calculate_cost(db_t *db, int cartnmr)
 {
     //gå igenom allt i carten
     //för varje merch calculate cost of merch
@@ -758,7 +760,7 @@ void removestock(db_t *db, char *name, int removequantity)
     ioopm_iterator_destroy(iter);
 }
 
-bool checkout(db_t *db, int cartnmr)
+bool ioopm_checkout(db_t *db, int cartnmr)
 {
     ioopm_hash_table_t *htc = db->carts;
     option_t lookup = ioopm_hash_table_lookup(htc, int_elem(cartnmr));
@@ -790,7 +792,7 @@ bool checkout(db_t *db, int cartnmr)
 
 //------------------------------------------- helper functions for frontend testing
 
-merch_t *get_merch_info(db_t *db, char *name)
+merch_t *ioopm_get_merch_info(db_t *db, char *name)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t success = ioopm_hash_table_lookup(ht, ptr_elem(name));

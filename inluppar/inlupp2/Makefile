@@ -15,3 +15,5 @@ uitest:
 clean:
 	rm -rf backtests
 	rm -rf frontend
+
+.PHONY:
