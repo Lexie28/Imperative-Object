@@ -486,7 +486,7 @@ bool replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amount) /
     {
         shelf_t *shelf = create_shelf(shelftoreplenish, amount);
         ioopm_linked_list_append(merch->locs, ptr_elem(shelf));
-        ioopm_hash_table_insert(db->shelftoname, ptr_elem(shelftoreplenish), ptr_elem(name));
+        ioopm_hash_table_insert(db->shelftoname, ptr_elem(shelftoreplenish), ptr_elem(name)); //leak?? name freeas aldrig
         return true;
     }
     else if (strcmp(lookup.value.p, name) == 0)
