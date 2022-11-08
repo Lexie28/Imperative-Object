@@ -121,7 +121,7 @@ void ui_edit_merchandise(db_t *db)
     char choice = toupper(ask_question_char("Would you like to edit this merchandise's [N]ame, [D]escription or [P]rice? \n"));
     if (choice == 'N')
     {
-        char *newname = ask_question_string("Edit name: \n");
+        char *newname = ask_question_string("Edit name: \n"); //allocd
         if (edit_merchandise_name(db, name, newname) == true)
         {
             printf("Item successfully edited! \n");

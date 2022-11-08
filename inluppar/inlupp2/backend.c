@@ -366,7 +366,7 @@ bool edit_merchandise_name(db_t *db, char *name, char *newname)
 
     nametuple_t nametuple;
     (&nametuple)->oldname = name;
-    (&nametuple)->newname = newname;
+    (&nametuple)->newname = strdup(newname);
     ioopm_hash_table_apply_to_all(db->shelftoname, change_name_shelfht, &nametuple);
     //apply to all på alla carts
     //ändrar namnet i cartsen
