@@ -231,13 +231,48 @@ void destroyingmerch(ioopm_hash_table_t *ht, merch_t *merch)
 }
 
 
+void remove_smallhtc(ioopm_hash_table_t *ht, char *name)
+{
+    ioopm_hash_table_remove(ht, ptr_elem(name));
+}
+
+void remove_bightc(elem_t key, elem_t *value, void *x)
+{
+    remove_smallhtc((*value).p, x);
+}
+
+
 bool remove_merchandise(db_t *db, char *name)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
     if (lookup.success == true)
     {
+        //tar bort från name-merch ht
         destroyingmerch(ht, lookup.value.p);
+        //bort från carts-ht
+        ioopm_hash_table_t *htc = db->carts;
+        ioopm_hash_table_apply_to_all(htc, remove_bightc, name);
+        //bort från shelf-name-ht
+        ioopm_hash_table_t *shelfname = db->shelftoname;
+        ioopm_list_t *keys = ioopm_hash_table_keys(shelfname);
+        ioopm_list_iterator_t *iter = ioopm_list_iterator(keys);
+        size_t size = ioopm_linked_list_size(keys);
+        for (int i = 0; i < size; i++)
+        {
+            elem_t currentkey = ioopm_iterator_current(iter);
+            option_t value_option = ioopm_hash_table_lookup(shelfname, currentkey);
+            if (value_option.success)
+            {
+                char *value = value_option.value.p;
+            
+                if (strcmp(value, name) == 0)
+                {
+                    ioopm_hash_table_remove(shelfname, currentkey);
+                }
+            }
+            ioopm_iterator_next(iter);
+        }
         return true;
     }
     else
@@ -246,33 +281,7 @@ bool remove_merchandise(db_t *db, char *name)
     }
 }
 
-/*
-bool edit_remove_merchandise(db_t *db, char *name)
-{
-    ioopm_hash_table_t *ht = db->namemerch;
-    option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
-    bool success = lookup.success;
-    if (success == false)
-    {
-        return false;
-    }
 
-    merch_t *merch = lookup.value.p;
-    ioopm_list_t *list = merch->locs;
-    ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
-    for (int i = 0; i < ioopm_linked_list_size(list); i++)
-    {
-        char *nameofshelf = ioopm_iterator_current(iter).p;
-        ioopm_iterator_next(iter);
-        ioopm_hash_table_remove(db->shelftoname, ptr_elem(nameofshelf));
-    }
-    ioopm_iterator_destroy(iter);
-    ioopm_hash_table_remove(ht, ptr_elem(name));
-    destroy_merch(merch);
-    return true;
-} */
-
-// remove_merchandise and edit_remove_merchandise the same function?
 
 static int cmpstringp(const void *p1, const void *p2)
 {
