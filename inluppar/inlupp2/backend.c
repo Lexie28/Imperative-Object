@@ -20,6 +20,12 @@ typedef struct hash_table ioopm_hash_table_t;
 typedef struct entry entry_t;
 typedef struct nametuple nametuple_t;
 
+struct nametuple
+{
+    char *oldname;
+    char *newname;
+};
+
 struct orderamnt
 {
     int *totalstock;
@@ -33,11 +39,6 @@ struct hash_table
     ioopm_hash_function hash_function; // Function for determining the keys of inputs elem_t.
 };
 
-struct nametuple
-{
-    char *oldname;
-    char *newname;
-};
 
 
 
@@ -650,7 +651,7 @@ bool remove_from_cart(db_t *db, int cartnmr, char *nameofmerch, int quantity)
     {
         nametuple_t freeptr;
         (&freeptr)->oldname = nameofmerch;
-        ioopm_hash_table_apply_to_all(cart, free_cart_merch, nameofmerch);
+        ioopm_hash_table_apply_to_all(cart, free_cart_merch, &freeptr);
         ioopm_hash_table_remove(cart, ptr_elem(nameofmerch));
         free(freeptr.newname);
         return true;
