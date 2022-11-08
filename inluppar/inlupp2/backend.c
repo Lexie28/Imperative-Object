@@ -170,10 +170,16 @@ void destroy_smaller_cartht(elem_t key, elem_t *value, void *x)
     destroy_cart((*value).p);
 }
 
+void free_name_shelftoname(elem_t key, elem_t *value, void *x)
+{
+    free((*value).p);
+}
+
 void db_destroy(db_t *db)
 {
     ioopm_hash_table_apply_to_all(db->namemerch, destroyhtnamemerch, NULL);
-    ioopm_hash_table_destroy(db->shelftoname);
+    ioopm_hash_table_apply_to_all(db->shelftoname, free_name_shelftoname, NULL);
+    ioopm_hash_table_destroy(db->shelftoname); //vi freear inte name-strduppen i denna hashtable
     ioopm_hash_table_apply_to_all(db->carts, destroy_smaller_cartht, NULL);
     ioopm_hash_table_destroy(db->carts);
     ioopm_hash_table_destroy(db->namemerch);
