@@ -1,7 +1,0 @@
-
-A
-testname
-testdesc
-69
-L
-Q

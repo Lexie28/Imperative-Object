@@ -153,7 +153,6 @@ void test_replenish_stock()
     merch_t *merch = a.value.p;
     ioopm_list_t *locs = merch->locs;
     //shelf_t *shelf = locs->head->value;
-
 }
 
 // ------------------------------------------------------------------------

@@ -97,7 +97,7 @@ void ui_remove_merchandise(db_t *db)
     char *sure = ask_question_string("Are you sure you want to remove this merchandise? y/n");
     if (strcmp(sure, "y") == 0 || strcmp(sure, "Y") == 0)
     {
-        if (ioopm_remove_merchandise(db, name) == true)
+        if (ioopm_remove_merchandise(db, name, false) == true)
         {
             printf("Item successfully removed! \n");
         }
@@ -159,7 +159,8 @@ void ui_edit_merchandise(db_t *db)
     }
     else
     {
-        printf("You did not pick a valid option to edit the merchandise! \n");
+        printf("You did not pick a valid option to edit the merchandise! \n"); 
+        free(name);
         return;
     }
     free(name);
@@ -280,11 +281,11 @@ void ui_checkout(db_t *db)
     int cartnmr = ask_question_int("Which cart would you like to check out?");
     if (ioopm_checkout(db, cartnmr) == true)
     {
-        printf("Your cart has been checked out!");
+        printf("Your cart has been checked out! \n");
     }
     else
     {
-        printf("Your cart could not be checked out!");
+        printf("Your cart could not be checked out! \n");
     }
 }
 
@@ -332,6 +333,7 @@ void ui_show_cart(db_t *db)
     if (lookup.success == false)
     {
         printf("This cart does not exist");
+        return;
     }
     ioopm_hash_table_t *cart = lookup.value.p;
     ioopm_hash_table_apply_to_all(cart, print_cart, NULL);

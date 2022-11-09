@@ -1,0 +1,107 @@
+
+A
+flower
+beautiful
+2
+A
+jeans
+blue
+3
+A
+tshirt
+white
+10
+A
+socks
+white
+10
+A
+hairband
+blue
+2
+A
+shirt
+fancy
+100
+A
+blazer
+black
+50
+A
+tiara
+gold
+30
+A
+overall
+burgundy
+20
+A
+redbull
+delish
+100
+A
+redbull light
+also delish
+150
+A
+chips salt
+salty
+100
+A
+chips sourcream
+sour
+30
+A
+dr.pepper
+nasty
+50
+A
+coffee
+ew
+40
+A
+hot chocolate
+yummy
+60
+A
+vasa kex
+ok
+20
+A
+hoodie
+warm and cozy
+150
+A
+billys
+a good lunch
+40
+A
+cola
+black
+15
+A
+caps
+protecting
+40
+A
+paper
+white
+32
+A
+blocks
+good for school
+100
+A
+pepsi
+50
+A
+pens
+black and blue
+60
+A
+pencils
+grey
+10
+L
+Y
+Q

@@ -10,7 +10,7 @@ memtest:
 	valgrind --show-leak-kinds=all --leak-check=full ./backtests
 
 uitest:
-	valgrind --show-leak-kinds=all --leak-check=full ./frontend
+	valgrind --show-leak-kinds=all --leak-check=full --track-origins=yes ./frontend
 
 clean:
 	rm -rf backtests

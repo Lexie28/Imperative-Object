@@ -230,10 +230,25 @@ void destroyingmerch(ioopm_hash_table_t *ht, merch_t *merch)
     free(merch);
 }
 
+void remove_smallhtc_edit(ioopm_hash_table_t *ht, char *name)
+{
+    ioopm_hash_table_remove(ht, ptr_elem(name));
+}
+
 
 void remove_smallhtc(ioopm_hash_table_t *ht, char *name)
 {
+    nametuple_t tofree;
+    (&tofree)->oldname = name;
+    (&tofree)->newname = "";
+    ioopm_hash_table_apply_to_all(ht, free_cart_merch, &tofree);
     ioopm_hash_table_remove(ht, ptr_elem(name));
+    free(tofree.newname);
+}
+
+void remove_bightc_edit(elem_t key, elem_t *value, void *x)
+{
+    remove_smallhtc_edit((*value).p, x);
 }
 
 void remove_bightc(elem_t key, elem_t *value, void *x)
@@ -242,7 +257,7 @@ void remove_bightc(elem_t key, elem_t *value, void *x)
 }
 
 
-bool ioopm_remove_merchandise(db_t *db, char *name)
+bool ioopm_remove_merchandise(db_t *db, char *name, bool edit)
 {
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
@@ -252,7 +267,14 @@ bool ioopm_remove_merchandise(db_t *db, char *name)
         destroyingmerch(ht, lookup.value.p);
         //bort från carts-ht
         ioopm_hash_table_t *htc = db->carts;
-        ioopm_hash_table_apply_to_all(htc, remove_bightc, name);
+        if (edit == true)
+        {
+            ioopm_hash_table_apply_to_all(htc, remove_bightc_edit, name);
+        }
+        else 
+        {
+            ioopm_hash_table_apply_to_all(htc, remove_bightc, name);
+        }
         //bort från shelf-name-ht
         ioopm_hash_table_t *shelfname = db->shelftoname;
         ioopm_list_t *keys = ioopm_hash_table_keys(shelfname);
@@ -269,6 +291,8 @@ bool ioopm_remove_merchandise(db_t *db, char *name)
                 if (strcmp(value, name) == 0)
                 {
                     ioopm_hash_table_remove(shelfname, currentkey);
+                    free(value);
+                    free(currentkey.p);
                 }
             }
             ioopm_iterator_next(iter);
@@ -333,7 +357,7 @@ void change_name_shelfht(elem_t key, elem_t *value, void *x)
     if (strcmp(nametuple->oldname, (*value).p) == 0)
     {
         free((*value).p);
-        (*value).p = nametuple->newname;
+        (*value).p = strdup(nametuple->newname);
     }
 }
 
@@ -378,14 +402,14 @@ bool ioopm_edit_merchandise_name(db_t *db, char *name, char *newname)
 
     nametuple_t nametuple;
     (&nametuple)->oldname = name;
-    (&nametuple)->newname = strdup(newname);
+    (&nametuple)->newname = newname;
     ioopm_hash_table_apply_to_all(db->shelftoname, change_name_shelfht, &nametuple);
     //apply to all på alla carts
     //ändrar namnet i cartsen
 
 
     ioopm_hash_table_apply_to_all(db->carts, change_name_cartht, &nametuple);
-    ioopm_remove_merchandise(db, name);
+    ioopm_remove_merchandise(db, name, true);
     return true;
 }
 

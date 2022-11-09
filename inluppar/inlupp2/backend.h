@@ -71,7 +71,7 @@ bool ioopm_add_merchandise(db_t *db, char *name, char *description, int price);
 /// @param db is the database we enter into to find our hash table
 /// @param name a string forming the name of our merchandise
 /// @return a bool indicating whether we managed to remove the chosen merchandise
-bool ioopm_remove_merchandise(db_t *db, char *name);
+bool ioopm_remove_merchandise(db_t *db, char *name, bool edit);
 
 /// @brief get an array of the keys (merchandise names) and size of said array from our hash table
 /// @param db is the database we enter into to find our hash table
