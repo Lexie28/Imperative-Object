@@ -22,7 +22,8 @@ public class Register {
     public void step() {
         if (queue.isEmpty() == true) //if queue is empty, return
         {
-            return;
+            throw new EmptyQueueException("Trying to step in an empty queue.");
+            //return;
         }
         else if (currentCustomerIsDone())
         {
@@ -32,7 +33,9 @@ public class Register {
         {
             queue.first.element.serve();
         }
+        
     }
+
 
     public boolean hasCustomers() {
         if (queue.isEmpty() == true)

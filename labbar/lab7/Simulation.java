@@ -4,9 +4,10 @@ public class Simulation {
     int intensity;
     int maxGroceries;
     int thresholdForNewRegister;
+    int amountOfRegisters;
 
-    public Simulation(int intensity, int maxGroceries, int thresholdForNewRegister) {
-        this.store = new Store();
+    public Simulation(int intensity, int maxGroceries, int thresholdForNewRegister, int amountOfRegisters) {
+        this.store = new Store(amountOfRegisters);
         this.time = 0;
         this.intensity = intensity;
         this.maxGroceries = maxGroceries;
@@ -15,13 +16,21 @@ public class Simulation {
 
     public void step()
     {
-        store.step();
-        int r = (int) (Math.random() * (100 - 0)) + 0;
+        try {
+            store.step();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            int r = (int) (Math.random() * (100 - 0)) + 0;
         if (r < intensity) {
             store.newCustomer(new Customer(time, (int) (Math.random() * (maxGroceries - 1)) + 1));
         }
         if (store.getAverageQueueLength() > (double) thresholdForNewRegister) {
-            store.openNewRegister();
+            try {
+                store.openNewRegister();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         Customer[] doneCustomers = store.getDoneCustomers();

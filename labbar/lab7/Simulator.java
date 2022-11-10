@@ -4,8 +4,9 @@ public class Simulator{
         int steps = 100;
         int intensity = 50;
         int maxGroceries = 10;
-        int thresholdForNewRegister = 10;
-        Simulation s = new Simulation(intensity, maxGroceries, thresholdForNewRegister);
+        int thresholdForNewRegister = 2;
+        int amountOfRegisters = 2; 
+        Simulation s = new Simulation(intensity, maxGroceries, thresholdForNewRegister, amountOfRegisters);
         for(int i = 0; i < steps; i++){
             System.out.print("\033[2J\033[;H");
             s.step();

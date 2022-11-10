@@ -4,9 +4,9 @@ public class Store {
     int doneTimes[];
     int doneLength;
 
-    public Store() {
-        this.registers = new Register[15];
-        for (int i = 0; i < 15; i++)
+    public Store(int amountOfRegisters) {
+        this.registers = new Register[amountOfRegisters];
+        for (int i = 0; i < amountOfRegisters; i++)
         {
             this.registers[i] = new Register();
         }
@@ -35,10 +35,15 @@ public class Store {
         shortest.enqueue(c);
     }  
 
-    public void step(){
+    public void step() throws Exception {
         for (int i = 0; i < regAmount; i++){
-            registers[i].step();
-        }
+            try {
+                registers[i].step();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
     }
 
     public void openNewRegister() {
