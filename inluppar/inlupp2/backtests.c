@@ -151,35 +151,54 @@ void test_add_remove_cart()
     int price = 55;
 
     ioopm_add_merchandise(db, name, description, price);
+    ioopm_replenish_stock(db, name, strdup("A27"), 20);
 
     ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
     ioopm_add_to_cart(db, 1, name, 10);
 
-    ioopm_hash_table_t htc = db->carts;
-    ioopm_hash_table_t cart = ioopm_hash_table_lookup(htc, ptr_elem("1"));
+    ioopm_hash_table_t *htc = db->carts;
+    option_t lookup = ioopm_hash_table_lookup(htc, int_elem(1));
+    ioopm_hash_table_t *cart = lookup.value.p;
+    option_t lookupincart = ioopm_hash_table_lookup(cart, ptr_elem(name));
+    CU_ASSERT_TRUE(lookupincart.success);
 
-    CU_ASSERT_TRUE(ioopm_remove_from_cart(db, 1, name, 10)); // remove all of them
     ioopm_db_destroy(db);
 }
 
-void test_add_remove_a_few_cart()
+void test_add_remove_multiple_cart()
 {
     db_t *db = ioopm_db_create();
     char *name = strdup("Lexie");
     char *description = strdup("Cool kid");
-    int price = 55;
+    int   price = 55;
 
-    ioopm_add_merchandise(db, strdup(name), strdup(description), price);
+    char *name2 = strdup("Vincent");
+    char *description2 = strdup("meh");
+    int   price2 = 52;
+
+    ioopm_add_merchandise(db, name, description, price); 
+    ioopm_add_merchandise(db, name2, description2, price2); 
+
+    ioopm_replenish_stock(db, name, strdup("A27"), 20);
+    ioopm_replenish_stock(db, name2, strdup("B27"), 20);
 
     ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
     ioopm_add_to_cart(db, 1, name, 10);
-    CU_ASSERT_TRUE(ioopm_remove_from_cart(db, 1, name, 5)); // remove a few of them
+    ioopm_add_to_cart(db, 1, name2, 10);
+
+    ioopm_hash_table_t *htc = db->carts;
+    option_t lookup = ioopm_hash_table_lookup(htc, int_elem(1));
+    ioopm_hash_table_t *cart = lookup.value.p;
+    option_t lookupincart = ioopm_hash_table_lookup(cart, ptr_elem(name));
+    option_t lookupincart2 = ioopm_hash_table_lookup(cart, ptr_elem(name2));
+
+    CU_ASSERT_TRUE(lookupincart.success);
+    CU_ASSERT_TRUE(lookupincart2.success);
+
     ioopm_db_destroy(db);
-    free(name);
-    free(description);
 }
 
-void test_add_remove_multiple_cart()
+void test_calculate_costs()
 {
     db_t *db = ioopm_db_create();
     char *name = strdup("Lexie");
@@ -190,19 +209,51 @@ void test_add_remove_multiple_cart()
     char *description2 = strdup("meh");
     int price2 = 52;
 
-    ioopm_add_merchandise(db, name, description, price);
-    ioopm_add_merchandise(db, name2, description2, price2);
+    ioopm_add_merchandise(db, name, description, price); 
+    ioopm_add_merchandise(db, name2, description2, price2); 
+
+    ioopm_replenish_stock(db, name, strdup("A27"), 20);
+    ioopm_replenish_stock(db, name2, strdup("B27"), 20);
 
     ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
     ioopm_add_to_cart(db, 1, name, 10);
     ioopm_add_to_cart(db, 1, name2, 10);
-    CU_ASSERT_TRUE(ioopm_remove_from_cart(db, 1, name, 10)); // remove all of them
-    CU_ASSERT_TRUE(ioopm_remove_from_cart(db, 1, name2, 10)); // remove all of them
+
+    CU_ASSERT_TRUE(ioopm_calculate_cost(db, 1)==1070);
+    ioopm_db_destroy(db);
+}
+
+void test_checkout()
+{
+    db_t *db = ioopm_db_create();
+    char *name = strdup("Lexie");
+    char *description = strdup("Cool kid");
+    int price = 55;
+
+    char *name2 = strdup("Vincent");
+    char *description2 = strdup("meh");
+    int price2 = 52;
+
+    ioopm_add_merchandise(db, name, description, price); 
+    ioopm_add_merchandise(db, name2, description2, price2); 
+
+    ioopm_replenish_stock(db, name, strdup("A27"), 10);
+    ioopm_replenish_stock(db, name2, strdup("B27"), 10);
+
+    ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
+    ioopm_add_to_cart(db, 1, name, 10);
+    ioopm_add_to_cart(db, 1, name2, 10);
+
+    ioopm_checkout(db, 1);
+
+    CU_ASSERT_TRUE(ioopm_hash_table_size(db->namemerch)==0);
+    CU_ASSERT_TRUE(ioopm_hash_table_size(db->carts)==0);
+
+
     ioopm_db_destroy(db);
 }
 
 // ------------------------------------------------------------------------
-
 
 int main()
 {
@@ -234,8 +285,9 @@ int main()
         (CU_add_test(my_test_suite, "Test changing price", test_edit_price_merchandise) == NULL) ||
         (CU_add_test(my_test_suite, "Test replenishing stock", test_replenish_stock) == NULL) ||
         (CU_add_test(my_test_suite, "Test adding and removing to a cart", test_add_remove_cart) == NULL) ||
-        (CU_add_test(my_test_suite, "Test adding and removing a few to a cart", test_add_remove_a_few_cart) == NULL) ||        
         (CU_add_test(my_test_suite, "Test adding and removing multiple items to a cart", test_add_remove_multiple_cart) == NULL) ||
+        (CU_add_test(my_test_suite, "Test calculating the cost of a cart", test_calculate_costs) == NULL) ||
+        (CU_add_test(my_test_suite, "Test checking out carts works", test_checkout) == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit
