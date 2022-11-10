@@ -714,6 +714,7 @@ int ioopm_calculate_cost(db_t *db, int cartnmr)
 return acc;
 }
 
+
 void removestock(db_t *db, char *name, int removequantity)
 {
     //gör en lookup på namnet, hämta ut listan av shelves, och gå igenom listan 
@@ -751,13 +752,17 @@ void removestock(db_t *db, char *name, int removequantity)
         {
             //printf("Index: %d", index);
             removequantity = removequantity - thisstockquantity;
+            shelf->quantity = 0;
             ioopm_iterator_next(iter);
-            ioopm_linked_list_remove_checkout(list, index); //den här som freeas fel?
+            //ta bort från shelftoname!!! TODO????
+            //char *shelfname = shelf->shelf;
+            //ioopm_hash_table_remove(db->shelftoname, ptr_elem(shelf->shelf)); //freear det här namnen?
             index++;
         }
     }
     ioopm_iterator_destroy(iter);
 }
+
 
 bool ioopm_checkout(db_t *db, int cartnmr)
 {
