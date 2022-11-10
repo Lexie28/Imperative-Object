@@ -289,7 +289,8 @@ void ui_checkout(db_t *db)
     }
 }
 
-void ui_show_merch(db_t *db) {
+void ui_show_merch(db_t *db) 
+{
     ui_list_merchandise(db);
     char *name = ask_question_string("The item name:");
     merch_t *merch = ioopm_get_merch_info(db, name);
