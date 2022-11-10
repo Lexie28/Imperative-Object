@@ -307,8 +307,6 @@ bool ioopm_remove_merchandise(db_t *db, char *name, bool edit)
     }
 }
 
-
-
 static int cmpstringp(const void *p1, const void *p2)
 {
     return strcmp(*(char *const *)p1, *(char *const *)p2);
@@ -349,7 +347,6 @@ listtype_t *ioopm_get_merchandise(db_t *db, bool *is_empty)
     listtype_t *result = makelisttype(keys_arr, size);
     return result;
 }
-
 
 void change_name_shelfht(elem_t key, elem_t *value, void *x)
 {
