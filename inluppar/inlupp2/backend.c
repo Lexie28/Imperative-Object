@@ -498,8 +498,8 @@ bool ioopm_replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amo
     if (!lookup.success)
     {
         shelf_t *shelf = create_shelf(shelftoreplenish, amount);
-        ioopm_linked_list_append(merch->locs, ptr_elem(shelf));
-        ioopm_hash_table_insert(db->shelftoname, ptr_elem(shelftoreplenish), ptr_elem(name));
+        ioopm_linked_list_append(merch->locs, ptr_elem(shelf)); //här
+        ioopm_hash_table_insert(db->shelftoname, ptr_elem(shelftoreplenish), ptr_elem(name)); //eller här
         return true;
     }
     else if (strcmp(lookup.value.p, name) == 0)
@@ -747,11 +747,13 @@ void removestock(db_t *db, char *name, int removequantity)
             ioopm_iterator_destroy(iter);
             return;
         }
-        if (thisstockquantity < removequantity)
+        if (thisstockquantity < removequantity) //PROBLEM TODO
         {
+            //printf("Index: %d", index);
             removequantity = removequantity - thisstockquantity;
-            ioopm_linked_list_remove(list, index);
             ioopm_iterator_next(iter);
+            ioopm_linked_list_remove_checkout(list, index); //den här som freeas fel?
+            index++;
         }
     }
     ioopm_iterator_destroy(iter);
@@ -759,6 +761,7 @@ void removestock(db_t *db, char *name, int removequantity)
 
 bool ioopm_checkout(db_t *db, int cartnmr)
 {
+    //tar vi bort det från shelftoname ht??
     ioopm_hash_table_t *htc = db->carts;
     option_t lookup = ioopm_hash_table_lookup(htc, int_elem(cartnmr));
     if (lookup.success == false)
@@ -783,8 +786,6 @@ bool ioopm_checkout(db_t *db, int cartnmr)
     return true;
     //gå igenom allt i den carten vi har valt att checka ut
 }
-
-
 
 
 //------------------------------------------- helper functions for frontend testing

@@ -111,6 +111,43 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value) // in
     list->size++;
 }
 
+elem_t ioopm_linked_list_remove_checkout(ioopm_list_t *list, int index)
+{
+    link_t *link = list->head;
+    if (index < 0 || index > list->size)
+    {
+        return ptr_elem(NULL);
+    }
+    else if (index == 0)
+    {
+
+        //elem_t removeVal = link->value; // Get return value of remove entry.
+        list->head = link->next;        // Set new head
+        free((link->value).p);
+        free(link);                     // Free memory used by head.
+        list->size--;                   // Decrease size.
+        return ptr_elem(NULL);          // Return value of head.
+    }
+    else
+    {
+        for (int i = 0; i < index - 1; i++) // Get to the link entry BEFORE the one we want to remove.
+        {
+            link = link->next;
+        }
+        //link_t *remove = link->next;   // Get the entry we want to remove
+        link->next = link->next->next; // Connect the entries before and after remove entry.
+        list->size--;                  // Decrease our list size value.
+        //elem_t result = link->next->value; // The value of index we want to remove (return val)
+        free((link->next->value).p);
+        free(link->next);                  // Free memory used by the entry.
+        if (link->next == NULL)
+        {
+            list->tail = link;
+        }
+        return ptr_elem(NULL);                 // Return deleted value of entry.
+    }
+}
+
 elem_t ioopm_linked_list_remove(ioopm_list_t *list, int index)
 {
     link_t *link = list->head;
