@@ -62,7 +62,7 @@ Results:
 -
 backend.c: 
 line coverage: 76.9%, 356/463
-functions: 97.9%, 46/47
+functions: 85.1%, 40/47
 
 These results demonstrate that most of the code we have written (meaning each line and loop) have been tested in our written tests. 
 We have attempted to write our test such that it achieves high quality with regards to edge cases, special inputs and the functionality of each function (so that the functions follow their documentation) - and if this is true, an 100% file coverage means that we have tested all of these scenario. 

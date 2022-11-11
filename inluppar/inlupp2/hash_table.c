@@ -89,6 +89,13 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) // the hash table only own
     free(ht);
 }
 
+void ioopm_hash_table_destroy_key(ioopm_hash_table_t *ht) // the hash table only owns (and thus needs to manage)
+// the memory it has allocated itself (meaning only the buckets array and all entries). Thus, if destroying a hash table creates memory leaks it is the fault of the programmer.
+{
+    ioopm_hash_table_clear_key(ht);
+    free(ht);
+}
+
 ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function ins_key_eq_fn, ioopm_hash_function ins_hash_func)
 {
     ioopm_hash_table_t *result = calloc(1, sizeof(ioopm_hash_table_t));
@@ -151,6 +158,28 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t insertedKey)
     }
 }
 
+option_t ioopm_hash_table_lookup_key(ioopm_hash_table_t *ht, elem_t insertedKey)
+{
+    int mappedKey = ht->hash_function(insertedKey);
+    //assert(mappedKey > 0 && "You want to look-up an invalid key");
+    if (mappedKey < 0)
+    {
+        return Failure();
+    }
+    int bucket = mappedKey % No_Buckets;
+    entry_t *tmp = find_previous_entry_for_key(&ht->buckets[bucket], insertedKey, ht->key_eq_fn);
+    entry_t *next = tmp->next;
+
+    if (next && ht->key_eq_fn(next->key, insertedKey)) // kolla både att vi fick ut en pekare, men också att dom är samma!! så next->key faktiskt är samma som insertedKey som vi vill kolla
+    {
+        return Success(next->key);
+    }
+    else
+    {
+        return Failure();
+    }
+}
+
 elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t insertedKey)
 {
 
@@ -200,6 +229,27 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
         }
     }
     return true; // If we go through all buckets and this is not true we return true.
+}
+
+void ioopm_hash_table_clear_key(ioopm_hash_table_t *ht)
+{
+    // Iterate over the different buckets.
+    for (int i = 0; i < No_Buckets; i++)
+    {
+        entry_t *entry = &ht->buckets[i]; // pekare till början av varje bucket
+        entry = entry->next;              // we skip dummy entry and go into
+        while (entry != NULL)             // går igenom next-pekarna tills vi kommer till slutet
+        {
+            entry_t *a = entry->next;
+            free((entry->key).p);
+            free(entry);
+            entry = a;
+        }
+        entry_t *dummyEntry = &ht->buckets[i];
+        dummyEntry->next = NULL;
+    }
+
+    // for each bucket, iterate over its entries and deallocate them
 }
 
 void ioopm_hash_table_clear(ioopm_hash_table_t *ht)

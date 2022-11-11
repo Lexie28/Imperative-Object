@@ -52,6 +52,12 @@ int hash_map_func_string(elem_t key); //Hash mapping function when elem_t is a s
 /// @param ht a hash table to be deleted
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht);
 
+void ioopm_hash_table_destroy_key(ioopm_hash_table_t *ht);
+// the hash table only owns (and thus needs to manage)
+
+void ioopm_hash_table_clear_key(ioopm_hash_table_t *ht);
+
+
 /// @brief add key => value entry in hash table ht
 /// @param ht hash table operated upon
 /// @param key key to insert
@@ -63,6 +69,8 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value);
 /// @param key key to lookup
 /// @return the value mapped to by key
 option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key);
+
+option_t ioopm_hash_table_lookup_key(ioopm_hash_table_t *ht, elem_t insertedKey);
 
 /// @brief remove any mapping from key to a value
 /// @param ht hash table operated upon

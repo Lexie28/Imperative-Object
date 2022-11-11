@@ -246,6 +246,22 @@ void remove_smallhtc(ioopm_hash_table_t *ht, char *name)
     free(tofree.newname);
 }
 
+void remove_smallhtc_cartremove(ioopm_hash_table_t *ht, char *name)
+{
+    ioopm_hash_table_remove(ht, ptr_elem(name));
+    ioopm_list_t *list = ioopm_hash_table_keys(ht);
+    int size = ioopm_linked_list_size(list);
+    for (int i = 0; i < size; i++)
+    {
+        char *listname = ioopm_linked_list_get(list, i).p;
+        if (strcmp(listname, name) == 0)
+        {
+            free(listname);
+        }
+    }
+    ioopm_linked_list_destroy(list);
+}
+
 void remove_bightc_edit(elem_t key, elem_t *value, void *x)
 {
     remove_smallhtc_edit((*value).p, x);
@@ -256,9 +272,28 @@ void remove_bightc(elem_t key, elem_t *value, void *x)
     remove_smallhtc((*value).p, x);
 }
 
+void remove_bightc_cartremove(elem_t key, elem_t *value, void *x)
+{
+    remove_smallhtc_cartremove((*value).p, x);
+}
+
 
 bool ioopm_remove_merchandise(db_t *db, char *name, bool edit)
 {
+    //kolla om den finns i någon av cartsen och om den finns sätt removebightcedit
+    ioopm_hash_table_t *carts = db->carts;
+    size_t size = ioopm_hash_table_size(carts);
+    for (int i = 1; i <= size; i++)
+    {
+        option_t a = ioopm_hash_table_lookup(carts, int_elem(i));
+        ioopm_hash_table_t *cart = a.value.p;
+        option_t b = ioopm_hash_table_lookup(cart, ptr_elem(name));
+        if (b.success == true)
+        {
+            ioopm_hash_table_apply_to_all(carts, remove_bightc_edit, name);
+            return true;
+        }  
+    }
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
     if (lookup.success == true)
@@ -460,35 +495,6 @@ ioopm_list_t *ioopm_show_stock(db_t *db, char *name) //bygg om så den blir som 
     }
 }
 
-
-    /*
-    ioopm_hash_table_t *ht = db->namemerch;
-    option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
-    bool success = lookup.success;
-    if (success == false)
-    {
-        return ioopm_linked_list_create(string_eq); // EMPTY LIST RETURNED IF LOOKUP FAILS
-    }
-
-    merch_t *merch = lookup.value.p;
-    ioopm_list_t *listoflocations = merch->locs;
-    ioopm_list_iterator_t *iter = ioopm_list_iterator(listoflocations);
-    ioopm_list_t *result = ioopm_linked_list_create(string_eq);
-    while (ioopm_iterator_has_next(iter)) //TODO!!! NU MISSAR DEN SISTA GREJEN // GÖR DEN VERKLIGEN DET? V (2022-11-02) //
-    {
-        elem_t shelf_elem = ioopm_iterator_current(iter);
-        //shelf_t *shelf = shelf_elem.p; // COMMENTED
-
-        ioopm_linked_list_append(result, shelf_elem);
-
-        //printf("%s: %d\n", shelf->shelf, shelf->quantity); // USED TO PRINT HERE, NO MORE
-        ioopm_iterator_next(iter);
-        elem_t shelf_elem = ioopm_iterator_next(iter); //har en dummy i början, osäker om vår linked list har det??
-        shelf_t *shelf = shelf_elem.p;
-        printf("%s: %d\n", shelf->shelf, shelf->quanitity); 
-    }
-    return result; */
-
 shelf_t *create_shelf(char *newshelf, int newquantity)
 {
     shelf_t *sh = calloc(1, sizeof(shelf_t));
@@ -623,19 +629,18 @@ void allcartorders(elem_t key, elem_t *value, void *orderamnt)
     ioopm_hash_table_apply_to_all(cart, totalcartorderofmerch, &orderamnt);
 }
 
-int totalordersofmerch(db_t *db, char *nameofmerch)
+orderamnt_t *totalordersofmerch(db_t *db, char *nameofmerch)
 {
     //count up how many in the carts currently
     //void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
     //typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra)
 
     ioopm_hash_table_t *htc = db->carts;
-    int totalorders = 0;
-    orderamnt_t orderamnt;
-    (&orderamnt)->totalstock = &totalorders;
-    (&orderamnt)->merchname = nameofmerch;
+    orderamnt_t *orderamnt = calloc(1, sizeof(orderamnt_t));
+    (orderamnt)->totalstock = 0;
+    (orderamnt)->merchname = nameofmerch;
     ioopm_hash_table_apply_to_all(htc, allcartorders, &orderamnt);
-    return totalorders;
+    return orderamnt;
 }
 
 bool ioopm_add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantity)
@@ -650,7 +655,9 @@ bool ioopm_add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantit
     }
     merch_t *merch = merchlookup.value.p;
     int totalstock = totalstockofmerch(merch);
-    int totalorders = totalordersofmerch(db, nameofmerch);
+    orderamnt_t *orders = totalordersofmerch(db, nameofmerch);
+    int totalorders = orders->totalstock;
+    printf("%d", totalorders);
     int result = totalstock - totalorders - quantity;
     ioopm_hash_table_t *cart = cartlookup.value.p;
     if (result >= 0)
