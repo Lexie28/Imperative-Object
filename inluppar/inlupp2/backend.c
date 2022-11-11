@@ -502,6 +502,8 @@ bool ioopm_replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amo
 {
     ioopm_show_stock(db, name);
 
+    shelftoreplenish[0] = toupper(shelftoreplenish[0]);
+
     bool isshelf = is_shelf(shelftoreplenish); //kollar att tar rätt input
     if (isshelf == false) return false;
 
@@ -542,10 +544,12 @@ bool ioopm_replenish_stock(db_t *db, char *name, char *shelftoreplenish, int amo
                 shelf->quantity += amount;
                 free(name);
                 free(shelftoreplenish);
+                ioopm_iterator_destroy(iter);
                 return true;
             }
             ioopm_iterator_next(iter);
         }
+        ioopm_iterator_destroy(iter);
         return false;
     }
     else
