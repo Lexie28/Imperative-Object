@@ -194,8 +194,8 @@ void test_add_remove_cart()
     ioopm_add_merchandise(db, strdup(name), strdup(description), price);
     ioopm_replenish_stock(db, strdup(name), strdup("A27"), 20);
 
-    ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
-    ioopm_add_to_cart(db, 1, name, 10);
+    ioopm_cart_create(db); //Automagically asigns a cart 1 since no other carts exist.
+    ioopm_add_to_cart(db, 1, strdup(name), 10);
 
     ioopm_hash_table_t *htc = db->carts;
     option_t lookup = ioopm_hash_table_lookup(htc, int_elem(1));
