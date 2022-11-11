@@ -237,8 +237,10 @@ void test_checkout()
     ioopm_add_merchandise(db, strdup(name), strdup(description), price); 
     ioopm_add_merchandise(db, strdup(name2), strdup(description2), price2); 
 
-    ioopm_replenish_stock(db, strdup(name), strdup("A27"), 10);
-    ioopm_replenish_stock(db, strdup(name2), strdup("B27"), 10);
+    char *testshelf = strdup("A27");
+    char *testshelf2 = strdup("B23");
+    ioopm_replenish_stock(db, strdup(name), testshelf, 10);
+    ioopm_replenish_stock(db, strdup(name2), testshelf2, 10);
 
     ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
     ioopm_add_to_cart(db, 1, strdup(name), 10);
@@ -246,11 +248,17 @@ void test_checkout()
 
     ioopm_checkout(db, 1); // removes stock.
 
-    CU_ASSERT_FALSE(ioopm_add_to_cart(db, 1, strdup(name), 1)); // No stock left if no more can be added.
-    CU_ASSERT_FALSE(ioopm_add_to_cart(db, 1, strdup(name2), 1));
+    char *testdup = strdup(name);
+    char *testdup2 = strdup(name);
+    CU_ASSERT_FALSE(ioopm_add_to_cart(db, 1, testdup, 1)); // No stock left if no more can be added.
+    CU_ASSERT_FALSE(ioopm_add_to_cart(db, 1, testdup2, 1));
 
     CU_ASSERT_TRUE(ioopm_hash_table_size(db->carts)==0);
 
+    free(testshelf);
+    free(testshelf2);
+    free(testdup);
+    free(testdup2);
     ioopm_db_destroy(db);
 }
 
