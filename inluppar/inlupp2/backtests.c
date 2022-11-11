@@ -146,15 +146,15 @@ void test_replenish_stock()
 void test_add_remove_cart()
 {
     db_t *db = ioopm_db_create();
-    char *name = strdup("Lexie");
-    char *description = strdup("Cool kid");
+    char *name = "Lexie";
+    char *description = "Cool kid";
     int price = 55;
 
-    ioopm_add_merchandise(db, name, description, price);
-    ioopm_replenish_stock(db, name, strdup("A27"), 20);
+    ioopm_add_merchandise(db, strdup(name), strdup(description), price);
+    ioopm_replenish_stock(db, strdup(name), strdup("A27"), 20);
 
-    ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
-    ioopm_add_to_cart(db, 1, name, 10);
+    ioopm_cart_create(db); //Automagically asigns a cart 1 since no other carts exist.
+    ioopm_add_to_cart(db, 1, strdup(name), 10);
 
     ioopm_hash_table_t *htc = db->carts;
     option_t lookup = ioopm_hash_table_lookup(htc, int_elem(1));
@@ -168,23 +168,23 @@ void test_add_remove_cart()
 void test_add_remove_multiple_cart()
 {
     db_t *db = ioopm_db_create();
-    char *name = strdup("Lexie");
-    char *description = strdup("Cool kid");
+    char *name = "Lexie";
+    char *description = "Cool kid";
     int   price = 55;
 
-    char *name2 = strdup("Vincent");
-    char *description2 = strdup("meh");
+    char *name2 = "Vincent";
+    char *description2 = "meh";
     int   price2 = 52;
 
-    ioopm_add_merchandise(db, name, description, price); 
-    ioopm_add_merchandise(db, name2, description2, price2); 
+    ioopm_add_merchandise(db, strdup(name), strdup(description), price); 
+    ioopm_add_merchandise(db, strdup(name2), strdup(description2), price2);  
 
-    ioopm_replenish_stock(db, name, strdup("A27"), 20);
-    ioopm_replenish_stock(db, name2, strdup("B27"), 20);
+    ioopm_replenish_stock(db, strdup(name), strdup("A27"), 20);
+    ioopm_replenish_stock(db, strdup(name2), strdup("B27"), 20);
 
     ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
-    ioopm_add_to_cart(db, 1, name, 10);
-    ioopm_add_to_cart(db, 1, name2, 10);
+    ioopm_add_to_cart(db, 1, strdup(name), 10);
+    ioopm_add_to_cart(db, 1, strdup(name2), 10);
 
     ioopm_hash_table_t *htc = db->carts;
     option_t lookup = ioopm_hash_table_lookup(htc, int_elem(1));
@@ -201,23 +201,23 @@ void test_add_remove_multiple_cart()
 void test_calculate_costs()
 {
     db_t *db = ioopm_db_create();
-    char *name = strdup("Lexie");
-    char *description = strdup("Cool kid");
+    char *name = "Lexie";
+    char *description = "Cool kid";
     int price = 55;
 
-    char *name2 = strdup("Vincent");
-    char *description2 = strdup("meh");
+    char *name2 = "Vincent";
+    char *description2 = "meh";
     int price2 = 52;
 
-    ioopm_add_merchandise(db, name, description, price); 
-    ioopm_add_merchandise(db, name2, description2, price2); 
+    ioopm_add_merchandise(db, strdup(name), strdup(description), price); 
+    ioopm_add_merchandise(db, strdup(name2), strdup(description2), price2);  
 
-    ioopm_replenish_stock(db, name, strdup("A27"), 20);
-    ioopm_replenish_stock(db, name2, strdup("B27"), 20);
+    ioopm_replenish_stock(db, strdup(name), strdup("A27"), 20);
+    ioopm_replenish_stock(db, strdup(name2), strdup("B27"), 20);
 
     ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
-    ioopm_add_to_cart(db, 1, name, 10);
-    ioopm_add_to_cart(db, 1, name2, 10);
+    ioopm_add_to_cart(db, 1, strdup(name), 10);
+    ioopm_add_to_cart(db, 1, strdup(name2), 10);
 
     CU_ASSERT_TRUE(ioopm_calculate_cost(db, 1)==1070);
     ioopm_db_destroy(db);
@@ -226,29 +226,30 @@ void test_calculate_costs()
 void test_checkout()
 {
     db_t *db = ioopm_db_create();
-    char *name = strdup("Lexie");
-    char *description = strdup("Cool kid");
+    char *name = "Lexie";
+    char *description = "Cool kid";
     int price = 55;
 
-    char *name2 = strdup("Vincent");
-    char *description2 = strdup("meh");
+    char *name2 = "Vincent";
+    char *description2 = "meh";
     int price2 = 52;
 
-    ioopm_add_merchandise(db, name, description, price); 
-    ioopm_add_merchandise(db, name2, description2, price2); 
+    ioopm_add_merchandise(db, strdup(name), strdup(description), price); 
+    ioopm_add_merchandise(db, strdup(name2), strdup(description2), price2); 
 
-    ioopm_replenish_stock(db, name, strdup("A27"), 10);
-    ioopm_replenish_stock(db, name2, strdup("B27"), 10);
+    ioopm_replenish_stock(db, strdup(name), strdup("A27"), 10);
+    ioopm_replenish_stock(db, strdup(name2), strdup("B27"), 10);
 
     ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
-    ioopm_add_to_cart(db, 1, name, 10);
-    ioopm_add_to_cart(db, 1, name2, 10);
+    ioopm_add_to_cart(db, 1, strdup(name), 10);
+    ioopm_add_to_cart(db, 1, strdup(name2), 10);
 
-    ioopm_checkout(db, 1);
+    ioopm_checkout(db, 1); // removes stock.
 
-    CU_ASSERT_TRUE(ioopm_hash_table_size(db->namemerch)==0);
+    CU_ASSERT_FALSE(ioopm_add_to_cart(db, 1, strdup(name), 1)); // No stock left if no more can be added.
+    CU_ASSERT_FALSE(ioopm_add_to_cart(db, 1, strdup(name2), 1));
+
     CU_ASSERT_TRUE(ioopm_hash_table_size(db->carts)==0);
-
 
     ioopm_db_destroy(db);
 }
@@ -277,17 +278,17 @@ int main()
     // the test in question. If you want to add another test, just
     // copy a line below and change the information test_merch_create
     if (
-        (CU_add_test(my_test_suite, "Test creating a database", test_db_create) == NULL) ||
-        (CU_add_test(my_test_suite, "Test adding merchandise to database", test_add_merchandise) == NULL) ||
-        (CU_add_test(my_test_suite, "Test removing merchandise to database", test_remove_merchandise) == NULL) ||
-        (CU_add_test(my_test_suite, "Test changing name of merchandise", test_edit_name_merchandise) == NULL) ||
-        (CU_add_test(my_test_suite, "Test changing description", test_edit_description_merchandise) == NULL) ||
-        (CU_add_test(my_test_suite, "Test changing price", test_edit_price_merchandise) == NULL) ||
-        (CU_add_test(my_test_suite, "Test replenishing stock", test_replenish_stock) == NULL) ||
-        (CU_add_test(my_test_suite, "Test adding and removing to a cart", test_add_remove_cart) == NULL) ||
+        (CU_add_test(my_test_suite, "Test creating a database", test_db_create)                                         == NULL) ||
+        (CU_add_test(my_test_suite, "Test adding merchandise to database", test_add_merchandise)                        == NULL) ||
+        (CU_add_test(my_test_suite, "Test removing merchandise to database", test_remove_merchandise)                   == NULL) ||
+        (CU_add_test(my_test_suite, "Test changing name of merchandise", test_edit_name_merchandise)                    == NULL) ||
+        (CU_add_test(my_test_suite, "Test changing description", test_edit_description_merchandise)                     == NULL) ||
+        (CU_add_test(my_test_suite, "Test changing price", test_edit_price_merchandise)                                 == NULL) ||
+        (CU_add_test(my_test_suite, "Test replenishing stock", test_replenish_stock)                                    == NULL) ||
+        (CU_add_test(my_test_suite, "Test adding and removing to a cart", test_add_remove_cart)                         == NULL) ||
         (CU_add_test(my_test_suite, "Test adding and removing multiple items to a cart", test_add_remove_multiple_cart) == NULL) ||
-        (CU_add_test(my_test_suite, "Test calculating the cost of a cart", test_calculate_costs) == NULL) ||
-        (CU_add_test(my_test_suite, "Test checking out carts works", test_checkout) == NULL) ||
+        (CU_add_test(my_test_suite, "Test calculating the cost of a cart", test_calculate_costs)                        == NULL) ||
+        (CU_add_test(my_test_suite, "Test checking out carts works", test_checkout)                                     == NULL) ||
         0)
     {
         // If adding any of the tests fails, we tear down CUnit and exit
