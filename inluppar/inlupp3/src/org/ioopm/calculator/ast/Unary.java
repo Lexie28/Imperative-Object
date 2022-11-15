@@ -1,5 +1,5 @@
 package inluppar.inlupp3.src.org.ioopm.calculator.ast;
 
-public class Unary {
+public abstract class Unary {
     
 }
