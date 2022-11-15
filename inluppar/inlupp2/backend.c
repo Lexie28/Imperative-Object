@@ -281,7 +281,7 @@ void remove_bightc_cartremove(elem_t key, elem_t *value, void *x)
 bool ioopm_remove_merchandise(db_t *db, char *name, bool edit)
 {
     //kolla om den finns i någon av cartsen och om den finns sätt removebightcedit
-    ioopm_hash_table_t *carts = db->carts;
+    /*ioopm_hash_table_t *carts = db->carts;
     size_t size = ioopm_hash_table_size(carts);
     for (int i = 1; i <= size; i++)
     {
@@ -293,7 +293,7 @@ bool ioopm_remove_merchandise(db_t *db, char *name, bool edit)
             ioopm_hash_table_apply_to_all(carts, remove_bightc_edit, name);
             return true;
         }  
-    }
+    }*/
     ioopm_hash_table_t *ht = db->namemerch;
     option_t lookup = ioopm_hash_table_lookup(ht, ptr_elem(name));
     if (lookup.success == true)
@@ -626,7 +626,7 @@ void totalcartorderofmerch(elem_t key, elem_t *value, void *orderamnt)
 void allcartorders(elem_t key, elem_t *value, void *orderamnt)
 {
     ioopm_hash_table_t *cart = (*value).p;
-    ioopm_hash_table_apply_to_all(cart, totalcartorderofmerch, &orderamnt);
+    ioopm_hash_table_apply_to_all(cart, totalcartorderofmerch, orderamnt);
 }
 
 orderamnt_t *totalordersofmerch(db_t *db, char *nameofmerch)
@@ -637,9 +637,9 @@ orderamnt_t *totalordersofmerch(db_t *db, char *nameofmerch)
 
     ioopm_hash_table_t *htc = db->carts;
     orderamnt_t *orderamnt = calloc(1, sizeof(orderamnt_t));
-    (orderamnt)->totalstock = 0;
-    (orderamnt)->merchname = nameofmerch;
-    ioopm_hash_table_apply_to_all(htc, allcartorders, &orderamnt);
+    orderamnt->totalstock = calloc(1, sizeof(int));
+    orderamnt->merchname = nameofmerch;
+    ioopm_hash_table_apply_to_all(htc, allcartorders, orderamnt);
     return orderamnt;
 }
 
@@ -656,8 +656,9 @@ bool ioopm_add_to_cart(db_t *db, int carttoaddto, char *nameofmerch, int quantit
     merch_t *merch = merchlookup.value.p;
     int totalstock = totalstockofmerch(merch);
     orderamnt_t *orders = totalordersofmerch(db, nameofmerch);
-    int totalorders = orders->totalstock;
-    printf("%d", totalorders);
+    int totalorders = *(orders->totalstock);
+    free(orders->totalstock);
+    free(orders);
     int result = totalstock - totalorders - quantity;
     ioopm_hash_table_t *cart = cartlookup.value.p;
     if (result >= 0)

@@ -277,6 +277,24 @@ void test_calculate_costs()
     ioopm_db_destroy(db);
 }
 
+void test_add_too_much_stock()
+{
+    db_t *db = ioopm_db_create();
+    char *name = "Lexie";
+    char *description = "Cool kid";
+    int price = 55;
+
+    ioopm_add_merchandise(db, strdup(name), strdup(description), price); 
+    ioopm_replenish_stock(db, strdup(name), strdup("A27"), 20);
+
+    ioopm_cart_create(db); //Automagically asigns a cart 1 since not other carts exist.
+    ioopm_add_to_cart(db, 1, strdup(name), 10);
+
+    ioopm_cart_create(db); //Automagically asigns a cart 2 since not other carts exist.
+    CU_ASSERT_FALSE(ioopm_add_to_cart(db, 2, strdup(name), 15));
+
+    ioopm_db_destroy(db);
+}
 /*
 void test_checkout()
 {
@@ -353,6 +371,7 @@ int main()
         //(CU_add_test(my_test_suite, "Test adding and removing to a cart", test_add_remove_cart) == NULL) ||
         (CU_add_test(my_test_suite, "Test adding and removing multiple items to a cart", test_add_remove_multiple_cart) == NULL) ||
         (CU_add_test(my_test_suite, "Test calculating the cost of a cart", test_calculate_costs) == NULL) ||
+        //(CU_add_test(my_test_suite, "Test adding too much stock", test_add_too_much_stock) == NULL) ||
         //(CU_add_test(my_test_suite, "Test checking out carts works", test_checkout) == NULL) ||
         0)
     {
