@@ -11,4 +11,10 @@ public abstract class Unary extends SymbolicExpression {
     public int getPriority() {
         return 150;
     }
+
+    public String toString() {
+        /// Note how the call to toString() is not necessary
+
+        return this.getName() + " " + this.expression.toString();
+    }
 }

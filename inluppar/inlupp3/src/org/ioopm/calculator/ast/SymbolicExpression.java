@@ -17,4 +17,8 @@ public abstract class SymbolicExpression {
     public double getValue() {
         throw new RuntimeException("getValue() called on expression with no value");
     }
+
+    public String toString() {
+        throw new RuntimeException("toString() called on expression with no value");
+    }
 }

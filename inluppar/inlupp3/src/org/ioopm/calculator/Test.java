@@ -3,10 +3,10 @@ package inluppar.inlupp3.src.org.ioopm.calculator;
 import inluppar.inlupp3.src.org.ioopm.calculator.ast.*;
 
 
-public class test {
+public class Test {
 
 
-    public void testPrinting(String expected, SymbolicExpression e) {
+    public static void testPrinting(String expected, SymbolicExpression e) {
         if (expected.equals("" + e)) {
             System.out.println("Passed: " + e);
         } else {
@@ -24,7 +24,7 @@ public class test {
         Variable v = new Variable("x");
         Addition a = new Addition(c1, v);
         Multiplication m = new Multiplication(a, c2);   
-        testPrinting("(5-x) * 2" + m);
+        testPrinting("(5.0 + x) * 2.0", m);
 
         // multiplication with subtraction
         Constant b1 = new Constant(3);
@@ -32,7 +32,7 @@ public class test {
         Variable v1 = new Variable("y");
         Subtraction a1 = new Subtraction(b1, v1);
         Multiplication n = new Multiplication(a1, b2);  
-        System.out.println("(3 - y) * 4 ==> " + n);
+        testPrinting("(3.0 - y) * 4.0", n);
 
         // division with subtraction
         Constant d1 = new Constant(8);
@@ -40,7 +40,7 @@ public class test {
         Variable v2 = new Variable("y");
         Subtraction a2 = new Subtraction(d1, v2);
         Division g = new Division(a2, d2);  
-        System.out.println("(8 - y) / 2 ==> " + g);
+        testPrinting("(8.0 - y) / 2.0", g);
 
 
 

@@ -9,4 +9,4 @@ clean:
 	rm -rf classes
 
 test: all
-	java -cp classes inluppar.inlupp3.src.org.ioopm.calculator.test
+	java -cp classes inluppar.inlupp3.src.org.ioopm.calculator.Test
