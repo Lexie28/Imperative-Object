@@ -3,7 +3,16 @@ package inluppar.inlupp3.src.org.ioopm.calculator;
 import inluppar.inlupp3.src.org.ioopm.calculator.ast.*;
 
 
-public class Test {
+public class test {
+
+
+    public void testPrinting(String expected, SymbolicExpression e) {
+        if (expected.equals("" + e)) {
+            System.out.println("Passed: " + e);
+        } else {
+            System.out.println("Error: expected '" + expected + "' but got '" + e + "'");
+        }
+    }
 
     public static void main(String[] args) {
         
@@ -15,7 +24,7 @@ public class Test {
         Variable v = new Variable("x");
         Addition a = new Addition(c1, v);
         Multiplication m = new Multiplication(a, c2);   
-        System.out.println("(5 + x) * 2 ==> " + m);
+        testPrinting("(5-x) * 2" + m);
 
         // multiplication with subtraction
         Constant b1 = new Constant(3);
