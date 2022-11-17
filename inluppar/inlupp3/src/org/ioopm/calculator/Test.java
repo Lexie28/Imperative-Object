@@ -6,7 +6,7 @@ import inluppar.inlupp3.src.org.ioopm.calculator.ast.*;
 public class Test {
 
 
-    public static void testPrinting(String expected, SymbolicExpression e) {
+    public static void testPrinting(String expected, SymbolicExpression e){
         if (expected.equals("" + e)) {
             System.out.println("Passed: " + e);
         } else {
@@ -41,12 +41,6 @@ public class Test {
         Subtraction a2 = new Subtraction(d1, v2);
         Division g = new Division(a2, d2);  
         testPrinting("(8.0 - y) / 2.0", g);
-
-
-
-
-        
-        
         
     }
 }
