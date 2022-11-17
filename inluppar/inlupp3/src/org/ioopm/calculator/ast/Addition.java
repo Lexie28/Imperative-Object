@@ -14,7 +14,7 @@ public class Addition extends Binary {
         return 50;
     }
 
-    public SymbolicExpression eval() {
+    public SymbolicExpression eval(Environment vars) {
         SymbolicExpression lhs = this.lhs;
         SymbolicExpression rhs = this.rhs;
 

@@ -1,4 +1,5 @@
 package inluppar.inlupp3.src.org.ioopm.calculator.ast;
+import java.util.HashMap;
 
 public class Variable extends Atom {
     private String identifier;
@@ -26,8 +27,16 @@ public class Variable extends Atom {
         return this.identifier == other.identifier;
     }
     
-    public Variable eval() {
-        //TODO mer att lägga till!! Kolla att det finns en variable?
+    public SymbolicExpression eval(HashMap<Variable, SymbolicExpression> vars) {
+        Variable key = new Variable(this.identifier);
+
+        if (vars.containsKey(key)) //om vårt hashtable containar vår variable
+        {
+            return vars.get(key);
+        }
+        else
+        {
         return new Variable(identifier);
+        }
     }
 }

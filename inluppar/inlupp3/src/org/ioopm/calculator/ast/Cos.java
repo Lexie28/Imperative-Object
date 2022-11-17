@@ -11,8 +11,8 @@ public class Cos extends Unary {
         return ("cos");
     }
     
-    public SymbolicExpression eval() {
-    SymbolicExpression expression = this.expression.eval();
+    public SymbolicExpression eval(Environment vars) {
+    SymbolicExpression expression = this.expression.eval(vars);
     if (expression.isConstant()) {
         return new Constant(Math.cos(expression.getValue()));
     } else {

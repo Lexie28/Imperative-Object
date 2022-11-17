@@ -2,7 +2,6 @@
 
 
 package inluppar.inlupp3.src.org.ioopm.calculator.ast; /// could place this in parser *for now*
-
 import java.util.HashMap;
 
 public abstract class SymbolicExpression {
@@ -27,7 +26,7 @@ public abstract class SymbolicExpression {
         throw new RuntimeException("toString() called on expression with no value");
     }
 
-    public SymbolicExpression eval() {
+    public SymbolicExpression eval(HashMap<Variable, SymbolicExpression> vars) {
         throw new RuntimeException("eval() called on expression with no value");
     }
 }

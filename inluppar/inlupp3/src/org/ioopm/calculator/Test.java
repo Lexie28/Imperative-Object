@@ -1,10 +1,11 @@
+
 package inluppar.inlupp3.src.org.ioopm.calculator;
 
 import inluppar.inlupp3.src.org.ioopm.calculator.ast.*;
+import java.util.HashMap;
 
 
 public class Test {
-
 
     public static void testPrinting(String expected, SymbolicExpression e){
         if (expected.equals("" + e)) {
@@ -14,8 +15,8 @@ public class Test {
         }
     }
 
-    public static void testEvaluating(SymbolicExpression expected, SymbolicExpression e) {
-        SymbolicExpression r = e.eval();
+    public static void testEvaluating(SymbolicExpression expected, SymbolicExpression e, Environment vars) {
+        SymbolicExpression r = e.eval(vars);
         if (r.equals(expected)) {
             System.out.println("Passed: " + expected + " " + "=" + " " + e);
         } else {
@@ -50,19 +51,23 @@ public class Test {
         testPrinting("(8.0 - y) / 2.0", g);
 
         // testing correct addition
+        HashMap<Variable, SymbolicExpression> vars = new HashMap<>();
+        Environment vars1 = vars;
         SymbolicExpression a3 = new Addition(new Constant(5), new Constant(37));
         SymbolicExpression b3 = new Constant(42);
-        testEvaluating(b3, a3); /// Tests if reducing a returns b (it should!)
+        testEvaluating(b3, a3, vars1); /// Tests if reducing a returns b (it should!)
 
         // testing correct subtraction
+        Environment vars2;
         SymbolicExpression a4 = new Subtraction(new Constant(12), new Constant(8));
         SymbolicExpression b4 = new Constant(4);
-        testEvaluating(b4, a4); /// Tests if reducing a returns b (it should!)
+        testEvaluating(b4, a4, vars2); /// Tests if reducing a returns b (it should!)
 
         // testing incorrect addition
+        Environment vars3;
         SymbolicExpression a5 = new Addition(new Constant(12), new Constant(20));
         SymbolicExpression b5 = new Constant(42);
-        testEvaluating(b5, a5); /// Tests if reducing a returns b (it should!)
+        testEvaluating(b5, a5, vars3); /// Tests if reducing a returns b (it should!)
 
         //IDEA testing incorrect and negative values
 
