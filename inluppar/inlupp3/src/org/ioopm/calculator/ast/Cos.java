@@ -1,7 +1,7 @@
 package inluppar.inlupp3.src.org.ioopm.calculator.ast;
 
 public class Cos extends Unary {
-    
+
     public Cos(SymbolicExpression expression)
     {
         super(expression);
@@ -11,4 +11,13 @@ public class Cos extends Unary {
         return ("cos");
     }
     
+    public SymbolicExpression eval() {
+    SymbolicExpression expression = this.expression.eval();
+    if (expression.isConstant()) {
+        return new Constant(Math.cos(expression.getValue()));
+    } else {
+        return new Cos(expression);
+    }
+    }
 }
+

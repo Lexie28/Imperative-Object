@@ -13,4 +13,18 @@ public class Multiplication extends Binary {
     public int getPriority() {
         return 100;
     }
+
+    public SymbolicExpression eval() {
+        SymbolicExpression lhs = this.lhs;
+        SymbolicExpression rhs = this.rhs;
+
+        if(lhs.isConstant() && rhs.isConstant())
+        {  
+            return(new Constant(lhs.getValue() * rhs.getValue()));
+        }
+        else
+        {
+            return new Multiplication(lhs, rhs);
+        }
+    }
 }

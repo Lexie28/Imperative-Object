@@ -14,9 +14,16 @@ public class Test {
         }
     }
 
+    public static void testEvaluating(SymbolicExpression expected, SymbolicExpression e) {
+        SymbolicExpression r = e.eval();
+        if (r.equals(expected)) {
+            System.out.println("Passed: " + expected + " " + "=" + " " + e);
+        } else {
+            System.out.println("Error: expected '" + expected + "' but got '" + e + "'");
+        }
+    }
+
     public static void main(String[] args) {
-        
-        
         
         // multiplication with addtion
         Constant c1 = new Constant(5);
@@ -41,6 +48,24 @@ public class Test {
         Subtraction a2 = new Subtraction(d1, v2);
         Division g = new Division(a2, d2);  
         testPrinting("(8.0 - y) / 2.0", g);
+
+        // testing correct addition
+        SymbolicExpression a3 = new Addition(new Constant(5), new Constant(37));
+        SymbolicExpression b3 = new Constant(42);
+        testEvaluating(b3, a3); /// Tests if reducing a returns b (it should!)
+
+        // testing correct subtraction
+        SymbolicExpression a4 = new Subtraction(new Constant(12), new Constant(8));
+        SymbolicExpression b4 = new Constant(4);
+        testEvaluating(b4, a4); /// Tests if reducing a returns b (it should!)
+
+        // testing incorrect addition
+        SymbolicExpression a5 = new Addition(new Constant(12), new Constant(20));
+        SymbolicExpression b5 = new Constant(42);
+        testEvaluating(b5, a5); /// Tests if reducing a returns b (it should!)
+
+        //IDEA testing incorrect and negative values
+
         
     }
 }

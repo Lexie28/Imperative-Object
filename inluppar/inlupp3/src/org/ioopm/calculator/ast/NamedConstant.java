@@ -8,4 +8,6 @@ public class NamedConstant extends Atom {
         this.identifier = identifier;
         this.value = value;
     }
+
+
 }

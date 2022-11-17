@@ -10,6 +10,14 @@ public class Log extends Unary {
     public String getName() {
         return ("log");
     }
-    
+
+    public SymbolicExpression eval() {
+        SymbolicExpression expression = this.expression.eval();
+        if (expression.isConstant()) {
+            return new Constant(Math.log10(expression.getValue()));
+        } else {
+            return new Sin(expression);
+        }
+        }
 }
 
