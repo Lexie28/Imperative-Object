@@ -9,6 +9,10 @@ public class Variable extends Atom {
         this.identifier = identifier;
     }
 
+    public boolean isVariable() {
+        return true;
+    }
+
     public String toString() {
         return this.identifier;
     }
@@ -26,17 +30,20 @@ public class Variable extends Atom {
         /// access a private field of other!
         return this.identifier == other.identifier;
     }
-    
-    public SymbolicExpression eval(HashMap<Variable, SymbolicExpression> vars) {
-        Variable key = new Variable(this.identifier);
 
-        if (vars.containsKey(key)) //om vårt hashtable containar vår variable
+    public int hashCode() {
+        return this.identifier.hashCode();
+    }
+    
+    public SymbolicExpression eval(Environment vars) {
+
+        if (vars.containsKey(this)) //om vårt hashtable containar vår variable
         {
-            return vars.get(key);
+            return vars.get(this);
         }
         else
         {
-        return new Variable(identifier);
+        return this;
         }
     }
 }

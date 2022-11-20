@@ -10,6 +10,10 @@ public abstract class SymbolicExpression {
         return false;
     }
 
+    public boolean isVariable() {
+        return false;
+    }
+
     public String getName() {
         throw new RuntimeException("getName() called on expression with no operator");
     }
@@ -26,7 +30,7 @@ public abstract class SymbolicExpression {
         throw new RuntimeException("toString() called on expression with no value");
     }
 
-    public SymbolicExpression eval(HashMap<Variable, SymbolicExpression> vars) {
+    public SymbolicExpression eval(Environment vars) {
         throw new RuntimeException("eval() called on expression with no value");
     }
 }

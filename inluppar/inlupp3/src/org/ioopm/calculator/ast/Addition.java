@@ -14,9 +14,10 @@ public class Addition extends Binary {
         return 50;
     }
 
+    //kolla vad som händer om du addar en constant o en variable, kolla om den finns i ht'en och isf dra ut det valuet
     public SymbolicExpression eval(Environment vars) {
-        SymbolicExpression lhs = this.lhs;
-        SymbolicExpression rhs = this.rhs;
+        SymbolicExpression lhs = this.lhs.eval(vars);
+        SymbolicExpression rhs = this.rhs.eval(vars);
 
         if(lhs.isConstant() && rhs.isConstant())
         {  

@@ -51,23 +51,44 @@ public class Test {
         testPrinting("(8.0 - y) / 2.0", g);
 
         // testing correct addition
-        HashMap<Variable, SymbolicExpression> vars = new HashMap<>();
-        Environment vars1 = vars;
+        Environment vars1 = new Environment();
         SymbolicExpression a3 = new Addition(new Constant(5), new Constant(37));
         SymbolicExpression b3 = new Constant(42);
         testEvaluating(b3, a3, vars1); /// Tests if reducing a returns b (it should!)
 
         // testing correct subtraction
-        Environment vars2;
+        Environment vars2 = new Environment();
         SymbolicExpression a4 = new Subtraction(new Constant(12), new Constant(8));
         SymbolicExpression b4 = new Constant(4);
         testEvaluating(b4, a4, vars2); /// Tests if reducing a returns b (it should!)
 
-        // testing incorrect addition
-        Environment vars3;
-        SymbolicExpression a5 = new Addition(new Constant(12), new Constant(20));
-        SymbolicExpression b5 = new Constant(42);
-        testEvaluating(b5, a5, vars3); /// Tests if reducing a returns b (it should!)
+        // testing branches addition
+        Environment vars3 = new Environment();
+        SymbolicExpression a5 = new Addition(new Constant(13), new Constant(20)); //33
+        SymbolicExpression b5 = new Subtraction(new Constant(5), new Constant(2)); //3
+        SymbolicExpression c5 = new Addition(a5, b5);
+        SymbolicExpression d5 = new Constant(36);
+        testEvaluating(d5, c5, vars3); /// Tests if reducing a returns b (it should!)
+
+        //testing variables
+        Environment vars4 = new Environment();
+        SymbolicExpression x = new Variable("x");
+        SymbolicExpression c3 = new Constant(20);
+        SymbolicExpression ass1 = new Assignment(c3, x);
+        testEvaluating(c3, ass1, vars4);
+        SymbolicExpression a6 = new Addition(x, new Constant(10));
+        testEvaluating(new Constant(30), a6, vars4);
+
+        //testing branch and variables
+        Environment vars5 = new Environment();
+        SymbolicExpression y = new Variable("y");
+        SymbolicExpression aa5 = new Constant(20);
+        SymbolicExpression bb5 = new Assignment(aa5, y); //y = 20
+        testEvaluating(aa5, bb5, vars5);
+        SymbolicExpression cc5 = new Addition(new Constant(3), new Constant(2)); //5
+        SymbolicExpression dd5 = new Addition(cc5, y);
+        testEvaluating(new Constant(25), dd5, vars5);
+
 
         //IDEA testing incorrect and negative values
 

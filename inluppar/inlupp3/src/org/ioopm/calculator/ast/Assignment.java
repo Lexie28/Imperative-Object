@@ -12,12 +12,11 @@ public class Assignment extends Binary {
 
     public SymbolicExpression eval(Environment vars) {
         SymbolicExpression lhs = this.lhs;
-        SymbolicExpression rhs = this.lhs;
-        if(lhs.isConstant())
+        SymbolicExpression rhs = this.rhs;
+        if(lhs.isConstant() && rhs.isVariable())
         {
             //rhs måste bli en variable. TODO är detta rätt sätt?
-            Variable rhsvar = new Variable(rhs.toString());
-            vars.put(rhsvar, lhs);
+            vars.put((Variable) rhs, lhs);
             return(new Constant(lhs.getValue()));
         }
         else
