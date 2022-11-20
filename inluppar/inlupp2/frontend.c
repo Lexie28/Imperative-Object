@@ -251,6 +251,7 @@ void ui_add_to_cart(db_t *db)
     //
 }
 
+
 void ui_remove_from_cart(db_t *db)
 {
     int cartnmr = ask_question_int("Which cart nr. would you like to remove from? \n");

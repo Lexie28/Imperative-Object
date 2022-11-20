@@ -1,19 +1,21 @@
 FLAGS = -g -Wall -pedantic 
 
-frontend: utils.c common.c linked_list.c iterator.c hash_table.c backend.c frontend.c
-	gcc $(FLAGS) utils.c common.c linked_list.c iterator.c hash_table.c backend.c frontend.c -o frontend
+%.o: %.c %.h
+	gcc $(FLAGS) -c $< -o $@
 
-backtests: backend.c hash_table.c linked_list.c iterator.c common.c backtests.c utils.c
-	gcc $(FLAGS) backend.c hash_table.c linked_list.c iterator.c common.c utils.c backtests.c -o backtests -lcunit
+frontend: frontend.o utils.o common.o linked_list.o iterator.o hash_table.o backend.o
+	gcc $(FLAGS) -o $@.out $^
+
+backtests: backtests.c utils.o common.o linked_list.o iterator.o hash_table.o backend.o
+	gcc $(FLAGS) $^ -o backtests -lcunit
 
 memtest:
 	valgrind --show-leak-kinds=all --leak-check=full ./backtests
 
 uitest:
-	valgrind --show-leak-kinds=all --leak-check=full --track-origins=yes ./frontend
+	valgrind --show-leak-kinds=all --leak-check=full --track-origins=yes ./frontend.out
 
 clean:
+	rm -rf *.o
 	rm -rf backtests
 	rm -rf frontend
-
-.PHONY:

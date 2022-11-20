@@ -7,6 +7,8 @@ bool elem_equality_func_int(elem_t a, elem_t b)
     return a.i == b.i;
 }
 
+
+
 bool elem_equality_func_str(elem_t a, elem_t b)
 {    
     if (strcmp(a.p, b.p) == 0) //If the characters/strings are equal, return true.
