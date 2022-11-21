@@ -89,8 +89,43 @@ public class Test {
         SymbolicExpression dd5 = new Addition(cc5, y);
         testEvaluating(new Constant(25), dd5, vars5);
 
+        //testing overwriting values
+        Environment vars6 = new Environment();
+        SymbolicExpression x6 = new Variable("x");
+        SymbolicExpression c6 = new Constant(20); //putting x to 20
+        SymbolicExpression ass6 = new Assignment(c6, x6);
+        testEvaluating(c6, ass6, vars6);
+        SymbolicExpression b6 = new Addition(x6, new Constant(10));
+        testEvaluating(new Constant(30), b6, vars6);
+        SymbolicExpression d6 = new Constant(10);
+        SymbolicExpression ass61 = new Assignment(d6, x6); //putting x to 10
+        testEvaluating(d6, ass61, vars6);
+        SymbolicExpression e6 = new Addition(x6, new Constant(4));
+        testEvaluating(new Constant(14), e6, vars6);
 
-        //IDEA testing incorrect and negative values
+        //test subtraction overwriting
+        Environment vars7 = new Environment();
+        SymbolicExpression x7 = new Variable("x");
+        SymbolicExpression c7 = new Constant(20); //putting x to 20
+        SymbolicExpression ass7 = new Assignment(c7, x7);
+        testEvaluating(c7, ass7, vars7);
+        SymbolicExpression b7 = new Subtraction(x7, new Constant(10));
+        testEvaluating(new Constant(10), b7, vars7);
+        SymbolicExpression d7 = new Constant(10);
+        SymbolicExpression ass71 = new Assignment(d7, x7); //putting x to 10
+        testEvaluating(d7, ass71, vars6);
+        SymbolicExpression e7 = new Subtraction(x7, new Constant(4));
+        testEvaluating(new Constant(6), e7, vars7);
+
+        //test using cosinus
+        Environment vars8 = new Environment();
+        SymbolicExpression a8 = new Addition(new Cos(new Constant(0)), new Constant(37));
+        SymbolicExpression b8 = new Constant(38);
+        testEvaluating(b8, a8, vars8);
+
+
+        //IDEA testing negative values
+        //test med sin(0) etc.
 
         
     }
