@@ -8,14 +8,33 @@ public class Calculator {
     public static void main(String[] args) {
         final CalculatorParser parser = new CalculatorParser();
         final Environment vars = new Environment();
-
+        
         while (true) {
             String input = System.console().readLine();
-            SymbolicExpression ob = parser //feeding input into parser?
-            if (ob.isCommand())
-            {
-                
+            try {
+                SymbolicExpression ob = parser.parse(input, vars);
+                if (ob.isCommand())
+                {
+                    if (ob instanceof Clear) {
+                        vars.clear();
+                    }
+                    if (ob instanceof Vars) {
+                        System.out.println(vars.toString());
+                    }
+                    if (ob instanceof Quit) {
+                        break;
+                    }
+                } 
+                else
+                {
+                    SymbolicExpression evaluatedob = ob.eval(vars);
+                    System.out.println("" + evaluatedob);
+                    vars.put(new Variable("ans"), evaluatedob);
+                }
+            } catch (Exception e) {
+                System.out.println("Error!" + e);
             }
+            
 
         }
     }

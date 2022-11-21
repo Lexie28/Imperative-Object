@@ -28,22 +28,22 @@ public class Variable extends Atom {
     
     public boolean equals(Variable other) {
         /// access a private field of other!
-        return this.identifier == other.identifier;
+        return this.identifier.equals(other.identifier);
     }
 
+    @Override
     public int hashCode() {
         return this.identifier.hashCode();
     }
     
     public SymbolicExpression eval(Environment vars) {
-
         if (vars.containsKey(this)) //om vårt hashtable containar vår variable
         {
             return vars.get(this);
         }
         else
         {
-        return this;
+            return this;
         }
     }
 }
