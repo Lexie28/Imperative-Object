@@ -123,10 +123,44 @@ public class Test {
         SymbolicExpression b8 = new Constant(38);
         testEvaluating(b8, a8, vars8);
 
+        //test using sinus
+        Environment vars9 = new Environment();
+        SymbolicExpression a9 = new Addition(new Sin(new Constant(0)), new Constant(37));
+        SymbolicExpression b9 = new Constant(37);
+        testEvaluating(b9, a9, vars9);
 
-        //IDEA testing negative values
-        //test med sin(0) etc.
+        //test using division and multiplication
+        Environment vars10 = new Environment();
+        SymbolicExpression a10 = new Multiplication(new Constant(5), new Constant(2));
+        SymbolicExpression b10 = new Constant(10);
+        testEvaluating(b10, a10, vars10);
+        SymbolicExpression c10 = new Division(new Constant(5), new Constant(2));
+        SymbolicExpression d10 = new Constant(2.5);
+        testEvaluating(d10, c10, vars10);
 
-        
+        //test multiplying with 0
+        Environment vars11 = new Environment();
+        SymbolicExpression a11 = new Multiplication(new Sin(new Constant(0)), new Constant(37));
+        SymbolicExpression b11 = new Constant(0);
+        testEvaluating(b11, a11, vars11);
+
+        //testing with negative values
+        Environment vars12 = new Environment();
+        SymbolicExpression a12 = new Multiplication(new Constant(-5), new Constant(2));
+        SymbolicExpression b12 = new Constant(-10);
+        testEvaluating(b12, a12, vars12);
+
+        //testing named constants
+        Environment vars13 = new Environment();
+        SymbolicExpression a13 = new Addition(new Constant(Constants.namedConstants.get("pi")), new Constant(1));
+        SymbolicExpression b13 = new Constant(Math.PI + 1);
+        testEvaluating(b13, a13, vars13);
+
+        //testing named constants mult.
+        Environment vars14 = new Environment();
+        SymbolicExpression a14 = new Multiplication(new Constant(Constants.namedConstants.get("Answer")), new Constant(2));
+        SymbolicExpression b14 = new Constant(84);
+        testEvaluating(b14, a14, vars14);
+
     }
 }

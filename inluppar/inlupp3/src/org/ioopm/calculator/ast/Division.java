@@ -14,9 +14,9 @@ public class Division extends Binary {
         return 100;
     }
 
-    public SymbolicExpression eval() {
-        SymbolicExpression lhs = this.lhs;
-        SymbolicExpression rhs = this.rhs;
+    public SymbolicExpression eval(Environment vars) {
+        SymbolicExpression lhs = this.lhs.eval(vars);
+        SymbolicExpression rhs = this.rhs.eval(vars);
 
         if(lhs.isConstant() && rhs.isConstant())
         {  

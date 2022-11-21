@@ -10,10 +10,17 @@ public class Assignment extends Binary {
         return ("=");
     }
 
-    public SymbolicExpression eval(Environment vars) {
+    public SymbolicExpression eval(Environment vars)  {
         SymbolicExpression lhs = this.lhs;
         SymbolicExpression rhs = this.rhs;
-        if(lhs.isConstant() && rhs.isVariable())
+
+        if (rhs.isNamedConstant())
+        {
+            throw new IllegalExpressionException("Error: cannot redefine named constant");
+        }
+        else{
+            
+            if(lhs.isConstant() && rhs.isVariable())
         {
             //rhs måste bli en variable. TODO är detta rätt sätt?
             vars.put((Variable) rhs, lhs);
@@ -22,6 +29,7 @@ public class Assignment extends Binary {
         else
         {
             return new Assignment(lhs, rhs);
+        }
         }
     }
     
