@@ -113,9 +113,9 @@ public class Test {
         testEvaluating(new Constant(10), b7, vars7);
         SymbolicExpression d7 = new Constant(10);
         SymbolicExpression ass71 = new Assignment(d7, x7); //putting x to 10
-        testEvaluating(d7, ass71, vars6);
-        SymbolicExpression e7 = new Subtraction(x7, new Constant(4));
-        testEvaluating(new Constant(6), e7, vars7);
+        testEvaluating(d7, ass71, vars7);
+        SymbolicExpression e7 = new Subtraction(x7, new Constant(5));
+        testEvaluating(new Constant(5), e7, vars7);
 
         //test using cosinus
         Environment vars8 = new Environment();
