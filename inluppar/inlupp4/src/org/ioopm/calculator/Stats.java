@@ -1,4 +1,4 @@
-package inluppar.inlupp3.src.org.ioopm.calculator;
+package src.org.ioopm.calculator;
 
 public class Stats {
     public int expressions;

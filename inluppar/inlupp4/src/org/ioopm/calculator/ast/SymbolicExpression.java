@@ -1,4 +1,4 @@
-package inluppar.inlupp3.src.org.ioopm.calculator.ast; /// could place this in parser *for now*
+package src.org.ioopm.calculator.ast; /// could place this in parser *for now*
 
 public abstract class SymbolicExpression {
     

@@ -1,6 +1,6 @@
-package inluppar.inlupp3.src.org.ioopm.calculator.parser;
+package src.org.ioopm.calculator.parser;
 
-import inluppar.inlupp3.src.org.ioopm.calculator.ast.*;
+import src.org.ioopm.calculator.ast.*;
 
 import java.io.StreamTokenizer;
 import java.io.StringReader;
