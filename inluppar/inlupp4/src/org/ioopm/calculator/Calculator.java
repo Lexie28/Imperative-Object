@@ -1,9 +1,9 @@
-package src.org.ioopm.calculator;
+package org.ioopm.calculator;
 
 import java.io.IOException;
 
-import src.org.ioopm.calculator.ast.*;
-import src.org.ioopm.calculator.parser.CalculatorParser;
+import org.ioopm.calculator.ast.*;
+import org.ioopm.calculator.parser.CalculatorParser;
 
 public class Calculator {
     

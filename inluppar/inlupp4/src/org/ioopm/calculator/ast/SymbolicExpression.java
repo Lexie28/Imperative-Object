@@ -1,4 +1,4 @@
-package src.org.ioopm.calculator.ast; /// could place this in parser *for now*
+package org.ioopm.calculator.ast; /// could place this in parser *for now*
 
 public abstract class SymbolicExpression {
     

@@ -1,4 +1,4 @@
-package src.org.ioopm.calculator;
+package org.ioopm.calculator;
 
 public class Stats {
     public int expressions;
