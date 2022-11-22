@@ -1,4 +1,4 @@
-package inluppar.inlupp3.src.org.ioopm.calculator.ast;
+package src.org.ioopm.calculator.ast;
 
 public class NamedConstant extends Atom {
     private String identifier;

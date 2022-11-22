@@ -1,9 +1,9 @@
-package inluppar.inlupp3.src.org.ioopm.calculator;
+package src.org.ioopm.calculator;
 
 import java.io.IOException;
 
-import inluppar.inlupp3.src.org.ioopm.calculator.ast.*;
-import inluppar.inlupp3.src.org.ioopm.calculator.parser.CalculatorParser;
+import src.org.ioopm.calculator.ast.*;
+import src.org.ioopm.calculator.parser.CalculatorParser;
 
 public class Calculator {
     

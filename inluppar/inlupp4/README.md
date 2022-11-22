@@ -23,7 +23,7 @@ all:
 	javac -d classes -sourcepath src src/org/ioopm/calculator/ast/*.java src/org/ioopm/calculator/parser/*.java src/org/ioopm/calculator/*.java
 
 run: all
-	java -cp classes inluppar.inlupp3.src.org.ioopm.calculator.Calculator
+	java -cp classes src.org.ioopm.calculator.Calculator
 
 As can be seen here the run-command uses the all-command where we compile all relevant parts of our program.
 
@@ -33,7 +33,7 @@ make run
 Running tests:
 In Makefile:
 test: all
-	java -cp classes inluppar.inlupp3.src.org.ioopm.calculator.Test
+	java -cp classes src.org.ioopm.calculator.Test
 
 In terminal:
 make test
