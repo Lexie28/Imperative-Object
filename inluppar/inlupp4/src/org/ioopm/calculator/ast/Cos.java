@@ -1,4 +1,4 @@
-package src.org.ioopm.calculator.ast;
+package org.ioopm.calculator.ast;
 
 public class Cos extends Unary {
 
