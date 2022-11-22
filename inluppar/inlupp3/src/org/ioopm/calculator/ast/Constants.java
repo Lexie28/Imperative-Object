@@ -10,8 +10,6 @@ public class Constants {
         Constants.namedConstants.put("e",  Math.E);
         Constants.namedConstants.put("L", 6.022140857 * (10^23));
         Constants.namedConstants.put("Answer" , 42.0);
-
-
     }
 
     public boolean isNamedConstant() {
