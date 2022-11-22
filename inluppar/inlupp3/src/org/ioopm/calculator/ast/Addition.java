@@ -6,15 +6,27 @@ public class Addition extends Binary {
         super(lhs, rhs);
     }
 
+    /**
+     * Used to get the name of the operation
+     * @return the String representing this operation
+     */
     public String getName(){
         return ("+");
     }
 
+    /**
+     * Used to get the priority of the operation
+     * @return the int representing the priority of this operation
+     */
     public int getPriority() {
         return 50;
     }
 
-    //kolla vad som händer om du addar en constant o en variable, kolla om den finns i ht'en och isf dra ut det valuet
+    /**
+     * Used to evaluate an expression using a hash-table of variables
+     * @param vars the environment vars to store the variables in
+     * @return a symbolicexpression that has been evaluated
+     */
     public SymbolicExpression eval(Environment vars) {
         SymbolicExpression lhs = this.lhs.eval(vars);
         SymbolicExpression rhs = this.rhs.eval(vars);
