@@ -1,6 +1,7 @@
 package org.ioopm.calculator;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.ioopm.calculator.ast.*;
 import org.ioopm.calculator.parser.CalculatorParser;
@@ -11,9 +12,10 @@ public class Calculator {
         final CalculatorParser parser = new CalculatorParser();
         final Environment vars = new Environment();
         final Stats stats = new Stats();
+        Scanner sc = new Scanner(System.in);
         
         while (true) {
-            String input = System.console().readLine();
+            String input = sc.nextLine();
             try {
                 SymbolicExpression ob = parser.parse(input, vars);
                 if (ob.isCommand())
@@ -48,5 +50,6 @@ public class Calculator {
             }
         }
         stats.printstats();
+        sc.close();
     }
 }
