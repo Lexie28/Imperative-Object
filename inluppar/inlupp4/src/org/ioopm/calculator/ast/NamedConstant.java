@@ -28,7 +28,7 @@ public class NamedConstant extends Atom {
 
     @Override
     public SymbolicExpression accept(Visitor v) {
-    throw new RuntimeException("Named constants can't accept visitors");
+        throw new RuntimeException("Named constants can't accept visitors");
     }
 
 }
