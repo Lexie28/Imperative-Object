@@ -16,18 +16,10 @@ public class Sin extends Unary {
         return ("sin");
     }
 
-    /**
-     * Used to evaluate an expression using a hash-table of variables
-     * @param vars the environment vars to store the variables in
-     * @return a symbolicexpression that has been evaluated
-     */
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression expression = this.expression.eval(vars);
-    if (expression.isConstant()) {
-        return new Constant(Math.sin(expression.getValue()));
-    } else {
-        return new Sin(expression);
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
-    }
+
 }
 

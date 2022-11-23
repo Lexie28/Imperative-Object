@@ -63,20 +63,10 @@ public class Variable extends Atom {
     public int hashCode() {
         return this.identifier.hashCode();
     }
-    
-    /**
-    * checks if variable has a saved value
-    * @param vars stores variables
-    * @return symbolicExpression of variable
-    */
-    public SymbolicExpression eval(Environment vars) {
-        if (vars.containsKey(this)) // if our hastable contains our variable
-        {
-            return vars.get(this);
-        }
-        else
-        {
-            return this;
-        }
+
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+    
 }

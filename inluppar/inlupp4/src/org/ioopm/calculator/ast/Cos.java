@@ -15,18 +15,9 @@ public class Cos extends Unary {
         return ("cos");
     }
     
-    /**
-     * Used to evaluate an expression using a hash-table of variables
-     * @param vars the environment vars which stores the variables
-     * @return a symbolicexpression that has been evaluated
-     */
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression expression = this.expression.eval(vars);
-    if (expression.isConstant()) {
-        return new Constant(Math.cos(expression.getValue()));
-    } else {
-        return new Cos(expression);
-    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
 }
 

@@ -66,12 +66,6 @@ public abstract class SymbolicExpression {
         throw new RuntimeException("toString() called on expression with no value");
     }
 
-    /**
-     * Used to evaluate an expression using a hash-table of variables
-     * @param vars the environment vars to store the variables in
-     * @return a symbolicexpression that has been evaluated
-     */
-    public SymbolicExpression eval(Environment vars) {
-        throw new RuntimeException("eval() called on expression with no value");
-    }
+    public abstract SymbolicExpression accept(Visitor v);
+    
 }

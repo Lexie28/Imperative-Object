@@ -1,5 +1,7 @@
 package org.ioopm.calculator.ast;
 
+import javax.management.RuntimeErrorException;
+
 public class NamedConstant extends Atom {
     private String identifier;
     private double value;
@@ -23,12 +25,10 @@ public class NamedConstant extends Atom {
         return true;
     }
 
-    /**
-     * Used to evaluate an expression using a hash-table of variables
-     * @param vars the environment vars to store the variables in
-     * @return a symbolicexpression that has been evaluated
-     */
-    public SymbolicExpression eval(Environment vars) {
-        return new Constant(value);
+
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    throw new RuntimeException("Named constants can't accept visitors");
     }
+
 }

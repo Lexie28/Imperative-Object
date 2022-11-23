@@ -16,17 +16,8 @@ public class Exp extends Unary {
    
     }
     
-    /**
-     * Used to evaluate an expression using a hash-table of variables
-     * @param vars the environment vars to store the variables in
-     * @return a symbolicexpression that has been evaluated
-     */
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression expression = this.expression.eval(vars);
-    if (expression.isConstant()) {
-        return new Constant(Math.exp(expression.getValue()));
-    } else {
-        return new Exp(expression);
-    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
 }

@@ -7,4 +7,9 @@ public class Clear extends Command {
         return theInstance;
     }
  /// The rest of the code
+
+ @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
+    }
 }

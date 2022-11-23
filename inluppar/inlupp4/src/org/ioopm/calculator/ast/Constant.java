@@ -52,14 +52,10 @@ public class Constant extends Atom {
         return this.value == other.value;
     }
 
-
-    /**
-     * Used to evaluate an expression using a hash-table of variables
-     * @param vars the environment vars to store the variables in
-     * @return a symbolicexpression that has been evaluated
-     */
-    public SymbolicExpression eval(Environment vars) {
-        return new Constant(value);
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+
 
 }

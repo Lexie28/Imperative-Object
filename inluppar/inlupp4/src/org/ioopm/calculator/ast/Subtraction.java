@@ -22,22 +22,8 @@ public class Subtraction extends Binary {
         return 50;
     }
 
-    /**
-     * Used to evaluate an expression using a hash-table of variables
-     * @param vars the environment vars to store the variables in
-     * @return a symbolicexpression that has been evaluated
-     */
-    public SymbolicExpression eval(Environment vars) {
-        SymbolicExpression lhs = this.lhs.eval(vars);
-        SymbolicExpression rhs = this.rhs.eval(vars);
-
-        if(lhs.isConstant() && rhs.isConstant())
-        {  
-            return(new Constant(lhs.getValue() - rhs.getValue()));
-        }
-        else
-        {
-            return new Subtraction(lhs, rhs);
-        }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
 }
