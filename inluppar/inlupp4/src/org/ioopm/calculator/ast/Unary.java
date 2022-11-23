@@ -50,8 +50,8 @@ public abstract class Unary extends SymbolicExpression {
     * @return true or false depending on if equal or not
     */
     public boolean equals(Unary other) {
-        boolean a = this.getName() == other.getName();
-        boolean b = this.expression == other.expression;
+        boolean a = this.getName().equals(other.getName());
+        boolean b = this.expression.equals(other.expression);
         if(a == true && b == true)
         {
             return true;

@@ -3,7 +3,7 @@ import org.ioopm.calculator.ast.*;
 import org.junit.Test;
 
 public class TestSubtraction {
-    Constant c1 = new Constant(5.0);
+    Constant c1 = new Constant(2.0);
     Constant c2 = new Constant(2.0);
     Subtraction a = new Subtraction(c1, c2);
     Subtraction a2 = new Subtraction(c2, c1);
@@ -40,7 +40,7 @@ public class TestSubtraction {
 
     @Test
     public void testToString() {
-        assert "5.0 - 2.0".equals(a.toString());
+        assert "2.0 - 2.0".equals(a.toString());
     }
 
     @Test
@@ -51,6 +51,6 @@ public class TestSubtraction {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 3.0 == a.eval(vars).getValue();
+        assert 0.0 == a.eval(vars).getValue();
     }
 }
