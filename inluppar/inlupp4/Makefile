@@ -1,12 +1,12 @@
 
 all:
-	javac -d classes -sourcepath src src/org/ioopm/calculator/ast/*.java src/org/ioopm/calculator/parser/*.java src/org/ioopm/calculator/*.java
+	javac -d classes -sourcepath src src\org\ioopm\calculator\Calculator.java
 
-run: all
+run:
 	java -cp classes org.ioopm.calculator.Calculator
 
 clean:
-	rm -rf classes
+	rmdir /s classes
 
 test: all
 	java -cp classes org.ioopm.calculator.Test

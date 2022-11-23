@@ -145,6 +145,7 @@ public class CalculatorParser {
 
         if (Constants.namedConstants.containsKey(this.st.sval)) {
             result = new NamedConstant(st.sval, Constants.namedConstants.get(st.sval));
+            vars.put(new Variable(this.st.sval), new Constant(Constants.namedConstants.get(this.st.sval)));
         } else {
             result = new Variable(this.st.sval);
         }
