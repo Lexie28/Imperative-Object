@@ -39,7 +39,7 @@ public class TestSin {
 
     @Test
     public void testToString() {
-        assert "sin 0".equals(a.toString());
+        assert "sin 0.0".equals(a.toString());
     }
 
     @Test

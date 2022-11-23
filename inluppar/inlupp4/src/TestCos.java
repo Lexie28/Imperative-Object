@@ -39,7 +39,7 @@ public class TestCos {
 
     @Test
     public void testToString() {
-        assert "cos 0".equals(a.toString());
+        assert "cos 0.0".equals(a.toString());
     }
 
     @Test

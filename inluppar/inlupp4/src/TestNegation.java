@@ -40,7 +40,7 @@ public class TestNegation {
 
     @Test
     public void testToString() {
-        assert "-2.0".equals(n.toString());
+        assert "- 2.0".equals(n.toString());
     }
 
     @Test
