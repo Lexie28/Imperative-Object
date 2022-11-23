@@ -10,3 +10,7 @@ clean:
 
 test: all
 	java -cp classes org.ioopm.calculator.Test
+
+test_input: 
+	java -cp classes org.ioopm.calculator.Calculator < input.txt > output.txt
+	FC output.txt expected_output.txt
