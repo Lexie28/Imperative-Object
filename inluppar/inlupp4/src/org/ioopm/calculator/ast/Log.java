@@ -23,7 +23,7 @@ public class Log extends Unary {
     public SymbolicExpression eval(Environment vars) {
         SymbolicExpression expression = this.expression.eval(vars);
         if (expression.isConstant()) {
-            return new Constant(Math.log10(expression.getValue()));
+            return new Constant(Math.log(expression.getValue()));
         } else {
             return new Sin(expression);
         }
