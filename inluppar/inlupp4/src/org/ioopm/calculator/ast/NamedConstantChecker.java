@@ -1,6 +1,33 @@
 package org.ioopm.calculator.ast;
 
-public class NamnedConstantChecker implements Visitor {
+import java.util.HashMap;
+
+public class NamedConstantChecker implements Visitor {
+
+    private HashMap<String, SymbolicExpression> illegalNamedConstantReassignments;
+
+    public NamedConstantChecker() {
+        illegalNamedConstantReassignments = new HashMap<String, SymbolicExpression>();
+    }
+
+    public boolean check(SymbolicExpression topLevel) {
+        topLevel.accept(this);
+        if(illegalNamedConstantReassignments.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String getCheckFlags() {
+        String result = "Error, assignments to named constants:";
+        for(String str : illegalNamedConstantReassignments.keySet()) {
+            result += "\n" + illegalNamedConstantReassignments.get(str) + " = " + str;
+        }
+        return result;
+    }
+
+
 
     @Override
     public SymbolicExpression visit(Addition n) {
@@ -11,9 +38,11 @@ public class NamnedConstantChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(Assignment n) {
+        SymbolicExpression left = n.lhs.accept(this);
         n.rhs.accept(this);
         if (n.rhs.isNamedConstant()) {
-            throw new RuntimeException("no, don't assign a named constant");
+            illegalNamedConstantReassignments.put(n.rhs.getName(), left);
+            return n;
         }
         else {
             return n;
@@ -22,7 +51,6 @@ public class NamnedConstantChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(Constant n) {
-        n.accept(this);
         return n;
     }
 
@@ -84,7 +112,6 @@ public class NamnedConstantChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(Variable n) {
-        n.accept(this);
         return n;
     }
 

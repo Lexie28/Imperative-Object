@@ -16,6 +16,7 @@ public class Calculator {
         Scanner sc = new Scanner(System.in);
         
         while (true) {
+            NamedConstantChecker ncc = new NamedConstantChecker();
             String input = sc.nextLine();
             try {
                 SymbolicExpression ob = parser.parse(input, vars);
@@ -34,7 +35,11 @@ public class Calculator {
                 else
                 {
                     stats.addExpression();
-                    
+
+                    boolean notIllegal = ncc.check(ob);
+                    if(!notIllegal) {
+                        System.out.println(ncc.getCheckFlags());
+                    }
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
                     System.out.println("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);
