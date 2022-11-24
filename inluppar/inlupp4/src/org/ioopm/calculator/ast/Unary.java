@@ -8,8 +8,9 @@ public abstract class Unary extends SymbolicExpression {
     * @param expression string representation of variable
     * @return string representation of variable
     */
-    public Unary(SymbolicExpression expression)
+    public Unary(String name, SymbolicExpression expression)
     {
+        super(name, expression);
         this.expression = expression;
     }
 

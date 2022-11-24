@@ -10,7 +10,7 @@ public class Subtraction extends Binary {
      * Used to get the name of the operation
      * @return the String representing this operation
      */
-    public String getName(){
+    public static String getName(){
         return ("-");
     }
 

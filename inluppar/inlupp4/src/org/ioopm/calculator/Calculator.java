@@ -1,6 +1,8 @@
 package org.ioopm.calculator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.ioopm.calculator.ast.*;
@@ -9,6 +11,7 @@ import org.ioopm.calculator.parser.CalculatorParser;
 public class Calculator {
     
     public static void main(String[] args) {
+        
         final CalculatorParser parser = new CalculatorParser();
         final Environment vars = new Environment();
         final Stats stats = new Stats();
@@ -16,6 +19,7 @@ public class Calculator {
         Scanner sc = new Scanner(System.in);
         
         while (true) {
+            List<String> checkList = new ArrayList<String>();
             NamedConstantChecker ncc = new NamedConstantChecker();
             String input = sc.nextLine();
             try {
@@ -36,9 +40,13 @@ public class Calculator {
                 {
                     stats.addExpression();
 
-                    boolean notIllegal = ncc.check(ob);
-                    if(!notIllegal) {
-                        System.out.println(ncc.getCheckFlags());
+                    ncc.check(ob);
+                    if(!checkList.isEmpty()) {
+                        System.out.println("Error, assignment to named constants:");
+                        for(String s : checkList) {
+                            System.out.println(s);
+                        }
+                        continue;
                     }
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
                     System.out.println("" + evaluatedob);
@@ -50,8 +58,9 @@ public class Calculator {
                         stats.addSuccEval();
                     }
                 }
-            }
-             catch (Exception e) {
+            } catch(CheckException e) {
+                checkList.add(e.getMessage());
+            } catch (Exception e) {
                 stats.addExpression();
                 System.out.println(e.getMessage());
             }

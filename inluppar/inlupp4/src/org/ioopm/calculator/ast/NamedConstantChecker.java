@@ -2,34 +2,12 @@ package org.ioopm.calculator.ast;
 
 import java.util.HashMap;
 
-import org.junit.jupiter.api.Named;
-
 public class NamedConstantChecker implements Visitor {
-
-    private HashMap<String, SymbolicExpression> illegalNamedConstantReassignments;
-
-    public NamedConstantChecker() {
-        illegalNamedConstantReassignments = new HashMap<String, SymbolicExpression>();
-    }
 
     public boolean check(SymbolicExpression topLevel) {
         topLevel.accept(this);
-        if(illegalNamedConstantReassignments.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
-
-    public String getCheckFlags() {
-        String result = "Error, assignments to named constants:";
-        for(String str : illegalNamedConstantReassignments.keySet()) {
-            result += "\n" + illegalNamedConstantReassignments.get(str) + " = " + str;
-        }
-        return result;
-    }
-
-
 
     @Override
     public SymbolicExpression visit(Addition n) {
@@ -43,7 +21,7 @@ public class NamedConstantChecker implements Visitor {
         SymbolicExpression left = n.lhs.accept(this);
         n.rhs.accept(this);
         if (n.rhs.isNamedConstant()) {
-            return n;
+            throw new CheckException(left.toString() + " = " +((NamedConstant) n.rhs).getIdentifier());
         }
         else {
             return n;
