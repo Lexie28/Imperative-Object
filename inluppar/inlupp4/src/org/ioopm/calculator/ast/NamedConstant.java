@@ -5,6 +5,7 @@ public class NamedConstant extends Atom {
     private double value;
 
     public NamedConstant(String identifier, double value) {
+        super(identifier);
         this.identifier = identifier;
         if (Constants.namedConstants.containsKey(identifier)) {
             this.value = Constants.namedConstants.get(identifier);

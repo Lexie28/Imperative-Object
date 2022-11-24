@@ -11,6 +11,7 @@ public class Variable extends Atom implements Comparable {
     */
     public Variable(String identifier)
     {
+        super(identifier);
         this.identifier = identifier;
     }
 
