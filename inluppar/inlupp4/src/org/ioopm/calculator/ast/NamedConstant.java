@@ -1,7 +1,5 @@
 package org.ioopm.calculator.ast;
 
-import javax.management.RuntimeErrorException;
-
 public class NamedConstant extends Atom {
     private String identifier;
     private double value;
