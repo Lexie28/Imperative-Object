@@ -121,8 +121,7 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Quit n) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Cannot evaluate a command");
     }
 
     @Override
@@ -158,14 +157,12 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Vars n) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Cannot evaluate a command");
     }
 
     @Override
     public SymbolicExpression visit(Clear n) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Cannot evaluate a command");
     }
     
 }
