@@ -35,8 +35,19 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Assignment n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+        if(right.isNamedConstant()) {
+            throw new RuntimeException("no");
+        } else if(right.isVariable() && !env.containsKey(right)) {
+            env.put((Variable) right, left);
+            return left;
+        } else if(right.isVariable() && env.containsKey(right)) { // May have to remove this case
+            return left;
+        } else {
+            return new Assignment(left, right);
+        }
+
     }
 
     @Override
@@ -137,9 +148,12 @@ public class EvaluationVisitor implements Visitor {
     }
 
     @Override
-    public SymbolicExpression visit(Variable n) { // ????????????????????
-        // TODO Auto-generated method stub
-        return null;
+    public SymbolicExpression visit(Variable n) {
+        if(env.containsKey(n)) {
+            return env.get(n);
+        } else {
+            return new Variable(n.toString());
+        }
     }
 
     @Override
