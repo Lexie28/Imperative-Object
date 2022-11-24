@@ -1,6 +1,6 @@
 package org.ioopm.calculator.ast;
 
-public class Variable extends Atom {
+public class Variable extends Atom implements Comparable {
     private String identifier;
 
 
@@ -67,6 +67,15 @@ public class Variable extends Atom {
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if(o instanceof Variable v) {
+            return this.identifier.compareTo(v.identifier);
+        } else {
+            throw new ClassCastException("Object is not an instance of Variable");
+        }
     }
     
 }
