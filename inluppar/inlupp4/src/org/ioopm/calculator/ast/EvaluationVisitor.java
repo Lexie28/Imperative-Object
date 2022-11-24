@@ -36,16 +36,17 @@ public class EvaluationVisitor implements Visitor {
     @Override
     public SymbolicExpression visit(Assignment n) {
         SymbolicExpression left = n.lhs.accept(this);
-        SymbolicExpression right = n.rhs.accept(this);
+        SymbolicExpression right = n.rhs;
         if(right.isNamedConstant()) {
-            throw new RuntimeException("no");
+            throw new RuntimeException("Cannot redefine a named constant");
         } else if(right.isVariable() && !env.containsKey(right)) {
             env.put((Variable) right, left);
+
             return left;
-        } else if(env.containsKey(right)) { // May have to remove this case
-            return left;
+        } else if(right.isVariable() && env.containsKey((Variable) right)) { // May have to remove this case
+            throw new RuntimeException("Cannot redefine a variable");
         } else {
-            return new Assignment(left, right);
+            throw new RuntimeException("Cannot assign to a non-variable");
         }
 
     }
