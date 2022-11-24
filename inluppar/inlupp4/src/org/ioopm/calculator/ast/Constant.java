@@ -5,9 +5,11 @@ public class Constant extends Atom {
 
     public Constant(double value)
     {
-        super(getName());
+        super("Constant");
         this.value = value;
     }
+
+
 
     /**
      * Used to determine if this is a constant
