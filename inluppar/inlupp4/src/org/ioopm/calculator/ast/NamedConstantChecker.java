@@ -2,6 +2,8 @@ package org.ioopm.calculator.ast;
 
 import java.util.HashMap;
 
+import org.junit.jupiter.api.Named;
+
 public class NamedConstantChecker implements Visitor {
 
     private HashMap<String, SymbolicExpression> illegalNamedConstantReassignments;
@@ -41,7 +43,6 @@ public class NamedConstantChecker implements Visitor {
         SymbolicExpression left = n.lhs.accept(this);
         n.rhs.accept(this);
         if (n.rhs.isNamedConstant()) {
-            illegalNamedConstantReassignments.put(n.rhs.getName(), left);
             return n;
         }
         else {
