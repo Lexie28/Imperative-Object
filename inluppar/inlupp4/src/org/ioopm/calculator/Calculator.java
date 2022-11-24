@@ -24,7 +24,7 @@ public class Calculator {
                         vars.clear();
                     }
                     if (ob instanceof Vars) {
-                        System.out.println(vars.toString());
+                        System.out.println(vars);
                     }
                     if (ob instanceof Quit) {
                         break;
