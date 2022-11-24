@@ -39,7 +39,13 @@ public abstract class SymbolicExpression {
      * @return the String representing this operation
      */
     public String getName() {
-        throw new RuntimeException("getName() called on expression with no operator");
+        try {
+            throw new RuntimeException("getName() called on expression with no operator");
+
+        } catch(Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**

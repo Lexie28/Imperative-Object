@@ -15,6 +15,10 @@ public class NamedConstant extends Atom {
         }
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
     /**
      * Used to determine if this is a constant
      * @return a boolean telling whether it is a contant or not
