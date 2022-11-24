@@ -24,6 +24,6 @@ public class Multiplication extends Binary {
 
     @Override
     public SymbolicExpression accept(Visitor v) {
-    return v.visit(this);
+        return v.visit(this);
     }
 }
