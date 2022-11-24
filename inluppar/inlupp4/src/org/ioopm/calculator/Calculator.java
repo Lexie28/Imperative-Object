@@ -12,6 +12,7 @@ public class Calculator {
         final CalculatorParser parser = new CalculatorParser();
         final Environment vars = new Environment();
         final Stats stats = new Stats();
+        final EvaluationVisitor ev = new EvaluationVisitor();
         Scanner sc = new Scanner(System.in);
         
         while (true) {
@@ -33,7 +34,7 @@ public class Calculator {
                 else
                 {
                     stats.addExpression();
-                    EvaluationVisitor ev = new EvaluationVisitor();
+                    
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
                     System.out.println("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);

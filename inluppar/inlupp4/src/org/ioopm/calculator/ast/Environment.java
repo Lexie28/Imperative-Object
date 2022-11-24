@@ -13,7 +13,7 @@ public class Environment extends HashMap<Variable, SymbolicExpression> {
         Iterator<Variable> it = vars.iterator();
             while(it.hasNext()) {
                 Variable v = it.next();
-                sb.append(v.getName());
+                sb.append(v.toString());
                 sb.append(" = ");
                 sb.append(this.get(v));
                 if(it.hasNext())

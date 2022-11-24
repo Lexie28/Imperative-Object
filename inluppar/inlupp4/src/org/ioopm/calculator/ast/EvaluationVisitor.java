@@ -42,7 +42,7 @@ public class EvaluationVisitor implements Visitor {
         } else if(right.isVariable() && !env.containsKey(right)) {
             env.put((Variable) right, left);
             return left;
-        } else if(right.isVariable() && env.containsKey(right)) { // May have to remove this case
+        } else if(env.containsKey(right)) { // May have to remove this case
             return left;
         } else {
             return new Assignment(left, right);
@@ -157,7 +157,8 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Vars n) {
-        throw new RuntimeException("Cannot evaluate a command");
+        n.accept(this);
+        return n;
     }
 
     @Override
