@@ -12,7 +12,14 @@ public class NamnedConstantChecker implements Visitor {
     @Override
     public SymbolicExpression visit(Assignment n) {
         n.rhs.accept(this);
-        return null;
+        if (n.rhs.isNamedConstant()) {
+            throw new RuntimeException("no, don't assign a named constant");
+        }
+        else
+        {
+            return n;
+        }
+        }
 
     }
 
