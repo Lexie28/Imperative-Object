@@ -4,7 +4,8 @@ public abstract class Binary extends SymbolicExpression {
     public SymbolicExpression lhs;
     public SymbolicExpression rhs;
 
-    public Binary(SymbolicExpression lhs, SymbolicExpression rhs) {
+    public Binary(String name, SymbolicExpression lhs, SymbolicExpression rhs) {
+        super(name);
         this.lhs = lhs;
         this.rhs = rhs;
     }

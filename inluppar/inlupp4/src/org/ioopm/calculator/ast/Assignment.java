@@ -1,8 +1,8 @@
 package org.ioopm.calculator.ast;
 
 public class Assignment extends Binary {
-    public Assignment(SymbolicExpression lhs, SymbolicExpression rhs) {
-        super(lhs, rhs);
+    public Assignment(String name, SymbolicExpression lhs, SymbolicExpression rhs) {
+        super(name, lhs, rhs);
     }
 
     /**
