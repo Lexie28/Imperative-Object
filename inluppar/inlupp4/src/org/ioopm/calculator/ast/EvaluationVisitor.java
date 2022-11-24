@@ -9,6 +9,7 @@ public class EvaluationVisitor implements Visitor {
         return topLevel.accept(this);
     }
 
+
     // This method gets called from Addition.accept(Visitor v) -- you should
     // be able to see from the eval() methods how these should behave (i.e., 
     // compare this method with your Addition::eval() and Symbolic.addition) 
@@ -45,38 +46,66 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Cos n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression expression = n.expression.accept(this);
+        if(expression.isConstant()) {
+            return new Constant(Math.cos(expression.getValue()));
+        } else {
+            return new Cos(expression);
+        }
     }
 
     @Override
     public SymbolicExpression visit(Division n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.isConstant() && right.isConstant()) {
+            return new Constant(left.getValue() / right.getValue());
+        } else {
+            return new Division(left, right);
+        }
     }
 
     @Override
     public SymbolicExpression visit(Exp n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression expression = n.expression.accept(this);
+        if(expression.isConstant()) {
+            return new Constant(Math.exp(expression.getValue()));
+        } else {
+            return new Exp(expression);
+        }
     }
 
     @Override
     public SymbolicExpression visit(Log n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression expression = n.expression.accept(this);
+        if(expression.isConstant()) {
+            return new Constant(Math.log(expression.getValue()));
+        } else {
+            return new Log(expression);
+        }
     }
 
     @Override
     public SymbolicExpression visit(Multiplication n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.isConstant() && right.isConstant()) {
+            return new Constant(left.getValue() * right.getValue());
+        } else {
+            return new Multiplication(left, right);
+        }
     }
 
     @Override
     public SymbolicExpression visit(Negation n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression expression = n.expression.accept(this);
+        if(expression.isConstant()) {
+            return new Constant(-expression.getValue());
+        } else {
+            return new Negation(expression);
+        }
     }
 
     @Override
@@ -87,20 +116,35 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Sin n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression expression = n.expression.accept(this);
+        if(expression.isConstant()) {
+            return new Constant(Math.sin(expression.getValue()));
+        } else {
+            return new Sin(expression);
+        }
     }
 
     @Override
     public SymbolicExpression visit(Subtraction n) {
-        // TODO Auto-generated method stub
-        return null;
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.isConstant() && right.isConstant()) {
+            return new Constant(left.getValue() - right.getValue());
+        } else {
+            return new Subtraction(left, right);
+        }
     }
 
     @Override
-    public SymbolicExpression visit(Variable n) {
-        // TODO Auto-generated method stub
-        return null;
+    public SymbolicExpression visit(Variable n) { // ????????????????????
+        if(env.containsKey(n)) {
+            SymbolicExpression expression = env.get(n).accept(this);
+            return expression;
+
+        } else {
+            return new Variable(n.toString());
+        }
     }
 
     @Override
