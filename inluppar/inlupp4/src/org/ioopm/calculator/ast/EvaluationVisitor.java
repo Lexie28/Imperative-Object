@@ -138,13 +138,8 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Variable n) { // ????????????????????
-        if(env.containsKey(n)) {
-            SymbolicExpression expression = env.get(n).accept(this);
-            return expression;
-
-        } else {
-            return new Variable(n.toString());
-        }
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
