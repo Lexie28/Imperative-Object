@@ -15,12 +15,9 @@ public class NamnedConstantChecker implements Visitor {
         if (n.rhs.isNamedConstant()) {
             throw new RuntimeException("no, don't assign a named constant");
         }
-        else
-        {
+        else {
             return n;
         }
-        }
-
     }
 
     @Override

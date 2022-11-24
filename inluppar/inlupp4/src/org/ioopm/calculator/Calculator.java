@@ -33,7 +33,8 @@ public class Calculator {
                 else
                 {
                     stats.addExpression();
-                    SymbolicExpression evaluatedob = ob.eval(vars);
+                    EvaluationVisitor ev = new EvaluationVisitor();
+                    SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
                     System.out.println("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);
                     if (evaluatedob.isConstant()) {
