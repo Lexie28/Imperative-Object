@@ -10,7 +10,7 @@ public class Assignment extends Binary {
      * @return the String representing this operation
      */
     public static String getName(){
-        return ("=");
+        return "=";
     }
 
     @Override

@@ -20,6 +20,10 @@ public class NamedConstant extends Atom {
         return identifier;
     }
 
+    public String toString() {
+        return this.identifier;
+    }
+
     /**
      * Used to determine if this is a constant
      * @return a boolean telling whether it is a contant or not

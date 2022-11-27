@@ -19,7 +19,6 @@ public class Calculator {
         Scanner sc = new Scanner(System.in);
         
         while (true) {
-            List<String> checkList = new ArrayList<String>();
             NamedConstantChecker ncc = new NamedConstantChecker();
             String input = sc.nextLine();
             try {
@@ -39,12 +38,10 @@ public class Calculator {
                 else
                 {
                     stats.addExpression();
-
-                    ncc.check(ob);
-                    if(!checkList.isEmpty()) {
+                    if(ncc.check(ob) == false) {
                         System.out.println("Error, assignment to named constants:");
-                        for(String s : checkList) {
-                            System.out.println(s);
+                        for(SymbolicExpression expression : ncc.checkList) {
+                            System.out.println("" + expression);
                         }
                         continue;
                     }
@@ -58,8 +55,6 @@ public class Calculator {
                         stats.addSuccEval();
                     }
                 }
-            } catch(CheckException e) {
-                checkList.add(e.getMessage());
             } catch (Exception e) {
                 stats.addExpression();
                 System.out.println(e.getMessage());

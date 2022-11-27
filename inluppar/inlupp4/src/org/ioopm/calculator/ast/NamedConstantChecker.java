@@ -1,12 +1,16 @@
 package org.ioopm.calculator.ast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+
 public class NamedConstantChecker implements Visitor {
+    public ArrayList<SymbolicExpression> checkList = new ArrayList<SymbolicExpression>();
 
     public boolean check(SymbolicExpression topLevel) {
         topLevel.accept(this);
-        return true;
+        
+        return this.checkList.size() == 0;
     }
 
     @Override
@@ -21,7 +25,8 @@ public class NamedConstantChecker implements Visitor {
         SymbolicExpression left = n.lhs.accept(this);
         n.rhs.accept(this);
         if (n.rhs.isNamedConstant()) {
-            throw new CheckException(left.toString() + " = " +((NamedConstant) n.rhs).getIdentifier());
+            this.checkList.add(n);
+            return n;
         }
         else {
             return n;

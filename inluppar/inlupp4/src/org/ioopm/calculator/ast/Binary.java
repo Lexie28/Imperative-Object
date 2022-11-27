@@ -24,7 +24,7 @@ public abstract class Binary extends SymbolicExpression {
         if (this.rhs.getPriority() < this.getPriority()) {
             rhsString = "(" + rhsString + ")";
         }
-        return lhsString + " " + this.getName() + " " + rhsString;
+        return lhsString + " " + this.name + " " + rhsString;
     }
 
 
