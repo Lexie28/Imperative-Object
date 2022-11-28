@@ -11,6 +11,7 @@ This program serves as a symbolic calculator. The calculator offers different fu
 - Exponential
 - Logarithms (base 10)
 - Negation
+- Commands
 
 It can handle i) variables and ii)constants. The commands offered to the user are Vars (listing all of our stored values), Quit (quitting the program) and Clear (clearing the contents of Vars).
 
