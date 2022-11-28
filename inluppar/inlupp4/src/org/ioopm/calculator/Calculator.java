@@ -20,6 +20,7 @@ public class Calculator {
         
         while (true) {
             NamedConstantChecker ncc = new NamedConstantChecker();
+            ReassignmentChecker reassc = new ReassignmentChecker();
             String input = sc.nextLine();
             try {
                 SymbolicExpression ob = parser.parse(input, vars);
@@ -38,6 +39,8 @@ public class Calculator {
                 else
                 {
                     stats.addExpression();
+
+                    // Namned Constant Checker
                     if(ncc.check(ob) == false) {
                         System.out.println("Error, assignment to named constants:");
                         for(SymbolicExpression expression : ncc.checkList) {
@@ -45,6 +48,17 @@ public class Calculator {
                         }
                         continue;
                     }
+
+                    // Variable Reassignment Checker
+                    if(reassc.check(ob) == false) {
+                        
+                        for(SymbolicExpression expression : reassc.reassignmentList) {
+                            System.out.println("Error, the variable " + expression + " is reassigned." );
+                        }
+                        continue;
+                    }
+
+
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
                     System.out.println("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);
