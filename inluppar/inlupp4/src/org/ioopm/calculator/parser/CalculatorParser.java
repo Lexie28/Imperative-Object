@@ -6,14 +6,15 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.io.IOException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Represents the parsing of strings into valid expressions defined in the AST.
  */
 public class CalculatorParser {
     private StreamTokenizer st;
-    private Environment vars;
+    private Stack vars;
     private static char MULTIPLY = '*';
     private static char ADDITION = '+';
     private static char SUBTRACTION = '-';
@@ -42,7 +43,7 @@ public class CalculatorParser {
      */
     public SymbolicExpression parse(String inputString, Environment vars) throws IOException {
         this.st = new StreamTokenizer(new StringReader(inputString)); // reads from inputString via stringreader.
-        this.vars = vars;
+        this.vars.pushEnvironment(vars);
         this.st.ordinaryChar('-');
         this.st.ordinaryChar('/');
         this.st.eolIsSignificant(true);
