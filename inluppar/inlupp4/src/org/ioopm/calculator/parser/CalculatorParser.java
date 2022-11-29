@@ -65,11 +65,11 @@ public class CalculatorParser {
     private SymbolicExpression statement() throws IOException {
         SymbolicExpression result;
         this.st.nextToken(); //kollar pÃ¥ nÃ¤sta token som ligger pÃ¥ strÃ¶mmen
-        if (this.st.ttype == this.st.TT_EOF) {
+        if (this.st.ttype == StreamTokenizer.TT_EOF) {
             throw new SyntaxErrorException("Error: Expected an expression");
         }
 
-        if (this.st.ttype == this.st.TT_WORD) { // vilken typ det senaste tecken vi lÃ¤ste in hade.
+        if (this.st.ttype == StreamTokenizer.TT_WORD) { // vilken typ det senaste tecken vi lÃ¤ste in hade.
             if (this.st.sval.equals("Quit") || this.st.sval.equals("Vars") || this.st.sval.equals("Clear")) { // sval = string Variable
                 result = command();
             } else {
@@ -79,8 +79,8 @@ public class CalculatorParser {
             result = assignment(); // om inte == word, gå till assignment ändå (kan vara tt_number)
         }
 
-        if (this.st.nextToken() != this.st.TT_EOF) { // token should be an end of stream token if we are done
-            if (this.st.ttype == this.st.TT_WORD) {
+        if (this.st.nextToken() != StreamTokenizer.TT_EOF) { // token should be an end of stream token if we are done
+            if (this.st.ttype == StreamTokenizer.TT_WORD) {
                 throw new SyntaxErrorException("Error: Unexpected '" + this.st.sval + "'");
             } else {
                 throw new SyntaxErrorException("Error: Unexpected '" + String.valueOf((char) this.st.ttype) + "'");
@@ -119,9 +119,9 @@ public class CalculatorParser {
         this.st.nextToken();
         while (this.st.ttype == ASSIGNMENT) {
             this.st.nextToken();
-            if (this.st.ttype == this.st.TT_NUMBER) {
+            if (this.st.ttype == StreamTokenizer.TT_NUMBER) {
                 throw new SyntaxErrorException("Error: Numbers cannot be used as a variable name");
-            } else if (this.st.ttype != this.st.TT_WORD) {
+            } else if (this.st.ttype != StreamTokenizer.TT_WORD) {
                 throw new SyntaxErrorException("Error: Not a valid assignment of a variable"); //this handles faulty inputs after the equal sign eg. 1 = (x etc
             } else {
                 if (this.st.sval.equals("ans")) {
@@ -229,7 +229,7 @@ public class CalculatorParser {
             }
         } else if (this.st.ttype == NEGATION) {
             result = unary();
-        } else if (this.st.ttype == this.st.TT_WORD) {
+        } else if (this.st.ttype == StreamTokenizer.TT_WORD) {
             if (st.sval.equals(SIN) ||
                 st.sval.equals(COS) ||
                 st.sval.equals(EXP) ||
@@ -248,9 +248,22 @@ public class CalculatorParser {
     }
 
     private SymbolicExpression scope() throws IOException {
+        SymbolicExpression result;
         if(this.st.ttype == OPEN_SCOPE) {
-            
+            this.st.nextToken();
+            this.vars.pushEnvironment(new Environment());
+            result = assignment();
+
+            if (this.st.nextToken() != CLOSE_SCOPE) {
+                throw new SyntaxErrorException("expected ')'");
+            } else {
+                this.vars.popEnvironment();
+            }
+        }  else {
+            this.st.pushBack();
+            result = null;
         }
+        return result;
     }
 
 
@@ -288,7 +301,7 @@ public class CalculatorParser {
      */
     private SymbolicExpression number() throws IOException {
         this.st.nextToken();
-        if (this.st.ttype == this.st.TT_NUMBER) {
+        if (this.st.ttype == StreamTokenizer.TT_NUMBER) {
             return new Constant(this.st.nval);
         } else {
             throw new SyntaxErrorException("Error: Expected number");
