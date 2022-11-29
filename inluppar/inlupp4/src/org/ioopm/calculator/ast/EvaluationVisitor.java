@@ -170,5 +170,10 @@ public class EvaluationVisitor implements Visitor {
     public SymbolicExpression visit(Clear n) {
         throw new RuntimeException("Cannot evaluate a command");
     }
-    
+
+    @Override
+    public SymbolicExpression visit(Scope n) {
+        n.accept(this);
+        
+    }    
 }

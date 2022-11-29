@@ -65,13 +65,7 @@ public abstract class SymbolicExpression {
      * @return the String representing this operation
      */
     public static String getName() {
-        try {
-            throw new RuntimeException("getName() called on expression with no operator");
-
-        } catch(Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
+        throw new RuntimeException("getName() called on expression with no operator");
     }
 
     /**
