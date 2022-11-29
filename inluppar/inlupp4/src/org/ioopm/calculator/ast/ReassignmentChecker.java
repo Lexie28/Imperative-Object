@@ -111,5 +111,11 @@ public class ReassignmentChecker implements Visitor {
         throw new RuntimeException("no");
     }
 
+    @Override
+    public SymbolicExpression visit(Scope n) {
+        n.expression.accept(this);
+        return n;
+    }
+
     
 }

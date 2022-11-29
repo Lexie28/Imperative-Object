@@ -173,7 +173,7 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Scope n) {
-        n.accept(this);
-        
+        n.expression.accept(this);
+        return n;
     }    
 }

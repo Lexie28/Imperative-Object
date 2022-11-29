@@ -108,4 +108,11 @@ public class NamedConstantChecker implements Visitor {
     public SymbolicExpression visit(Clear n) {
         throw new RuntimeException("no");
     }
+
+    @Override
+    public SymbolicExpression visit(Scope n) {
+        n.expression.accept(this);
+        return n;
+    }
+
 }
