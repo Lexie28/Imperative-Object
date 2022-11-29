@@ -2,10 +2,10 @@ package org.ioopm.calculator.ast;
 
 public class EvaluationVisitor implements Visitor {
 
-    private Environment env = null;
+    private Stack env = new Stack();
 
     public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env) {
-        this.env = env;
+        this.env.pushEnvironment(env);
         return topLevel.accept(this);
     }
 
@@ -173,7 +173,9 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(Scope n) {
+        env.pushEnvironment(new Environment());
         n.expression.accept(this);
+        env.popEnvironment();
         return n;
     }    
 }

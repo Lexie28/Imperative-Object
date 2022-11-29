@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class CalculatorParser {
     private StreamTokenizer st;
-    private Stack vars;
+    private Environment vars;
     private static char MULTIPLY = '*';
     private static char ADDITION = '+';
     private static char SUBTRACTION = '-';
@@ -51,7 +51,7 @@ public class CalculatorParser {
         this.st.ordinaryChar('/');
         this.st.eolIsSignificant(true);
 
-        this.vars.pushEnvironment(vars);
+        this.vars = vars;
         SymbolicExpression result = statement(); // calls to statement
         return result; // the final result
     }
@@ -219,7 +219,7 @@ public class CalculatorParser {
      *         missing right parantheses
      */
     private SymbolicExpression primary() throws IOException {
-        SymbolicExpression result = scope();
+        SymbolicExpression result;
         if (this.st.ttype == '(') {
             this.st.nextToken();
             result = assignment();
@@ -240,28 +240,17 @@ public class CalculatorParser {
             } else {
                 result = identifier();
             }
-        } else {
-            this.st.pushBack();
-            result = number();
-        }
-        return result;
-    }
-
-    private SymbolicExpression scope() throws IOException {
-        SymbolicExpression result;
-        if(this.st.ttype == OPEN_SCOPE) {
+        } else if(this.st.ttype == OPEN_SCOPE) {
             this.st.nextToken();
-            this.vars.pushEnvironment(new Environment());
-            result = assignment();
+            //this.vars.pushEnvironment(new Environment());
+            result = new Scope(assignment());
 
             if (this.st.nextToken() != CLOSE_SCOPE) {
                 throw new SyntaxErrorException("expected ')'");
-            } else {
-                this.vars.popEnvironment();
             }
-        }  else {
+        } else {
             this.st.pushBack();
-            result = null;
+            result = number();
         }
         return result;
     }

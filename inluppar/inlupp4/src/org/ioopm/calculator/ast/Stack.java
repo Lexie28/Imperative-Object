@@ -1,5 +1,7 @@
 package org.ioopm.calculator.ast;
 
+import java.util.Set;
+
 public class Stack extends Environment {
     
     java.util.Stack<Environment> envStack;
@@ -25,4 +27,14 @@ public class Stack extends Environment {
     public void popEnvironment() {
         envStack.pop();
     }
+
+    @Override
+    public Set<Variable> keySet() {
+        return envStack.peek().keySet();
+    }
+
+    public Environment peek() {
+        return envStack.peek();
+    }
+
 }

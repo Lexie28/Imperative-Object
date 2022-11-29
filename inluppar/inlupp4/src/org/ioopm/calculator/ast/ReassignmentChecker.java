@@ -4,24 +4,28 @@ import java.util.ArrayList;
 
 public class ReassignmentChecker implements Visitor {
 
-    public ArrayList<SymbolicExpression> checkList = new ArrayList<SymbolicExpression>();
-    public ArrayList<SymbolicExpression> reassignmentList = new ArrayList<SymbolicExpression>();
+    public Stack stack = new Stack();
+    public ArrayList<Variable> reassignmentList = new ArrayList<Variable>();
+
+    public ReassignmentChecker() {
+        stack.pushEnvironment(new Environment());
+    }
 
     public boolean check(SymbolicExpression topLevel) {
         topLevel.accept(this);
         
-        return this.reassignmentList.size() == 0;
+        return this.stack.peek().size() == 0;
     }
 
     @Override
     public SymbolicExpression visit(Assignment n) {
-        n.lhs.accept(this);
+        SymbolicExpression left = n.lhs.accept(this);
         SymbolicExpression right = n.rhs.accept(this);
         if (n.rhs.isVariable() )  {
-            if(this.checkList.contains((Variable) right)) {
+            if(this.stack.peek().containsKey((Variable) right)) {
                 this.reassignmentList.add((Variable) right);
             } else {
-                this.checkList.add((Variable) right);
+                this.stack.peek().put((Variable) right, left);
             }
         }
 
@@ -113,7 +117,9 @@ public class ReassignmentChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(Scope n) {
+        stack.pushEnvironment(new Environment());
         n.expression.accept(this);
+        stack.popEnvironment();
         return n;
     }
 

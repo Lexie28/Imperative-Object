@@ -30,7 +30,7 @@ public class Calculator {
                         vars.clear();
                     }
                     if (ob instanceof Vars) {
-                        System.out.println(vars);
+                        System.out.println("" + vars);
                     }
                     if (ob instanceof Quit) {
                         break;
@@ -60,8 +60,10 @@ public class Calculator {
 
 
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
+
                     System.out.println("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);
+
                     if (evaluatedob.isConstant()) {
                         stats.addFullEval();
                         //kom ihåg att här adda till både full o succcess eval här då en full eval inkl. success eval
@@ -71,7 +73,7 @@ public class Calculator {
                 }
             } catch (Exception e) {
                 stats.addExpression();
-                System.out.println(e.getMessage());
+                System.out.println("" + e.getMessage());
             }
         }
         stats.printstats();

@@ -16,4 +16,10 @@ public class Scope extends Unary {
         
         return v.visit(this);
     }
+
+    public String toString() {
+        return "{" + expression.toString() + "}";
+    }
+
+    
 }
