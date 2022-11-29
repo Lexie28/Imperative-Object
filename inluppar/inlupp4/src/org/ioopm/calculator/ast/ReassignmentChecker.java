@@ -14,7 +14,7 @@ public class ReassignmentChecker implements Visitor {
     public boolean check(SymbolicExpression topLevel) {
         topLevel.accept(this);
         
-        return this.stack.peek().size() == 0;
+        return this.reassignmentList.size() == 0;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ReassignmentChecker implements Visitor {
             if(this.stack.peek().containsKey((Variable) right)) {
                 this.reassignmentList.add((Variable) right);
             } else {
-                this.stack.peek().put((Variable) right, left);
+                this.stack.put((Variable) right, left);
             }
         }
 

@@ -51,13 +51,11 @@ public class Calculator {
 
                     // Variable Reassignment Checker
                     if(reassc.check(ob) == false) {
-                        
                         for(SymbolicExpression expression : reassc.reassignmentList) {
                             System.out.println("Error, the variable " + expression + " is reassigned." );
                         }
                         continue;
                     }
-
 
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
 
