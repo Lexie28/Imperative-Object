@@ -26,6 +26,8 @@ public class CalculatorParser {
     private static String LOG = "Log";
     private static String EXP = "Exp";
     private static char ASSIGNMENT = '=';
+    private static char OPEN_SCOPE = '{';
+    private static char CLOSE_SCOPE = '}';
 
     // unallowerdVars is used to check if variabel name that we
     // want to assign new meaning to is a valid name eg 3 = Quit
@@ -42,11 +44,14 @@ public class CalculatorParser {
      * @throws IOException by nextToken() if it reads invalid input
      */
     public SymbolicExpression parse(String inputString, Environment vars) throws IOException {
-        this.st = new StreamTokenizer(new StringReader(inputString)); // reads from inputString via stringreader.
-        this.vars.pushEnvironment(vars);
+
+        // StringTokenizer setup
+        this.st = new StreamTokenizer(new StringReader(inputString)); // reads from inputString via stringreader.  
         this.st.ordinaryChar('-');
         this.st.ordinaryChar('/');
         this.st.eolIsSignificant(true);
+
+        this.vars.pushEnvironment(vars);
         SymbolicExpression result = statement(); // calls to statement
         return result; // the final result
     }
@@ -68,10 +73,10 @@ public class CalculatorParser {
             if (this.st.sval.equals("Quit") || this.st.sval.equals("Vars") || this.st.sval.equals("Clear")) { // sval = string Variable
                 result = command();
             } else {
-                result = assignment(); // gÃ¥r vidare med uttrycket.
+                result = assignment(); // går vidare med uttrycket.
             }
         } else {
-            result = assignment(); // om inte == word, gÃ¥ till assignment Ã¤ndÃ¥ (kan vara tt_number)
+            result = assignment(); // om inte == word, gå till assignment ändå (kan vara tt_number)
         }
 
         if (this.st.nextToken() != this.st.TT_EOF) { // token should be an end of stream token if we are done
@@ -214,7 +219,7 @@ public class CalculatorParser {
      *         missing right parantheses
      */
     private SymbolicExpression primary() throws IOException {
-        SymbolicExpression result;
+        SymbolicExpression result = scope();
         if (this.st.ttype == '(') {
             this.st.nextToken();
             result = assignment();
@@ -241,6 +246,13 @@ public class CalculatorParser {
         }
         return result;
     }
+
+    private SymbolicExpression scope() throws IOException {
+        if(this.st.ttype == OPEN_SCOPE) {
+            
+        }
+    }
+
 
     /**
      * Checks what type of Unary operation the token read is and
