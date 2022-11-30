@@ -9,15 +9,15 @@ public class GT extends Conditionals {
 
     @Override
     public SymbolicExpression accept(Visitor v) {
-        // TODO Auto-generated method stub
-        return null;
+        return v.visit(this);
     }
 
     public static String getName() {
         return ">";
     }
-
     
-
+    public String toString() {
+        return ("if" + this.lhs + getName() + this.rhs + "{" + this.ifstate + "} else {" + this.elsestate + "}");
+    }
     
 }
