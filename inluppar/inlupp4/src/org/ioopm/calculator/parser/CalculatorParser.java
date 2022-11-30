@@ -299,7 +299,7 @@ public class CalculatorParser {
                     SymbolicExpression rhs = expression();
 
                     this.st.nextToken();
-                    SymbolicExpression ifstate = primary();
+                    SymbolicExpression ifstate = assignment();
                     /*
                     //this.st.nextToken();
                     if(this.st.ttype == OPEN_SCOPE) {
@@ -318,7 +318,7 @@ public class CalculatorParser {
                     }
     
                     this.st.nextToken();
-                    SymbolicExpression elsestate = primary();
+                    SymbolicExpression elsestate = assignment();
 
                     
                     /*
