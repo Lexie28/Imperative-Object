@@ -246,7 +246,75 @@ public class CalculatorParser {
                 st.sval.equals(LOG)) {
 
                 result = unary();
-            } else {
+            } else if(this.st.sval.equals(IF)) {
+                    this.st.nextToken();
+    
+                    SymbolicExpression lhs = assignment();
+                    SymbolicExpression rhs;
+                    SymbolicExpression ifstate;
+                    SymbolicExpression elsestate;
+                    String op = "";
+    
+                    this.st.nextToken();
+                    if (st.ttype == LT) {
+                        this.st.nextToken();
+                        op = "" + LT;
+                        
+                    } else if(st.ttype == GT) {
+                        this.st.nextToken();
+                        op = "" + GT;
+    
+                    } else if(st.sval.equals(LTE)) {
+                        this.st.nextToken();
+                        op = "" + LTE;
+    
+                    } else if(st.sval.equals(GTE)) {
+                        this.st.nextToken();
+                        op = "" + GTE;
+    
+                    } else if(st.sval.equals(EQUALS)) {
+                        this.st.nextToken();
+                        op = "" + EQUALS;
+                    } else {
+                        throw new RuntimeException("expected conditional operator");
+                    }
+    
+                    rhs = assignment();
+    
+                    this.st.nextToken();
+                    if(this.st.ttype == OPEN_SCOPE) {
+                        this.st.pushBack();
+                        ifstate = assignment();
+                    } else {
+                        throw new SyntaxErrorException("expected '{'");
+                    }
+    
+                    this.st.nextToken();
+                    if(!this.st.sval.equals(ELSE)) {
+                        throw new RuntimeException("expected 'else'");
+                    }
+    
+                    this.st.nextToken();
+                    if(this.st.ttype == OPEN_SCOPE) {
+                        this.st.pushBack();
+                        elsestate = assignment();
+                    } else {
+                        throw new SyntaxErrorException("expected '{'");
+                    }
+    
+                    if(op.equals(""+LT)) {
+                        result = new LT(lhs, rhs, ifstate, elsestate);
+                    } else if(op.equals(""+GT)) {
+                        result = new GT(lhs, rhs, ifstate, elsestate);
+                    } else if(op.equals(""+LTE)) {
+                        result = new LTE(lhs, rhs, ifstate, elsestate);
+                    } else if(op.equals(""+GTE)) {
+                        result = new GTE(lhs, rhs, ifstate, elsestate);
+                    } else {
+                        result = new Equals(lhs, rhs, ifstate, elsestate);
+                    } 
+    
+                } else {
                 result = identifier();
             }
         } else if(this.st.ttype == OPEN_SCOPE) {
@@ -255,42 +323,8 @@ public class CalculatorParser {
             result = new Scope(assignment());
 
             if (this.st.nextToken() != CLOSE_SCOPE) {
-                throw new SyntaxErrorException("expected ')'");
+                throw new SyntaxErrorException("expected '}'");
             }
-        } else if(this.st.ttype == StreamTokenizer.TT_WORD) {
-            if(this.st.sval.equals(IF)) {
-                this.st.nextToken();
-
-                SymbolicExpression lhs = assignment();
-
-                this.st.nextToken();
-                if (st.ttype == LT) {
-                    this.st.nextToken();
-
-                    SymbolicExpression rhs = assignment();
-
-                    result = new LT(lhs, rhs);
-
-                } else if(st.ttype == GT) {
-
-                } else if(st.sval.equals(LTE)) {
-
-                } else if(st.sval.equals(GTE)) {
-
-                } else if(st.sval.equals(EQUALS)) {
-
-                }
-
-                
-
-                this.st.nextToken();
-                if(!this.st.sval.equals(ELSE)) {
-                    throw new RuntimeException("expected 'else'");
-                }
-
-                
-
-            } 
         } else {
             this.st.pushBack();
             result = number();
