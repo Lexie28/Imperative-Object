@@ -1,20 +1,15 @@
 package org.ioopm.calculator.ast;
 
 public abstract class Conditionals extends Binary {
-    public String op;
     public SymbolicExpression ifstate;
     public SymbolicExpression elsestate;
 
-    public Conditionals(SymbolicExpression lhs, SymbolicExpression rhs) {
+    public Conditionals(String name, SymbolicExpression lhs, SymbolicExpression rhs, SymbolicExpression ifstate, SymbolicExpression elsestate) {
         super(getName(), lhs, rhs);
     }
 
-    public static String getName() {
-        return "conditionals";
-    }
-
     public String toString() {
-        return ("if" + this.lhs + this.op + this.rhs + "{" + this.ifstate + "} else {" + this.elsestate + "}");
+        return ("if" + this.lhs + getName() + this.rhs + "{" + this.ifstate + "} else {" + this.elsestate + "}");
     }
 
     

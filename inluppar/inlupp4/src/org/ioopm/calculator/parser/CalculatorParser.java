@@ -28,6 +28,15 @@ public class CalculatorParser {
     private static char ASSIGNMENT = '=';
     private static char OPEN_SCOPE = '{';
     private static char CLOSE_SCOPE = '}';
+    private static String IF  = "if";
+    private static String ELSE = "else";
+    private static char GT = '>';
+    private static char LT = '<';
+    private static String GTE = ">=";
+    private static String LTE = "<=";
+    private static String EQUALS = "==";
+
+
 
     // unallowerdVars is used to check if variabel name that we
     // want to assign new meaning to is a valid name eg 3 = Quit
@@ -248,6 +257,40 @@ public class CalculatorParser {
             if (this.st.nextToken() != CLOSE_SCOPE) {
                 throw new SyntaxErrorException("expected ')'");
             }
+        } else if(this.st.ttype == StreamTokenizer.TT_WORD) {
+            if(this.st.sval.equals(IF)) {
+                this.st.nextToken();
+
+                SymbolicExpression lhs = assignment();
+
+                this.st.nextToken();
+                if (st.ttype == LT) {
+                    this.st.nextToken();
+
+                    SymbolicExpression rhs = assignment();
+
+                    result = new LT(lhs, rhs);
+
+                } else if(st.ttype == GT) {
+
+                } else if(st.sval.equals(LTE)) {
+
+                } else if(st.sval.equals(GTE)) {
+
+                } else if(st.sval.equals(EQUALS)) {
+
+                }
+
+                
+
+                this.st.nextToken();
+                if(!this.st.sval.equals(ELSE)) {
+                    throw new RuntimeException("expected 'else'");
+                }
+
+                
+
+            } 
         } else {
             this.st.pushBack();
             result = number();
