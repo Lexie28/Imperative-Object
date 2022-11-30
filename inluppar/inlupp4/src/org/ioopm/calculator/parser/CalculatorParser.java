@@ -257,7 +257,6 @@ public class CalculatorParser {
                 result = unary();
             } else if(this.st.sval.equals(IF)) {
                     this.st.nextToken();
-                    System.out.println("Found if");
     
                     SymbolicExpression lhs = expression();
                     String op = "";
@@ -269,8 +268,6 @@ public class CalculatorParser {
                         if(st.ttype == ASSIGNMENT) {
                             this.st.nextToken();
                             op = LTE;
-                        } else {
-                            throw new RuntimeException("expected conditional operator");
                         }
                         
                     } else if(st.ttype == GT) {
@@ -279,8 +276,6 @@ public class CalculatorParser {
                         if(st.ttype == ASSIGNMENT) {
                             this.st.nextToken();
                             op = GTE;
-                        } else {
-                            throw new RuntimeException("expected conditional operator");
                         }
     
                     } else if(st.ttype == ASSIGNMENT) {
