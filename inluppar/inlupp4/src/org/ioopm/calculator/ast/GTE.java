@@ -15,8 +15,4 @@ public class GTE extends Conditionals{
     public static String getName() {
         return ">=";
     }
-    
-    public String toString() {
-        return ("if" + this.lhs + getName() + this.rhs + "{" + this.ifstate + "} else {" + this.elsestate + "}");
-    }
 }
