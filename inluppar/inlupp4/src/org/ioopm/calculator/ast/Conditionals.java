@@ -9,9 +9,23 @@ public class Conditionals extends SymbolicExpression {
 
     public ArrayList<String> operationslist = 
 
+    public Conditionals(SymbolicExpression lhs, SymbolicExpression rhs) {
+        super(getName(), lhs, rhs);
+        this.lhsexp = lhs;
+        this.rhsexp = rhs;
+    }
+
+    public static String getName() {
+        return "conditionals";
+    }
 
     public String toString() {
         return ("if" + this.lhs + this.op + "{" + this.ifstate + "} else {" this.elsestate + "}");
+    }
+
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+        return v.visit(this);
     }
 
     
