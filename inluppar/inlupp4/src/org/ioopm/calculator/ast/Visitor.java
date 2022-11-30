@@ -17,4 +17,9 @@ public interface Visitor {
     public SymbolicExpression visit(Vars n);
     public SymbolicExpression visit(Clear n);
     public SymbolicExpression visit(Scope n);
+    public SymbolicExpression visit(GT n);
+    public SymbolicExpression visit(GTE n);
+    public SymbolicExpression visit(LT n);
+    public SymbolicExpression visit(LTE n);
+    public SymbolicExpression visit(Equals n);
 }

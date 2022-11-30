@@ -177,5 +177,100 @@ public class EvaluationVisitor implements Visitor {
         SymbolicExpression exp = n.expression.accept(this);
         env.popEnvironment();
         return exp;
-    }    
+    }
+
+    @Override
+    public SymbolicExpression visit(Equals n) {
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.equals(right)) {
+            return n.ifstate.accept(this);
+        }
+        else
+        {
+            return n.elsestate.accept(this);
+        }
+    }
+
+    @Override
+    public SymbolicExpression visit(GT n) {
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.isConstant() && right.isConstant())
+        {
+            if (((Constant) left).getValue() > ((Constant) right).getValue()) {
+                return n.ifstate.accept(this);
+            }
+            else
+            {
+                return n.elsestate.accept(this);
+            }
+    }
+    else {
+        throw new RuntimeException("Could not compare");
+    }
+    }
+
+    @Override
+    public SymbolicExpression visit(GTE n) {
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.isConstant() && right.isConstant())
+        {
+            if (((Constant) left).getValue() >= ((Constant) right).getValue()) {
+                return n.ifstate.accept(this);
+            }
+            else
+            {
+                return n.elsestate.accept(this);
+            }
+        }
+        else {
+            throw new RuntimeException("Could not compare");
+        }
+        }
+
+    @Override
+    public SymbolicExpression visit(LT n) {
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.isConstant() && right.isConstant())
+        {
+            if (((Constant) left).getValue() < ((Constant) right).getValue()) {
+                return n.ifstate.accept(this);
+            }
+            else
+            {
+                return n.elsestate.accept(this);
+            }
+    }
+        else {
+            throw new RuntimeException("Could not compare");
+        }
+}
+
+    @Override
+    public SymbolicExpression visit(LTE n) {
+        SymbolicExpression left = n.lhs.accept(this);
+        SymbolicExpression right = n.rhs.accept(this);
+
+        if (left.isConstant() && right.isConstant())
+        {
+            if (((Constant) left).getValue() <= ((Constant) right).getValue()) {
+                return n.ifstate.accept(this);
+            }
+            else
+            {
+                return n.elsestate.accept(this);
+            }
+    }
+        else {
+            throw new RuntimeException("Could not compare");
+        }
+    }
+
 }
