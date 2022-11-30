@@ -35,6 +35,10 @@ public class Stack extends Environment {
         return this.get(o) != null;
     }
 
+    public boolean containsKeyInCurrent(Object o) {
+        return envStack.peek().get(o) != null;
+    }
+
 
     public void pushEnvironment(Environment vars) {
         envStack.push(vars);

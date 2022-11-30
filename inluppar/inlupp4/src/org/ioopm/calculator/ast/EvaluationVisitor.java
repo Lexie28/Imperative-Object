@@ -40,8 +40,11 @@ public class EvaluationVisitor implements Visitor {
         /* if(right.isNamedConstant()) {
             throw new RuntimeException("Cannot redefine a named constant");
         } else */ 
-        if(right.isVariable() && !env.containsKey(right)) {
-            env.put((Variable) right, left);
+       // System.out.println(left + " = "+ right);
+        // System.out.println("" + right + " is " + right.isVariable() + !env.containsKeyInCurrent(right));
+        
+        if(n.rhs.isVariable() && !env.containsKeyInCurrent(n.rhs)) {
+            env.put((Variable) n.rhs, left);
 
             return left;
         } else {
