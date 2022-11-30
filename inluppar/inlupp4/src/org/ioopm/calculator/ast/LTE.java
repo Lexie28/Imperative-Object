@@ -9,8 +9,7 @@ public class LTE extends Conditionals{
 
     @Override
     public SymbolicExpression accept(Visitor v) {
-        // TODO Auto-generated method stub
-        return null;
+        return v.visit(this);
     }
 
     public static String getName() {
