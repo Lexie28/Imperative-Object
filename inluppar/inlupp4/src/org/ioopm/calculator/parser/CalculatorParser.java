@@ -300,17 +300,6 @@ public class CalculatorParser {
 
                     this.st.nextToken();
                     SymbolicExpression ifstate = assignment();
-                    /*
-                    //this.st.nextToken();
-                    if(this.st.ttype == OPEN_SCOPE) {
-                        System.out.println("Finding if state");
-                        this.st.pushBack();
-                        ifstate = primary();
-                    } else {
-                        throw new SyntaxErrorException("expected '{'");
-                    }
-                    */
-    
                     
                     this.st.nextToken();
                     if(this.st.ttype == StreamTokenizer.TT_WORD && !this.st.sval.equals(ELSE)) {
@@ -319,18 +308,6 @@ public class CalculatorParser {
     
                     this.st.nextToken();
                     SymbolicExpression elsestate = assignment();
-
-                    
-                    /*
-                    System.out.println("Finding else statement");
-                    this.st.nextToken(); System.out.println(this.st.sval);
-                    if(this.st.ttype == OPEN_SCOPE) {
-                        this.st.pushBack();
-                        elsestate = primary();
-                    } else {
-                        throw new SyntaxErrorException("expected '{'");
-                    }
-                    */
     
                     if(op.equals(""+LT)) {
                         result = new LT(lhs, rhs, ifstate, elsestate);
@@ -343,6 +320,8 @@ public class CalculatorParser {
                     } else {
                         result = new Equals(lhs, rhs, ifstate, elsestate);
                     } 
+
+                    System.out.println(result);
     
                 } else {
                 result = identifier();
