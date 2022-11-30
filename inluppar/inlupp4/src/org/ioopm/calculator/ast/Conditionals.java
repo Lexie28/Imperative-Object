@@ -20,7 +20,7 @@ public class Conditionals extends SymbolicExpression {
     }
 
     public String toString() {
-        return ("if" + this.lhs + this.op + "{" + this.ifstate + "} else {" this.elsestate + "}");
+        return ("if" + this.lhsexp + this.op + this.rhsexp + "{" + this.ifstate + "} else {" + this.elsestate + "}");
     }
 
     @Override
