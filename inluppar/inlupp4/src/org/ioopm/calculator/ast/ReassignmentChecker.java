@@ -123,5 +123,50 @@ public class ReassignmentChecker implements Visitor {
         return n;
     }
 
+    @Override
+    public SymbolicExpression visit(GT n) {
+        n.lhs.accept(this);
+        n.rhs.accept(this);
+        n.ifstate.accept(this);
+        n.elsestate.accept(this);
+        return null;
+    }
+
+    @Override
+    public SymbolicExpression visit(GTE n) {
+        n.lhs.accept(this);
+        n.rhs.accept(this);
+        n.ifstate.accept(this);
+        n.elsestate.accept(this);
+        return null;
+    }
+
+    @Override
+    public SymbolicExpression visit(LT n) {
+        n.lhs.accept(this);
+        n.rhs.accept(this);
+        n.ifstate.accept(this);
+        n.elsestate.accept(this);
+        return null;
+    }
+
+    @Override
+    public SymbolicExpression visit(LTE n) {
+        n.lhs.accept(this);
+        n.rhs.accept(this);
+        n.ifstate.accept(this);
+        n.elsestate.accept(this);
+        return null;
+    }
+
+    @Override
+    public SymbolicExpression visit(Equals n) {
+        n.lhs.accept(this);
+        n.rhs.accept(this);
+        n.ifstate.accept(this);
+        n.elsestate.accept(this);
+        return null;
+    }
+
     
 }
