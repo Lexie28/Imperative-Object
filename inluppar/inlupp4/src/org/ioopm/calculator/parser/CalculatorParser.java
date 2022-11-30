@@ -238,6 +238,15 @@ public class CalculatorParser {
             }
         } else if (this.st.ttype == NEGATION) {
             result = unary();
+        } else if(this.st.ttype == OPEN_SCOPE) {
+            this.st.nextToken();
+            //this.vars.pushEnvironment(new Environment());
+            result = new Scope(assignment());
+
+            this.st.nextToken();
+            if (this.st.ttype != CLOSE_SCOPE) {
+                throw new SyntaxErrorException("expected '}'");
+            }
         } else if (this.st.ttype == StreamTokenizer.TT_WORD) {
             if (st.sval.equals(SIN) ||
                 st.sval.equals(COS) ||
@@ -248,59 +257,57 @@ public class CalculatorParser {
                 result = unary();
             } else if(this.st.sval.equals(IF)) {
                     this.st.nextToken();
+                    System.out.println("Found if");
     
-                    SymbolicExpression lhs = assignment();
-                    SymbolicExpression rhs;
-                    SymbolicExpression ifstate;
-                    SymbolicExpression elsestate;
+                    SymbolicExpression lhs = expression();
                     String op = "";
-    
+                    
                     this.st.nextToken();
                     if (st.ttype == LT) {
                         this.st.nextToken();
                         op = "" + LT;
+                        if(st.ttype == ASSIGNMENT) {
+                            this.st.nextToken();
+                            op = LTE;
+                        } else {
+                            throw new RuntimeException("expected conditional operator");
+                        }
                         
                     } else if(st.ttype == GT) {
                         this.st.nextToken();
                         op = "" + GT;
+                        if(st.ttype == ASSIGNMENT) {
+                            this.st.nextToken();
+                            op = GTE;
+                        } else {
+                            throw new RuntimeException("expected conditional operator");
+                        }
     
-                    } else if(st.sval.equals(LTE)) {
+                    } else if(st.ttype == ASSIGNMENT) {
                         this.st.nextToken();
-                        op = "" + LTE;
-    
-                    } else if(st.sval.equals(GTE)) {
-                        this.st.nextToken();
-                        op = "" + GTE;
-    
-                    } else if(st.sval.equals(EQUALS)) {
-                        this.st.nextToken();
-                        op = "" + EQUALS;
+                        if(st.ttype == ASSIGNMENT) {
+                            this.st.nextToken();
+                            op = "" + EQUALS;
+                        } else {
+                            throw new RuntimeException("expected conditional operator");
+                        }
+                        
                     } else {
                         throw new RuntimeException("expected conditional operator");
                     }
-    
-                    rhs = assignment();
-    
+
+                    SymbolicExpression rhs = expression();
+
                     this.st.nextToken();
-                    if(this.st.ttype == OPEN_SCOPE) {
-                        this.st.pushBack();
-                        ifstate = assignment();
-                    } else {
-                        throw new SyntaxErrorException("expected '{'");
-                    }
-    
+                    SymbolicExpression ifstate = assignment();
+                    
                     this.st.nextToken();
-                    if(!this.st.sval.equals(ELSE)) {
+                    if(this.st.ttype == StreamTokenizer.TT_WORD && !this.st.sval.equals(ELSE)) {
                         throw new RuntimeException("expected 'else'");
                     }
     
                     this.st.nextToken();
-                    if(this.st.ttype == OPEN_SCOPE) {
-                        this.st.pushBack();
-                        elsestate = assignment();
-                    } else {
-                        throw new SyntaxErrorException("expected '{'");
-                    }
+                    SymbolicExpression elsestate = assignment();
     
                     if(op.equals(""+LT)) {
                         result = new LT(lhs, rhs, ifstate, elsestate);
@@ -313,19 +320,13 @@ public class CalculatorParser {
                     } else {
                         result = new Equals(lhs, rhs, ifstate, elsestate);
                     } 
+
+                    System.out.println(result);
     
                 } else {
                 result = identifier();
             }
-        } else if(this.st.ttype == OPEN_SCOPE) {
-            this.st.nextToken();
-            //this.vars.pushEnvironment(new Environment());
-            result = new Scope(assignment());
-
-            if (this.st.nextToken() != CLOSE_SCOPE) {
-                throw new SyntaxErrorException("expected '}'");
-            }
-        } else {
+        }  else {
             this.st.pushBack();
             result = number();
         }
