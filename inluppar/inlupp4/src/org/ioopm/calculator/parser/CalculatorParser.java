@@ -315,8 +315,6 @@ public class CalculatorParser {
                     } else {
                         result = new Equals(lhs, rhs, ifstate, elsestate);
                     } 
-
-                    System.out.println(result);
     
                 } else {
                 result = identifier();
