@@ -174,8 +174,8 @@ public class EvaluationVisitor implements Visitor {
     @Override
     public SymbolicExpression visit(Scope n) {
         env.pushEnvironment(new Environment());
-        n.expression.accept(this);
+        SymbolicExpression exp = n.expression.accept(this);
         env.popEnvironment();
-        return n;
+        return exp;
     }    
 }
