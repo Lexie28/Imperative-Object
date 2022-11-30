@@ -7,6 +7,8 @@ public class Conditionals extends SymbolicExpression {
     public SymbolicExpression ifstate;
     public SymbolicExpression elsestate;
 
+    public ArrayList<String> operationslist = 
+
 
     public String toString() {
         return ("if" + this.lhs + this.op + "{" + this.ifstate + "} else {" this.elsestate + "}");
