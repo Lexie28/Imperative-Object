@@ -1,5 +1,6 @@
 package org.ioopm.calculator.ast;
 
+import java.util.Iterator;
 import java.util.Set;
 
 public class Stack extends Environment {
@@ -12,13 +13,28 @@ public class Stack extends Environment {
 
     @Override
     public SymbolicExpression get(Object o) {
-        return envStack.peek().get(o);
+        Iterator<Environment> iter = envStack.iterator();
+        while(iter.hasNext()) {
+            Environment current = iter.next();
+            if(current.containsKey(o)) {
+                return current.get(o);
+            } else {
+                continue;
+            }
+        }
+        return null;
     }
 
     @Override
     public SymbolicExpression put(Variable v, SymbolicExpression e) {
         return envStack.peek().put(v, e);
     }
+
+    @Override
+    public boolean containsKey(Object o) {
+        return this.get(o) != null;
+    }
+
 
     public void pushEnvironment(Environment vars) {
         envStack.push(vars);
