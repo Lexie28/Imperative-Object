@@ -1,21 +1,23 @@
 package org.ioopm.calculator.ast;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Set;
 
 public class Stack extends Environment {
     
-    java.util.Stack<Environment> envStack;
+    java.util.ArrayList<Environment> envStack;
 
     public Stack() {
-        envStack = new java.util.Stack<Environment>();
+        envStack = new java.util.ArrayList<Environment>();
     }
 
     @Override
     public SymbolicExpression get(Object o) {
-        Iterator<Environment> iter = envStack.iterator();
-        while(iter.hasNext()) {
-            Environment current = iter.next();
+        ListIterator<Environment> iter = envStack.listIterator(envStack.size());
+        while(iter.hasPrevious()) {
+            Environment current = iter.previous();
             if(current.containsKey(o)) {
                 return current.get(o);
             } else {
@@ -27,7 +29,7 @@ public class Stack extends Environment {
 
     @Override
     public SymbolicExpression put(Variable v, SymbolicExpression e) {
-        return envStack.peek().put(v, e);
+        return envStack.get(envStack.size()-1).put(v, e);
     }
 
     @Override
@@ -36,25 +38,25 @@ public class Stack extends Environment {
     }
 
     public boolean containsKeyInCurrent(Object o) {
-        return envStack.peek().get(o) != null;
+        return envStack.get(envStack.size()-1).get(o) != null;
     }
 
 
     public void pushEnvironment(Environment vars) {
-        envStack.push(vars);
+        envStack.add(vars);
     }
 
     public void popEnvironment() {
-        envStack.pop();
+        envStack.remove(envStack.size()-1);
     }
 
     @Override
     public Set<Variable> keySet() {
-        return envStack.peek().keySet();
+        return envStack.get(envStack.size()-1).keySet();
     }
 
     public Environment peek() {
-        return envStack.peek();
+        return envStack.get(envStack.size()-1);
     }
 
 }
