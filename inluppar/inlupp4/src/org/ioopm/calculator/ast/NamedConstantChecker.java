@@ -1,7 +1,6 @@
 package org.ioopm.calculator.ast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class NamedConstantChecker implements Visitor {
@@ -22,7 +21,7 @@ public class NamedConstantChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(Assignment n) {
-        SymbolicExpression left = n.lhs.accept(this);
+        n.lhs.accept(this);
         n.rhs.accept(this);
         if (n.rhs.isNamedConstant()) {
             this.checkList.add(n);
