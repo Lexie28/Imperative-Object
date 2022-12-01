@@ -5,6 +5,7 @@ import org.junit.Test;
 public class TestAddition {
     Constant c1 = new Constant(2.0);
     Constant c2 = new Constant(2.0);
+    Constant c3 = new Constant(4.0);
     Addition a = new Addition(c1, c2);
     Addition a2 = new Addition(c2, c1);
 
@@ -25,7 +26,7 @@ public class TestAddition {
 
     @Test
     public void testGetName() {
-        assert "+".equals(a.getName());
+        assert "+".equals(Addition.getName());
     }
 
     @Test
@@ -51,6 +52,8 @@ public class TestAddition {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 4.0 == a.eval(vars).getValue();
-    }
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c3.equals(ev.evaluate(a, vars));
+
+    }   
 }

@@ -4,7 +4,6 @@ public class LT extends Conditionals {
 
     public LT(SymbolicExpression lhs, SymbolicExpression rhs, SymbolicExpression ifstate, SymbolicExpression elsestate) {
         super(getName(), lhs, rhs, ifstate, elsestate);
-        //TODO Auto-generated constructor stub
     }
 
     @Override

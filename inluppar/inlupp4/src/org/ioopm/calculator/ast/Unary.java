@@ -29,7 +29,7 @@ public abstract class Unary extends SymbolicExpression {
     public String toString() {
         /// Note how the call to toString() is not necessary
 
-        return this.getName() + " " + this.expression.toString();
+        return this.name + " " + this.expression.toString();
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class Unary extends SymbolicExpression {
     * @return true or false depending on if equal or not
     */
     public boolean equals(Unary other) {
-        boolean a = this.getName().equals(other.getName());
+        boolean a = this.name.equals(other.name);
         boolean b = this.expression.equals(other.expression);
         if(a == true && b == true)
         {

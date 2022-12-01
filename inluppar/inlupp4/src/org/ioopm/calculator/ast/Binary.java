@@ -50,7 +50,7 @@ public abstract class Binary extends SymbolicExpression {
         /// access a private field of other!
         boolean a =this.lhs.equals(other.lhs);
         boolean b = this.rhs.equals(other.rhs);
-        boolean c = this.getName().equals(other.getName());
+        boolean c = this.name.equals(other.name);
         if (a == true && b == true && c == true)
         {
             return true;

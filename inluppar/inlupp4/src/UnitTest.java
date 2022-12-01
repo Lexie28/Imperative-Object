@@ -1,15 +1,6 @@
 import org.ioopm.calculator.ast.*;
-import java.util.HashMap;
-
-import org.junit.Test;
-
 
 public class UnitTest {
-    
-    @Test
-    public void test() {
-        assert 1+1 == 2;
-    }
 
 
     public static void testPrinting(String expected, SymbolicExpression e){
@@ -21,7 +12,8 @@ public class UnitTest {
     }
 
     public static void testEvaluating(SymbolicExpression expected, SymbolicExpression e, Environment vars) {
-        SymbolicExpression r = e.eval(vars);
+        EvaluationVisitor ev = new EvaluationVisitor();
+        SymbolicExpression r = ev.evaluate(e, vars);
         if (r.equals(expected)) {
             System.out.println("Passed: " + expected + " " + "=" + " " + e);
         } else {

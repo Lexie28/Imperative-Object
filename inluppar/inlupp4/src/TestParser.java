@@ -40,10 +40,11 @@ public class TestParser {
         Negation n = new Negation(new Negation(new Negation(new Variable("pi"))));
         CalculatorParser parser = new CalculatorParser();
         Environment vars = new Environment();
+        EvaluationVisitor ev = new EvaluationVisitor();
 
         try {
             SymbolicExpression s = parser.parse(n.toString(), vars);
-            assert n.eval(vars).equals(s.eval(vars)); // May cause problems in the future
+            assert ev.evaluate(n, vars).equals(ev.evaluate(s, vars));
         } catch(IOException e) {
             assert false;
         }

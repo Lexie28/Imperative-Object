@@ -1,6 +1,6 @@
 package org.ioopm.calculator.ast;
 
-public class Variable extends Atom implements Comparable {
+public class Variable extends Atom implements Comparable<Variable> {
     private String identifier;
 
 
@@ -71,12 +71,9 @@ public class Variable extends Atom implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if(o instanceof Variable v) {
-            return this.identifier.compareTo(v.identifier);
-        } else {
-            throw new ClassCastException("Object is not an instance of Variable");
-        }
+    public int compareTo(Variable v) {
+        return this.identifier.compareTo(v.identifier);
     }
+
     
 }

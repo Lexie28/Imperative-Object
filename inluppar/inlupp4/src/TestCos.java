@@ -4,6 +4,7 @@ import org.junit.Test;
 
 public class TestCos {
     Constant c1 = new Constant(0);
+    Constant c2 = new Constant(1);
     Cos a = new Cos(c1); //=0
     Cos b = new Cos(c1);
 
@@ -24,7 +25,7 @@ public class TestCos {
 
     @Test
     public void testGetName() {
-        assert "cos".equals(a.getName());
+        assert "cos".equals(Cos.getName());
     }
 
     @Test
@@ -50,6 +51,7 @@ public class TestCos {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 1.0 == a.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c2.equals(ev.evaluate(a, vars));
     }
 }

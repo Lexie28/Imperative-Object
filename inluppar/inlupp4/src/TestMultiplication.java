@@ -5,6 +5,7 @@ import org.junit.Test;
 public class TestMultiplication {
     Constant c1 = new Constant(2.0);
     Constant c2 = new Constant(2.0);
+    Constant c3 = new Constant(4);
     Multiplication a = new Multiplication(c1, c2);
     Multiplication a2 = new Multiplication(c2, c1);
 
@@ -25,7 +26,7 @@ public class TestMultiplication {
 
     @Test
     public void testGetName() {
-        assert "*".equals(a.getName());
+        assert "*".equals(Multiplication.getName());
     }
 
     @Test
@@ -51,6 +52,7 @@ public class TestMultiplication {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 4.0 == a.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c3.equals(ev.evaluate(a, vars));
     }
 }
