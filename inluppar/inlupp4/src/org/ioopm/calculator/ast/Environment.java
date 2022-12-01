@@ -5,6 +5,10 @@ import java.util.TreeSet;
      
 public class Environment extends HashMap<Variable, SymbolicExpression> {
 
+    /**
+     * Used to get the string version of this operation
+     * @return the String representing this operation
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

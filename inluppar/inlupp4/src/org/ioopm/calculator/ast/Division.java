@@ -22,6 +22,10 @@ public class Division extends Binary {
         return 100;
     }
 
+    /**
+     * Accepts the visitor class to Division
+     * @return the visited Division
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

@@ -15,6 +15,10 @@ public class Negation extends Unary {
         return ("-");
     }
 
+    /**
+     * Accepts the visitor class to Negation
+     * @return the visited Negation
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

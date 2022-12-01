@@ -13,6 +13,12 @@ public class EvaluationVisitor implements Visitor {
     // This method gets called from Addition.accept(Visitor v) -- you should
     // be able to see from the eval() methods how these should behave (i.e., 
     // compare this method with your Addition::eval() and Symbolic.addition) 
+
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the addition to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Addition n) {
         // Visit the left hand side and right hand side subexpressions
@@ -33,6 +39,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the assignment to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Assignment n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -48,11 +59,21 @@ public class EvaluationVisitor implements Visitor {
 
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the constant to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Constant n) {
         return new Constant(n.getValue());
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the cos to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Cos n) {
         SymbolicExpression expression = n.expression.accept(this);
@@ -63,6 +84,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the division to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Division n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -75,6 +101,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the exp to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Exp n) {
         SymbolicExpression expression = n.expression.accept(this);
@@ -85,6 +116,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the log to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Log n) {
         SymbolicExpression expression = n.expression.accept(this);
@@ -95,6 +131,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the multiplication to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Multiplication n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -107,6 +148,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the negation to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Negation n) {
         SymbolicExpression expression = n.expression.accept(this);
@@ -117,11 +163,21 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the quit command to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Quit n) {
         throw new RuntimeException("Cannot evaluate a command");
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the Sin to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Sin n) {
         SymbolicExpression expression = n.expression.accept(this);
@@ -132,6 +188,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the subtraction to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Subtraction n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -144,6 +205,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the variable to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Variable n) {
         if(env.containsKey(n)) {
@@ -153,17 +219,32 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the vars command to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Vars n) {
         n.accept(this);
         return n;
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the clear command to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Clear n) {
         throw new RuntimeException("Cannot evaluate a command");
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the scope to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Scope n) {
         env.pushEnvironment(new Environment());
@@ -172,6 +253,11 @@ public class EvaluationVisitor implements Visitor {
         return exp;
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the equals to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Equals n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -186,6 +272,11 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the greater than to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(GT n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -206,6 +297,11 @@ public class EvaluationVisitor implements Visitor {
     }
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the greater than or equals to, to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(GTE n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -226,6 +322,11 @@ public class EvaluationVisitor implements Visitor {
         }
         }
 
+        /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the less than to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(LT n) {
         SymbolicExpression left = n.lhs.accept(this);
@@ -246,6 +347,11 @@ public class EvaluationVisitor implements Visitor {
         }
 }
 
+/**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the less than or equals to, to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(LTE n) {
         SymbolicExpression left = n.lhs.accept(this);

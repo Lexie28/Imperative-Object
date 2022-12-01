@@ -10,6 +10,10 @@ public abstract class Conditionals extends Binary {
         this.elsestate = elsestate;
     }
 
+    /**
+     * Used to get the string version of this operation
+     * @return the String representing this operation
+     */
     public String toString() {
         return ("if" + this.lhs + name + this.rhs + this.ifstate +  " else " + this.elsestate);
     }

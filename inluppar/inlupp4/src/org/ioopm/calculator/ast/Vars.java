@@ -12,6 +12,10 @@ public class Vars extends Command {
         }
      /// The rest of the code
 
+     /**
+     * Accepts the visitor class to Vars
+     * @return the visited Vars
+     */
      @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

@@ -22,6 +22,10 @@ public class Multiplication extends Binary {
         return 100;
     }
 
+    /**
+     * Accepts the visitor class to Multiplication
+     * @return the visited Multiplication
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

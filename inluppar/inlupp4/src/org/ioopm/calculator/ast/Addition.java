@@ -23,6 +23,10 @@ public class Addition extends Binary {
     }
 
 
+    /**
+     * Accepts the visitor class to Addition
+     * @return the visited Addition
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

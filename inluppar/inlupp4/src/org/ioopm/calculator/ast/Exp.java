@@ -16,6 +16,10 @@ public class Exp extends Unary {
    
     }
     
+    /**
+     * Accepts the visitor class to Exp
+     * @return the visited Exp
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

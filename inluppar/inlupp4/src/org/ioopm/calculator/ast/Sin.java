@@ -16,6 +16,10 @@ public class Sin extends Unary {
         return ("sin");
     }
 
+    /**
+     * Accepts the visitor class to Sin
+     * @return the visited Sin
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

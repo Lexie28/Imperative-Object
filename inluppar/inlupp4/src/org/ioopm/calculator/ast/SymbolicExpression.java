@@ -13,7 +13,10 @@ public abstract class SymbolicExpression {
         }
     }
 
-    /// Returns e.g., "Constant(42)" if name is "Constant" and subExpressions is ["42"]
+    /**
+     * Used to get the string version of this operation
+     * @return the String representing this operation
+     */
     public String toString(String msg) {
         StringBuilder sb = new StringBuilder();
         sb.append(this.name);
@@ -84,6 +87,10 @@ public abstract class SymbolicExpression {
         throw new RuntimeException("getValue() called on expression with no value");
     }
 
+    /**
+     * Accepts the visitor class to SymbolicExpression
+     * @return the visited SymbolicExpression
+     */
     public abstract SymbolicExpression accept(Visitor v);
     
 }

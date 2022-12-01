@@ -15,6 +15,10 @@ public class Cos extends Unary {
         return ("cos");
     }
     
+    /**
+     * Accepts the visitor class to Cos
+     * @return the visited Cos
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

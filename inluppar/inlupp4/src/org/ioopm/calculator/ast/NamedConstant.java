@@ -16,10 +16,18 @@ public class NamedConstant extends Atom {
         }
     }
 
+    /**
+     * Used to get the string version of the identifier used in this operation
+     * @return the String representing this identifier
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * Used to get the string version of this operation
+     * @return the String representing this operation
+     */
     public String toString() {
         return this.identifier;
     }
@@ -33,6 +41,10 @@ public class NamedConstant extends Atom {
     }
 
 
+    /**
+     * Accepts the visitor class to NamedConstant
+     * @return the visited NamedConstant
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return new Constant(value);

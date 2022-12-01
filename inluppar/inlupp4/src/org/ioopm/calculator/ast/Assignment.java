@@ -13,6 +13,10 @@ public class Assignment extends Binary {
         return "=";
     }
 
+    /**
+     * Accepts the visitor class to Assignment
+     * @return the visited Assignment
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

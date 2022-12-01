@@ -15,6 +15,10 @@ public class Log extends Unary {
         return ("log");
     }
 
+    /**
+     * Accepts the visitor class to Log
+     * @return the visited Log
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

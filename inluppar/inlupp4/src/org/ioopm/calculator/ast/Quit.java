@@ -10,6 +10,10 @@ public class Quit extends Command {
     }
  /// The rest of the code
 
+ /**
+     * Accepts the visitor class to Quit
+     * @return the visited Quit
+     */
  @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

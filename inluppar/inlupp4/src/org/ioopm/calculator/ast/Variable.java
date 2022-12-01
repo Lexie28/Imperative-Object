@@ -65,11 +65,21 @@ public class Variable extends Atom implements Comparable<Variable> {
         return this.identifier.hashCode();
     }
 
+
+    /**
+     * Accepts the visitor class to Variable
+     * @return the visited Variable
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);
     }
 
+    /**
+     * Compares two different variables
+     * @param v the variable to be compared against
+     * @return an int, if 0, the two strings are equal, otherwise they are not
+     */
     @Override
     public int compareTo(Variable v) {
         return this.identifier.compareTo(v.identifier);

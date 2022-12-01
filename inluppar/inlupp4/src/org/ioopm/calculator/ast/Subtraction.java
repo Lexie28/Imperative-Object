@@ -22,6 +22,11 @@ public class Subtraction extends Binary {
         return 50;
     }
 
+
+    /**
+     * Accepts the visitor class to Subtraction
+     * @return the visited Subtraction
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

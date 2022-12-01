@@ -50,11 +50,20 @@ public class Constant extends Atom {
     }
     }
 
+    /**
+     * Used to determine if two objects are equal
+     * @param other a Constant to be compared to the current (this) one
+     * @return a boolean telling if it is equal or not
+     */
     public boolean equals(Constant other) {
         /// access a private field of other!
         return this.value == other.value;
     }
 
+    /**
+     * Accepts the visitor class to Constant
+     * @return the visited Constant
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

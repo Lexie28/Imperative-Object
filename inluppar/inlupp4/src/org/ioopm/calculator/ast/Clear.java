@@ -10,6 +10,10 @@ public class Clear extends Command {
     }
  /// The rest of the code
 
+ /**
+     * Accepts the visitor class to Clear
+     * @return the visited Clear
+     */
  @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);
