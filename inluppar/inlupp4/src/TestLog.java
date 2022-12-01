@@ -5,6 +5,7 @@ import org.junit.Test;
 
 public class TestLog {
     Constant c = new Constant(2.0);
+    Constant c1 = new Constant(Math.log(2.0));
     Log n = new Log(c);
     Log n2 = new Log(c);
 
@@ -25,7 +26,7 @@ public class TestLog {
 
     @Test
     public void testGetName() {
-        assert "log".equals(n.getName());
+        assert "log".equals(Log.getName());
     }
 
     @Test
@@ -51,6 +52,7 @@ public class TestLog {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert Math.log(2.0) == n.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c1.equals(ev.evaluate(n, vars));
     }
 }

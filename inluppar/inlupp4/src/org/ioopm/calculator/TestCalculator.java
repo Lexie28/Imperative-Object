@@ -1,8 +1,8 @@
 package org.ioopm.calculator;
 
+
 import java.io.IOException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.Scanner;
 
@@ -38,7 +38,8 @@ public class TestCalculator {
                 else
                 {
                     stats.addExpression();
-                    SymbolicExpression evaluatedob = ob.eval(vars);
+                    EvaluationVisitor ev = new EvaluationVisitor();
+                    SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
                     fw.write("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);
                     if (evaluatedob.isConstant()) {

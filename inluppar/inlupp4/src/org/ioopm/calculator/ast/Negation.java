@@ -1,7 +1,5 @@
 package org.ioopm.calculator.ast;
 
-import java.beans.Expression;
-
 public class Negation extends Unary {
     
     public Negation(SymbolicExpression expression)

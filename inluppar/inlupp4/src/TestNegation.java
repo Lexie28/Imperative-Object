@@ -5,6 +5,7 @@ import org.junit.Test;
 
 public class TestNegation {
     Constant c = new Constant(2.0);
+    Constant c1 = new Constant(-2);
     Negation n = new Negation(c);
     Negation n2 = new Negation(c);
 
@@ -25,7 +26,7 @@ public class TestNegation {
 
     @Test
     public void testGetName() {
-        assert "-".equals(n.getName());
+        assert "-".equals(Negation.getName());
     }
 
     @Test
@@ -40,6 +41,7 @@ public class TestNegation {
 
     @Test
     public void testToString() {
+        System.out.println(n.toString());
         assert "- 2.0".equals(n.toString());
     }
 
@@ -51,6 +53,7 @@ public class TestNegation {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert -2.0 == n.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c1.equals(ev.evaluate(n, vars));
     }
 }

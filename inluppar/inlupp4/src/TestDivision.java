@@ -5,6 +5,7 @@ import org.junit.Test;
 public class TestDivision {
     Constant c1 = new Constant(2.0);
     Constant c2 = new Constant(2.0);
+    Constant c3 = new Constant(1);
     Division a = new Division(c1, c2);
     Division a2 = new Division(c2, c1);
 
@@ -25,7 +26,7 @@ public class TestDivision {
 
     @Test
     public void testGetName() {
-        assert "/".equals(a.getName());
+        assert "/".equals(Division.getName());
     }
 
     @Test
@@ -51,6 +52,7 @@ public class TestDivision {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 1.0 == a.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c3.equals(ev.evaluate(a, vars));
     }
 }

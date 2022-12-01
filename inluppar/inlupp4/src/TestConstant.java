@@ -20,7 +20,7 @@ public class TestConstant {
     @Test
     public void testGetName() {
         try {
-            c1.getName();
+            Constant.getName();
             assert false;
         } catch(RuntimeException e) {
             assert true;
@@ -50,7 +50,8 @@ public class TestConstant {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 2.0 == c1.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c1.equals(ev.evaluate(c2, vars));
     }
 }
 

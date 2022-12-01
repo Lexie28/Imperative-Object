@@ -24,7 +24,7 @@ public class TestSin {
 
     @Test
     public void testGetName() {
-        assert "sin".equals(a.getName());
+        assert "sin".equals(Sin.getName());
     }
 
     @Test
@@ -39,6 +39,7 @@ public class TestSin {
 
     @Test
     public void testToString() {
+        System.out.println(a.toString());
         assert "sin 0.0".equals(a.toString());
     }
 
@@ -50,6 +51,7 @@ public class TestSin {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 0.0 == a.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c1.equals(ev.evaluate(a, vars));
     }
 }

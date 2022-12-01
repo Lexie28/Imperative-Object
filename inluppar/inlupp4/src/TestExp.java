@@ -5,6 +5,7 @@ import org.junit.Test;
 
 public class TestExp {
     Constant c = new Constant(2.0);
+    Constant c1 = new Constant(Math.exp(2.0));
     Exp n = new Exp(c);
     Exp n2 = new Exp(c);
 
@@ -25,7 +26,7 @@ public class TestExp {
 
     @Test
     public void testGetName() {
-        assert "exp".equals(n.getName());
+        assert "exp".equals(Exp.getName());
     }
 
     @Test
@@ -51,6 +52,7 @@ public class TestExp {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert Math.exp(2.0) == n.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c1.equals(ev.evaluate(n, vars));
     }
 }

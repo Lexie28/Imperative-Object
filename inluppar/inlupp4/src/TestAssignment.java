@@ -3,10 +3,10 @@ import org.ioopm.calculator.ast.*;
 import org.junit.Test;
 
 public class TestAssignment {
-    Constant c1 = new Constant(2.0);
+    Constant c = new Constant(2.0);
     Variable x = new Variable("x");
-    Assignment a = new Assignment(c1, x);
-    Assignment a2 = new Assignment(c1, x); //TODO?? testa equals
+    Assignment a = new Assignment(c, x);
+    Assignment a2 = new Assignment(c, x);
     //Addition a2 = new Addition(c2, c1);
 
     @Test
@@ -26,7 +26,7 @@ public class TestAssignment {
 
     @Test
     public void testGetName() {
-        assert "=".equals(a.getName());
+        assert "=".equals(Assignment.getName());
     }
 
     @Test
@@ -52,6 +52,7 @@ public class TestAssignment {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert 2.0 == a.eval(vars).getValue();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c.equals(ev.evaluate(a, vars));
     }
 }

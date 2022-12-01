@@ -1,7 +1,5 @@
 package org.ioopm.calculator.ast;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Set;
 

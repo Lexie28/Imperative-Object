@@ -24,7 +24,7 @@ public class TestVariable {
     @Test
     public void testGetName() {
         try {
-            a.getName();
+            Variable.getName();
             assert false;
         }
             catch(RuntimeException e) {
@@ -55,6 +55,7 @@ public class TestVariable {
     @Test
     public void testEval() {
         Environment vars = new Environment();
-        assert b.equals(a.eval(vars));
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert b.equals(ev.evaluate(a, vars));
     }
 }
