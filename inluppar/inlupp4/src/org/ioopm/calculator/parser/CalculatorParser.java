@@ -291,7 +291,7 @@ public class CalculatorParser {
                 while((this.st.ttype != ')')) {
                     func.addArg(identifier());
                     this.st.nextToken();
-                    if(this.st.sval.equals(", ")) {
+                    if(this.st.ttype == ',') {
                         this.st.nextToken();
                         continue;
                     } else if( this.st.ttype != ')'){

@@ -5,9 +5,8 @@ public class FunctionCall extends SymbolicExpression{
     String identifier;
     Atom[] args;
 
-    public FunctionCall(String name, ... args) {
+    public FunctionCall(String name) {
         super(name);
-        this.args = args;
 
     }
 

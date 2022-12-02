@@ -11,16 +11,21 @@ public class Calculator {
         
         final CalculatorParser parser = new CalculatorParser();
         final Environment vars = new Environment();
+        final Environment funcs = new Environment();
         final Stats stats = new Stats();
         final EvaluationVisitor ev = new EvaluationVisitor();
         Scanner sc = new Scanner(System.in);
+
+        Variable currentFuncName = new Variable("");
         
         while (true) {
+
             NamedConstantChecker ncc = new NamedConstantChecker();
             ReassignmentChecker reassc = new ReassignmentChecker();
             String input = sc.nextLine();
             try {
                 SymbolicExpression ob = parser.parse(input, vars);
+
                 if (ob.isCommand())
                 {
                     if (ob instanceof Clear) {
@@ -32,9 +37,18 @@ public class Calculator {
                     if (ob instanceof Quit) {
                         break;
                     }
-                } 
-                else
-                {
+                    if (ob instanceof End) {
+                        currentFuncName = new Variable("");
+                    }
+                } else if (parser.getFunctionParsingMode()){
+                    if(ob instanceof FunctionDeclaration fd) {
+                        funcs.put(new Variable(fd.getIdentifier()), fd);
+                        currentFuncName = new Variable(fd.getIdentifier());
+                    } else {
+                        ((FunctionDeclaration) funcs.get(currentFuncName)).addExpression(ob);
+
+                    }
+                } else {
                     stats.addExpression();
 
                     // Namned Constant Checker
@@ -55,7 +69,7 @@ public class Calculator {
                     }
 
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
-                    System.out.println(evaluatedob.toString());
+                    
 
                     System.out.println("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);

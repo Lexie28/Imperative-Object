@@ -11,11 +11,35 @@ public class FunctionDeclaration extends SymbolicExpression {
     public FunctionDeclaration(String name) {
         super(name);
         this.identifier = name;
-        args = new ArrayList<>();
+        this.args = new ArrayList<>();
     }
 
     public void addArg(SymbolicExpression arg) {
-        args.add(arg);
+        this.args.add(arg);
+    }
+
+    public void addExpression(SymbolicExpression expression) {
+        this.seq.add(expression);
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb
+        .append("function ")
+        .append(identifier)
+        .append("(");
+        for(SymbolicExpression s : args) {
+            sb.append(s.toString());
+            if(args.indexOf(s) != args.size()-1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
 
