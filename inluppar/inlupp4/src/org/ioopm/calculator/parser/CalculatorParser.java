@@ -8,6 +8,9 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Function;
+
+import javax.management.RuntimeErrorException;
 
 /**
  * Represents the parsing of strings into valid expressions defined in the AST.
@@ -35,7 +38,14 @@ public class CalculatorParser {
     private static String GTE = ">=";
     private static String LTE = "<=";
     private static String EQUALS = "==";
+    private static String FUNCTION = "function";
 
+
+    private boolean functionParsingMode = false;
+
+    public boolean getFunctionParsingMode() {
+        return functionParsingMode;
+    }
 
 
     // unallowerdVars is used to check if variabel name that we
@@ -109,9 +119,17 @@ public class CalculatorParser {
             return Quit.instance();
         } else if (this.st.sval.equals("Clear")) {
             return Clear.instance();
-        } else {
+        } else if (this.st.sval.equals("Vars")) {
             return Vars.instance();
-        }
+        } else {
+            if(functionParsingMode) {
+                functionParsingMode = false;
+                return End.instance();
+            } else {
+                throw new RuntimeException("End can only occur as end of function definition");
+            }
+            
+        }  
     }
 
 
@@ -250,7 +268,41 @@ public class CalculatorParser {
                 result = unary();
             } else if(this.st.sval.equals(IF)) {
                 result = conditional();
+
+            
     
+            } else if (this.st.sval.equals(FUNCTION)) {
+                FunctionDeclaration func;
+                if(functionParsingMode == true) {
+                    throw new RuntimeException("Nested functions are not permitted");
+                }
+                this.st.nextToken();
+                if (this.st.ttype == StreamTokenizer.TT_WORD) {
+                    func = new FunctionDeclaration(this.st.sval);
+                } else {
+                    throw new SyntaxErrorException("expected '('");
+                }
+                this.st.nextToken();
+                if (this.st.ttype != '(') {
+                    throw new SyntaxErrorException("expected '('");
+                }
+
+                this.st.nextToken();
+                while((this.st.ttype != ')')) {
+                    func.addArg(identifier());
+                    this.st.nextToken();
+                    if(this.st.sval.equals(", ")) {
+                        this.st.nextToken();
+                        continue;
+                    } else if( this.st.ttype != ')'){
+                        throw new SyntaxErrorException("expected ')'"); 
+                    }
+                }
+
+                result = func;
+
+
+
             } else {
                 result = identifier();
 
