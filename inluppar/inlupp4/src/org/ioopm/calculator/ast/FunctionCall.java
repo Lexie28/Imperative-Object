@@ -3,9 +3,12 @@ package org.ioopm.calculator.ast;
 public class FunctionCall extends SymbolicExpression{
 
     String identifier;
+    Atom[] args;
 
-    public FunctionCall(String name, Variable... args) {
+    public FunctionCall(String name, Atom... args) {
         super(name);
+        this.args = args;
+
     }
 
 

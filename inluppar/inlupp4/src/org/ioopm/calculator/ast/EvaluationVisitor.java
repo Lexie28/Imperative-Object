@@ -374,7 +374,11 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(FunctionDeclaration n) {
-        throw new RuntimeException("Don't do this");
+        
+
+
+
+
     }
 
     @Override
