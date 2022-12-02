@@ -1,5 +1,7 @@
 package org.ioopm.calculator.ast;
 
+import java.util.Iterator;
+
 public class EvaluationVisitor implements Visitor {
 
     private Stack env = new Stack();
@@ -386,12 +388,19 @@ public class EvaluationVisitor implements Visitor {
 
     @Override
     public SymbolicExpression visit(FunctionCall n) {
-        throw new RuntimeException("no ");
+        env.pushEnvironment(new Environment());
+        SymbolicExpression expression = n.accept(this);
+        env.popEnvironment();
+        return expression;
     }
 
     @Override
     public SymbolicExpression visit(Sequence n) {
-        throw new RuntimeException("no ");
-    }
+        SymbolicExpression result = n.expression.accept(this);
+        if(n.next != null) {
+            n.next.accept(this);
+        }
+        return result;
+     }
 
 }

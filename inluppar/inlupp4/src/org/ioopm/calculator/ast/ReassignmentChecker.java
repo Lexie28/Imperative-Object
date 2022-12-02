@@ -280,22 +280,22 @@ public class ReassignmentChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(End n) {
-        throw new RuntimeException("no");
+        throw new RuntimeException("end");
     }
 
     @Override
     public SymbolicExpression visit(FunctionDeclaration n) {
-        throw new RuntimeException("no");
+        throw new RuntimeException("r fd");
     }
 
     @Override
     public SymbolicExpression visit(FunctionCall n) {
-        throw new RuntimeException("no");
+        throw new RuntimeException("fc");
     }
 
     @Override
     public SymbolicExpression visit(Sequence n) {
-        throw new RuntimeException("no");
+        throw new RuntimeException("seq");
     }
 
     
