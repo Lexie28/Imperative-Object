@@ -259,4 +259,24 @@ public class NamedConstantChecker implements Visitor {
         return n;
     }
 
+    @Override
+    public SymbolicExpression visit(End n) {
+        throw new RuntimeException("no");
+    }
+
+    @Override
+    public SymbolicExpression visit(FunctionDeclaration n) {
+
+    }
+
+    @Override
+    public SymbolicExpression visit(FunctionCall n) {
+
+    }
+
+    @Override
+    public SymbolicExpression visit(Sequence n) {
+
+    }
+
 }

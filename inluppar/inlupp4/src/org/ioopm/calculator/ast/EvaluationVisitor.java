@@ -373,17 +373,25 @@ public class EvaluationVisitor implements Visitor {
     }
 
     @Override
+    public SymbolicExpression visit(End n) {
+        throw new RuntimeException("Cannot evaluate a command");
+    }
+
+    @Override
     public SymbolicExpression visit(FunctionDeclaration n) {
         
-
-
 
 
     }
 
     @Override
     public SymbolicExpression visit(FunctionCall n) {
-        
+
+    }
+
+    @Override
+    public SymbolicExpression visit(Sequence n) {
+
     }
 
 }

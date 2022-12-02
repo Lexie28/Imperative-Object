@@ -22,4 +22,8 @@ public interface Visitor {
     public SymbolicExpression visit(LT n);
     public SymbolicExpression visit(LTE n);
     public SymbolicExpression visit(Equals n);
+    public SymbolicExpression visit(End n);
+    public SymbolicExpression visit(FunctionDeclaration n);
+    public SymbolicExpression visit(FunctionCall n);
+    public SymbolicExpression visit(Sequence n);
 }
