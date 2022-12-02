@@ -257,7 +257,7 @@ public class CalculatorParser {
             result = assignment();
             /// This captures unbalanced parentheses!
             if (this.st.nextToken() != ')') {
-                throw new SyntaxErrorException("expected ')'");
+                throw new SyntaxErrorException("i1 expected ')'");
             }
         } else if (this.st.ttype == NEGATION) {
             result = unary();
@@ -308,7 +308,28 @@ public class CalculatorParser {
                 result = func;
 
 
+            } else if(funcs.containsKey(new Variable(st.sval))) {
+                FunctionCall funcCall = new FunctionCall(st.sval, ((FunctionDeclaration) funcs.get(new Variable(st.sval))).seq);
+                this.st.nextToken();
+                if( this.st.ttype != '('){
+                    throw new SyntaxErrorException("expected '('"); 
+                }
 
+                this.st.nextToken();
+                while((this.st.ttype != ')')) {
+                    funcCall.addArg(primary());
+                    this.st.nextToken();
+                    if(this.st.ttype == ',') {
+                        this.st.nextToken();
+                        continue;
+                    } else if( this.st.ttype != ')'){
+                        throw new SyntaxErrorException("i expected ')'"); 
+                    }
+                }
+
+                result = funcCall;
+
+                 
             } else {
                 result = identifier();
 

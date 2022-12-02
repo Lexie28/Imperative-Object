@@ -271,12 +271,16 @@ public class NamedConstantChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(FunctionCall n) {
-        throw new RuntimeException("fc");
+        return n.accept(this);
     }
 
     @Override
     public SymbolicExpression visit(Sequence n) {
-        throw new RuntimeException("seq");
+        SymbolicExpression result = n.expression.accept(this);
+        if(n.next != null) {
+            n.next.accept(this);
+        }
+        return result;
     }
 
 }

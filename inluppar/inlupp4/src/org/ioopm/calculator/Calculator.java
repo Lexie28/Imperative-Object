@@ -24,7 +24,7 @@ public class Calculator {
             ReassignmentChecker reassc = new ReassignmentChecker();
             String input = sc.nextLine();
             try {
-                SymbolicExpression ob = parser.parse(input, vars);
+                SymbolicExpression ob = parser.parse(input, vars, funcs);
 
                 if (ob.isCommand())
                 {
