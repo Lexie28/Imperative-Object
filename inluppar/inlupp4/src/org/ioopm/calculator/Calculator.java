@@ -55,6 +55,7 @@ public class Calculator {
                     }
 
                     SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
+                    System.out.println(evaluatedob.toString());
 
                     System.out.println("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);

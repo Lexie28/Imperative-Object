@@ -1,16 +1,21 @@
 package org.ioopm.calculator.ast;
 
+import java.util.ArrayList;
+
 public class FunctionDeclaration extends SymbolicExpression {
     
     String identifier;
-    Variable[] args;
+    ArrayList<SymbolicExpression> args;
     Sequence seq;
 
-    public FunctionDeclaration(String name,Sequence sequence, Variable... args ) {
+    public FunctionDeclaration(String name) {
         super(name);
         this.identifier = name;
-        this.seq = sequence;
-        this.args = args;
+        args = new ArrayList<>();
+    }
+
+    public void addArg(SymbolicExpression arg) {
+        args.add(arg);
     }
 
 
