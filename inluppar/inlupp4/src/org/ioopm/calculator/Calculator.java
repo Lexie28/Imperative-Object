@@ -47,8 +47,21 @@ public class Calculator {
                         funcs.put(new Variable(fd.getIdentifier()), fd);
                         currentFuncName = new Variable(fd.getIdentifier());
                     } else {
-                        ((FunctionDeclaration) funcs.get(currentFuncName)).addExpression(ob);
-
+                        if(ncc.check(ob) == false) {
+                            System.out.println("Error, assignment to named constants:");
+                            for(SymbolicExpression expression : ncc.checkList) {
+                                System.out.println("" + expression);
+                            }
+                            continue;
+                        }
+                        if(reassc.check(ob) == false) {
+                            for(SymbolicExpression expression : reassc.reassignmentList) {
+                                System.out.println("Error, the variable " + expression + " is reassigned." );
+                            }
+                            continue;
+                        } else {
+                            ((FunctionDeclaration) funcs.get(currentFuncName)).addExpression(ob);
+                        }
                     }
                 } else {
                     stats.addExpression();

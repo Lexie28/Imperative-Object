@@ -290,7 +290,7 @@ public class ReassignmentChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(FunctionCall n) {
-        return n.seq.accept(this);
+        return n;
     }
 
     @Override
