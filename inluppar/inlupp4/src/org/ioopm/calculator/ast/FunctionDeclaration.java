@@ -6,7 +6,7 @@ public class FunctionDeclaration extends SymbolicExpression {
     
     String identifier;
     ArrayList<SymbolicExpression> args;
-    Sequence seq;
+    public Sequence seq;
 
     public FunctionDeclaration(String name) {
         super(name);
@@ -19,7 +19,12 @@ public class FunctionDeclaration extends SymbolicExpression {
     }
 
     public void addExpression(SymbolicExpression expression) {
-        this.seq.add(expression);
+        if(this.seq == null) {
+            this.seq = new Sequence(name, expression);
+        } else {
+            this.seq.add(expression);
+        }
+        
     }
 
     public String getIdentifier() {

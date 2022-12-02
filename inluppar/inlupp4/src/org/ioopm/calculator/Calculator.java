@@ -38,7 +38,19 @@ public class Calculator {
                         break;
                     }
                     if (ob instanceof End) {
+
+                        FunctionDeclaration fd = (FunctionDeclaration) funcs.get(currentFuncName);
+                        System.out.println(fd.toString());
+
+                        Sequence se = fd.seq;
+                        while(se != null) {
+                            System.out.println(se.expression);
+                            se = se.next;
+                        }
+
+
                         currentFuncName = new Variable("");
+
                     }
                 } else if (parser.getFunctionParsingMode()){
                     if(ob instanceof FunctionDeclaration fd) {

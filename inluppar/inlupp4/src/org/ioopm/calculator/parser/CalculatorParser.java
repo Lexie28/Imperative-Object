@@ -53,7 +53,7 @@ public class CalculatorParser {
     // or 10 + x = L is not allowed
     private final ArrayList < String > unallowedVars = new ArrayList < String > (Arrays.asList("Quit",
         "Vars",
-        "Clear"));
+        "Clear", "End"));
 
     /**
      * Used to parse the inputted string by the Calculator program
@@ -89,7 +89,10 @@ public class CalculatorParser {
         }
 
         if (this.st.ttype == StreamTokenizer.TT_WORD) { // vilken typ det senaste tecken vi lÃ¤ste in hade.
-            if (this.st.sval.equals("Quit") || this.st.sval.equals("Vars") || this.st.sval.equals("Clear")) { // sval = string Variable
+            if (this.st.sval.equals("Quit") 
+            || this.st.sval.equals("Vars") 
+            || this.st.sval.equals("Clear") 
+            || this.st.sval.equals("End")) { // sval = string Variable
                 result = command();
             } else {
                 result = assignment(); // går vidare med uttrycket.
@@ -276,6 +279,7 @@ public class CalculatorParser {
                 if(functionParsingMode == true) {
                     throw new RuntimeException("Nested functions are not permitted");
                 }
+                functionParsingMode = true;
                 this.st.nextToken();
                 if (this.st.ttype == StreamTokenizer.TT_WORD) {
                     func = new FunctionDeclaration(this.st.sval);
