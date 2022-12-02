@@ -280,12 +280,12 @@ public class ReassignmentChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(End n) {
-        throw new RuntimeException("end");
+        throw new RuntimeException("Reassignment not defined for Commands");
     }
 
     @Override
     public SymbolicExpression visit(FunctionDeclaration n) {
-        throw new RuntimeException("r fd");
+        throw new RuntimeException("Reassignment not defined for FunctionDeclerations");
     }
 
     @Override
