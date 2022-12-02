@@ -18,6 +18,7 @@ import javax.management.RuntimeErrorException;
 public class CalculatorParser {
     private StreamTokenizer st;
     private Environment vars;
+    private Environment funcs;
     private static char MULTIPLY = '*';
     private static char ADDITION = '+';
     private static char SUBTRACTION = '-';
@@ -62,7 +63,7 @@ public class CalculatorParser {
      * @return a SymbolicExpression to be evaluated
      * @throws IOException by nextToken() if it reads invalid input
      */
-    public SymbolicExpression parse(String inputString, Environment vars) throws IOException {
+    public SymbolicExpression parse(String inputString, Environment vars, Environment funcs) throws IOException {
 
         // StringTokenizer setup
         this.st = new StreamTokenizer(new StringReader(inputString)); // reads from inputString via stringreader.  
@@ -71,6 +72,7 @@ public class CalculatorParser {
         this.st.eolIsSignificant(true);
 
         this.vars = vars;
+        this.funcs = funcs;
         SymbolicExpression result = statement(); // calls to statement
         return result; // the final result
     }
