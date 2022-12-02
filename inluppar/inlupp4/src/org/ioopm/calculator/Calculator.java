@@ -39,16 +39,6 @@ public class Calculator {
                     }
                     if (ob instanceof End) {
 
-                        FunctionDeclaration fd = (FunctionDeclaration) funcs.get(currentFuncName);
-                        System.out.println(fd.toString());
-
-                        Sequence se = fd.seq;
-                        while(se != null) {
-                            System.out.println(se.expression);
-                            se = se.next;
-                        }
-
-
                         currentFuncName = new Variable("");
 
                     }
@@ -80,7 +70,7 @@ public class Calculator {
                         continue;
                     }
 
-                    SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
+                    SymbolicExpression evaluatedob = ev.evaluate(ob, vars, funcs);
                     
 
                     System.out.println("" + evaluatedob);

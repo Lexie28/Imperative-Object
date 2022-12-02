@@ -10,6 +10,7 @@ public class FunctionCall extends SymbolicExpression{
 
     public FunctionCall(String name, Sequence sequence) {
         super(name);
+        this.identifier = name;
         args = new ArrayList<>();
         this.seq = sequence;
     }
@@ -21,7 +22,7 @@ public class FunctionCall extends SymbolicExpression{
 
     @Override
     public SymbolicExpression accept(Visitor v) {
-        return v.visit(seq);
+        return v.visit(this);
     }
 
 
