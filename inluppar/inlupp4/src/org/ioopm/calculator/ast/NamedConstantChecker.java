@@ -271,7 +271,7 @@ public class NamedConstantChecker implements Visitor {
 
     @Override
     public SymbolicExpression visit(FunctionCall n) {
-        return n.accept(this);
+        return n.seq.accept(this);
     }
 
     @Override

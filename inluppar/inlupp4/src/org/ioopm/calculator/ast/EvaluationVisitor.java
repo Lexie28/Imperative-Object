@@ -5,10 +5,13 @@ import java.util.Iterator;
 public class EvaluationVisitor implements Visitor {
 
     private Stack env = new Stack();
+    Environment funcs;
 
-    public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env) {
+    public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env, Environment funcs) {
         this.env.pushEnvironment(env);
+        this.funcs = funcs;
         return topLevel.accept(this);
+        
     }
 
 
@@ -389,7 +392,27 @@ public class EvaluationVisitor implements Visitor {
     @Override
     public SymbolicExpression visit(FunctionCall n) {
         env.pushEnvironment(new Environment());
-        SymbolicExpression expression = n.accept(this);
+        
+        FunctionDeclaration fd = (FunctionDeclaration) funcs.get(new Variable(n.identifier));
+
+        if(fd == null) {
+            throw new RuntimeException("Function does not exist");
+        }
+
+        if(fd.args.size() > n.args.size()) {
+            throw new RuntimeException("Function called with too few arguments. Expected " + fd.args.size() + ", got " + n.args.size());
+        } else if(fd.args.size() < n.args.size()) {
+            throw new RuntimeException("Function called with too many arguments. Expected " + fd.args.size() + ", got " + n.args.size());
+        } else {
+
+            for(int i = 0; i< fd.args.size(); i++) {
+                new Assignment(n.args.get(i), fd.args.get(i)).accept(this);
+            }
+
+        }
+
+        SymbolicExpression expression = n.seq.accept(this);
+
         env.popEnvironment();
         return expression;
     }
@@ -398,7 +421,7 @@ public class EvaluationVisitor implements Visitor {
     public SymbolicExpression visit(Sequence n) {
         SymbolicExpression result = n.expression.accept(this);
         if(n.next != null) {
-            n.next.accept(this);
+            result = n.next.accept(this);
         }
         return result;
      }
