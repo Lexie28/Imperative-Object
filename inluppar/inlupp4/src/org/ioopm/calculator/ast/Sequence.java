@@ -1,26 +1,28 @@
 package org.ioopm.calculator.ast;
 
-import java.util.LinkedList;
-
 public class Sequence extends SymbolicExpression {
 
-    public LinkedList<SymbolicExpression> expressionsList;
+    public SymbolicExpression expression;
+    public Sequence next;
 
 
-    public Sequence(String name, Object[] subExpressions) {
-        super(name, subExpressions);
-        expressionsList = new LinkedList<>();
+    public Sequence(String name, SymbolicExpression expression) {
+        super(name);
+        this.expression = expression;
     }
 
     public void add(SymbolicExpression expression) {
-        expressionsList.add(expression);
+        if(this.next == null) {
+            next = new Sequence(name, expression);
+        } else {
+            next.add(expression);
+        }
     }
 
 
     @Override
     public SymbolicExpression accept(Visitor v) {
-        // TODO Auto-generated method stub
-        return null;
+        return v.visit(this);
     }
     
 }
