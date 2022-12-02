@@ -18,6 +18,4 @@ public abstract class Conditionals extends Binary {
         return ("if" + this.lhs + name + this.rhs + this.ifstate +  " else " + this.elsestate);
     }
     
-
-    
 }

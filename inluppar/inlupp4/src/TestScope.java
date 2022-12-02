@@ -2,10 +2,12 @@ import org.ioopm.calculator.ast.*;
 
 import org.junit.Test;
 
-public class TestSin {
-    Constant c1 = new Constant(0);
-    Sin a = new Sin(c1); //=0
-    Sin b = new Sin(c1);
+
+public class TestScope {
+    Constant c1 = new Constant(2.0);
+    Constant c2 = new Constant(3.0);
+    Scope a = new Scope(c1);
+    Scope a2 = new Scope(new Assignment(c1, new Variable("x")));
 
     @Test
     public void testGetValue() {
@@ -24,7 +26,7 @@ public class TestSin {
 
     @Test
     public void testGetName() {
-        assert "sin".equals(Sin.getName());
+        assert "scope".equals(Scope.getName());
     }
 
     @Test
@@ -39,12 +41,12 @@ public class TestSin {
 
     @Test
     public void testToString() {
-        assert "sin 0.0".equals(a.toString());
+        assert "{2.0}".equals(a.toString());
     }
 
     @Test
     public void testEquals() {
-        assert a.equals(b);
+        assert !a.equals(a2);
     }
 
     @Test
@@ -52,5 +54,7 @@ public class TestSin {
         Environment vars = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
         assert c1.equals(ev.evaluate(a, vars));
-    }
+        assert c1.equals(ev.evaluate(a2, vars));
+
+    } 
 }

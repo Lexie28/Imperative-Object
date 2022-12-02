@@ -239,14 +239,7 @@ public class CalculatorParser {
         } else if (this.st.ttype == NEGATION) {
             result = unary();
         } else if(this.st.ttype == OPEN_SCOPE) {
-            this.st.nextToken();
-            //this.vars.pushEnvironment(new Environment());
-            result = new Scope(assignment());
-
-            this.st.nextToken();
-            if (this.st.ttype != CLOSE_SCOPE) {
-                throw new SyntaxErrorException("expected '}'");
-            }
+            result = scope();
         } else if (this.st.ttype == StreamTokenizer.TT_WORD) {
             if (st.sval.equals(SIN) ||
                 st.sval.equals(COS) ||
@@ -256,68 +249,11 @@ public class CalculatorParser {
 
                 result = unary();
             } else if(this.st.sval.equals(IF)) {
-                    this.st.nextToken();
+                result = conditional();
     
-                    SymbolicExpression lhs = expression();
-                    String op = "";
-                    
-                    this.st.nextToken();
-                    if (st.ttype == LT) {
-                        this.st.nextToken();
-                        op = "" + LT;
-                        if(st.ttype == ASSIGNMENT) {
-                            this.st.nextToken();
-                            op = LTE;
-                        }
-                        
-                    } else if(st.ttype == GT) {
-                        this.st.nextToken();
-                        op = "" + GT;
-                        if(st.ttype == ASSIGNMENT) {
-                            this.st.nextToken();
-                            op = GTE;
-                        }
-    
-                    } else if(st.ttype == ASSIGNMENT) {
-                        this.st.nextToken();
-                        if(st.ttype == ASSIGNMENT) {
-                            this.st.nextToken();
-                            op = "" + EQUALS;
-                        } else {
-                            throw new RuntimeException("expected conditional operator");
-                        }
-                        
-                    } else {
-                        throw new RuntimeException("expected conditional operator");
-                    }
-
-                    SymbolicExpression rhs = expression();
-
-                    this.st.nextToken();
-                    SymbolicExpression ifstate = assignment();
-                    
-                    this.st.nextToken();
-                    if(this.st.ttype == StreamTokenizer.TT_WORD && !this.st.sval.equals(ELSE)) {
-                        throw new RuntimeException("expected 'else'");
-                    }
-    
-                    this.st.nextToken();
-                    SymbolicExpression elsestate = assignment();
-    
-                    if(op.equals(""+LT)) {
-                        result = new LT(lhs, rhs, ifstate, elsestate);
-                    } else if(op.equals(""+GT)) {
-                        result = new GT(lhs, rhs, ifstate, elsestate);
-                    } else if(op.equals(""+LTE)) {
-                        result = new LTE(lhs, rhs, ifstate, elsestate);
-                    } else if(op.equals(""+GTE)) {
-                        result = new GTE(lhs, rhs, ifstate, elsestate);
-                    } else {
-                        result = new Equals(lhs, rhs, ifstate, elsestate);
-                    } 
-    
-                } else {
+            } else {
                 result = identifier();
+
             }
         }  else {
             this.st.pushBack();
@@ -326,6 +262,95 @@ public class CalculatorParser {
         return result;
     }
 
+    private SymbolicExpression scope() throws IOException {
+        SymbolicExpression result;
+        if(this.st.ttype == OPEN_SCOPE) {
+            this.st.nextToken();
+            result = new Scope(assignment());
+
+            this.st.nextToken();
+            if (this.st.ttype != CLOSE_SCOPE) {
+                throw new SyntaxErrorException("expected '}'");
+            }
+        } else {
+            throw new SyntaxErrorException("expected '{'");
+        }
+
+        return result;
+    }
+
+    private SymbolicExpression conditional() throws IOException {
+        if(!this.st.sval.equals(IF)) {
+            throw new RuntimeException("expected 'if'");
+        }
+
+        SymbolicExpression result;
+        this.st.nextToken();
+
+        SymbolicExpression lhs = expression();
+        String op = "";
+    
+        this.st.nextToken();
+
+        if (st.ttype == LT) {
+            this.st.nextToken();
+            op =""+LT ;
+            if(st.ttype == ASSIGNMENT) {
+                this.st.nextToken();
+                op = ""+LTE;
+            }
+            
+        } else if(st.ttype == GT) {
+            this.st.nextToken();
+            op = "" + GT;
+            if(st.ttype == ASSIGNMENT) {
+                this.st.nextToken();
+                op = "" + GTE;
+            }
+
+        } else if(st.ttype == ASSIGNMENT) {
+            this.st.nextToken();
+            if(st.ttype == ASSIGNMENT) {
+                this.st.nextToken();
+                op = "" + EQUALS;
+            } else {
+                throw new RuntimeException("expected conditional operator");
+            }
+            
+        } else {
+            throw new RuntimeException("expected conditional operator");
+        }
+
+        SymbolicExpression rhs = expression();
+
+        this.st.nextToken();
+        SymbolicExpression ifstate = assignment();
+        
+        this.st.nextToken();
+        if(this.st.ttype == StreamTokenizer.TT_WORD && !this.st.sval.equals(ELSE)) {
+            throw new RuntimeException("expected 'else'");
+        }
+
+        this.st.nextToken();
+        SymbolicExpression elsestate = assignment();
+
+
+        if(op.equals(""+LT)) {
+            result = new LT(lhs, rhs, ifstate, elsestate);
+        } else if(op.equals(""+GT)) {
+            result = new GT(lhs, rhs, ifstate, elsestate);
+        } else if(op.equals(""+LTE)) {
+            result = new LTE(lhs, rhs, ifstate, elsestate);
+        } else if(op.equals(""+GTE)) {
+            result = new GTE(lhs, rhs, ifstate, elsestate);
+        } else if(op.equals(EQUALS)){
+            result = new Equals(lhs, rhs, ifstate, elsestate);
+        } else {
+            throw new RuntimeException("expected conditional operator");
+        }
+
+        return result;
+    }
 
     /**
      * Checks what type of Unary operation the token read is and

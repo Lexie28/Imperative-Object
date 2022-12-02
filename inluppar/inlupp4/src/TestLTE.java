@@ -3,56 +3,57 @@ import org.ioopm.calculator.ast.*;
 import org.junit.Test;
 
 
-public class TestNegation {
-    Constant c = new Constant(2.0);
-    Constant c1 = new Constant(-2);
-    Negation n = new Negation(c);
-    Negation n2 = new Negation(c);
+public class TestLTE {
+    Constant c1 = new Constant(2.0);
+    Constant c2 = new Constant(3.0);
+    LTE a = new LTE(c2, c1, c2, c1);
+    LTE a2 = new LTE(c1, c2, c1, c2);
 
-    @Test 
+    @Test
     public void testGetValue() {
-        try{
-            n.getValue();
+        try {
+            a.getValue();
             assert false;
-        } catch (RuntimeException e) {
+        } catch(RuntimeException e) {
             assert true;
         }
     }
 
     @Test
     public void testIsConstant() {
-        assert n.isConstant() == false;
+        assert false == a.isConstant();
     }
 
     @Test
     public void testGetName() {
-        assert "-".equals(Negation.getName());
+        assert "<=".equals(LTE.getName());
     }
 
     @Test
     public void testIsCommand() {
-        assert false == n.isCommand();
+        assert false == a.isCommand();
     }
 
     @Test
     public void testPriority() {
-        assert 150 == n.getPriority();
+        assert 0 == a.getPriority();
     }
 
     @Test
     public void testToString() {
-        assert "- 2.0".equals(n.toString());
+        assert "if3.0<=2.03.0 else 2.0".equals(a.toString());
     }
 
     @Test
     public void testEquals() {
-        assert n.equals(n2);
+        assert !a.equals(a2);
     }
 
     @Test
     public void testEval() {
         Environment vars = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert c1.equals(ev.evaluate(n, vars));
-    }
+        assert !c2.equals(ev.evaluate(a, vars));
+
+    }   
 }
