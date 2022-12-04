@@ -55,7 +55,8 @@ public class TestVariable {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert b.equals(ev.evaluate(a, vars));
+        assert b.equals(ev.evaluate(a, vars, funcs));
     }
 }

@@ -52,7 +52,8 @@ public class TestLog {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert c1.equals(ev.evaluate(n, vars));
+        assert c1.equals(ev.evaluate(n, vars, funcs));
     }
 }

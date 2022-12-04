@@ -296,10 +296,10 @@ public class EvaluationVisitor implements Visitor {
             {
                 return n.elsestate.accept(this);
             }
-    }
-    else {
-        throw new RuntimeException("Could not compare");
-    }
+        }
+        else {
+            throw new RuntimeException("Could not compare");
+        }
     }
 
     /**
@@ -377,11 +377,22 @@ public class EvaluationVisitor implements Visitor {
         }
     }
 
+    
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the end command to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(End n) {
         throw new RuntimeException("Cannot evaluate a command");
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the function declaration to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(FunctionDeclaration n) {
         throw new RuntimeException("no ");
@@ -389,6 +400,11 @@ public class EvaluationVisitor implements Visitor {
 
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the function call to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(FunctionCall n) {
         env.pushEnvironment(new Environment());
@@ -417,6 +433,11 @@ public class EvaluationVisitor implements Visitor {
         return expression;
     }
 
+    /**
+     * Used to visit (and therefore evaluate) an expression
+     * @param n the sequence to be visited
+     * @return the visited symbolicexpression
+     */
     @Override
     public SymbolicExpression visit(Sequence n) {
         SymbolicExpression result = n.expression.accept(this);

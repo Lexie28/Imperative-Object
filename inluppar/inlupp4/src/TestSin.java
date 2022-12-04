@@ -50,7 +50,8 @@ public class TestSin {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert c1.equals(ev.evaluate(a, vars));
+        assert c1.equals(ev.evaluate(a, vars, funcs));
     }
 }

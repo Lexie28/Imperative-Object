@@ -52,9 +52,10 @@ public class TestScope {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert c1.equals(ev.evaluate(a, vars));
-        assert c1.equals(ev.evaluate(a2, vars));
+        assert c1.equals(ev.evaluate(a, vars, funcs));
+        assert c1.equals(ev.evaluate(a2, vars, funcs));
 
     } 
 }

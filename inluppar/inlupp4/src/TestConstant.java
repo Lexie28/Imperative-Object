@@ -50,8 +50,9 @@ public class TestConstant {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert c1.equals(ev.evaluate(c2, vars));
+        assert c1.equals(ev.evaluate(c2, vars, funcs));
     }
 }
 

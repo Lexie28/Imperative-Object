@@ -11,6 +11,10 @@ public class Sequence extends SymbolicExpression {
         this.expression = expression;
     }
 
+    /**
+     * Used to add an expression to the sequence
+     * @param expression the expression to be added to the sequence
+     */
     public void add(SymbolicExpression expression) {
         if(this.next == null) {
             next = new Sequence(name, expression);
@@ -20,6 +24,10 @@ public class Sequence extends SymbolicExpression {
     }
 
 
+    /**
+     * Accepts the visitor class to sequence
+     * @return the visited sequence
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

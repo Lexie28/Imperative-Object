@@ -14,10 +14,19 @@ public class FunctionDeclaration extends SymbolicExpression {
         this.args = new ArrayList<>();
     }
 
+    /**
+     * Used to add arguments to the function declaration list
+     * @param arg the argument to be added to this list
+     */
     public void addArg(SymbolicExpression arg) {
         this.args.add(arg);
     }
 
+
+    /**
+     * Used to add an expression to the function declaration sequence
+     * @param expression the expression to be added to the sequence
+     */
     public void addExpression(SymbolicExpression expression) {
         if(this.seq == null) {
             this.seq = new Sequence(name, expression);
@@ -27,10 +36,18 @@ public class FunctionDeclaration extends SymbolicExpression {
         
     }
 
+    /**
+     * Used get the identifier of the function declaration
+     * @return a String representing the identifier of the function declaration
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * Used to get the string version of this operation
+     * @return the String representing this operation
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb
@@ -48,6 +65,10 @@ public class FunctionDeclaration extends SymbolicExpression {
     }
 
 
+    /**
+     * Accepts the visitor class to function declaration
+     * @return the visited Function Declaration
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

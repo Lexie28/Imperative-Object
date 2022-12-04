@@ -53,10 +53,11 @@ public class TestEquals {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        System.out.println(ev.evaluate(a, vars).toString());
-        assert c1.equals(ev.evaluate(a, vars));
-        assert c1.equals(ev.evaluate(a3, vars));
+        System.out.println(ev.evaluate(a, vars, funcs).toString());
+        assert c1.equals(ev.evaluate(a, vars, funcs));
+        assert c1.equals(ev.evaluate(a3, vars, funcs));
 
     }   
 }

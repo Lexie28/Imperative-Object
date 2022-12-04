@@ -51,7 +51,8 @@ public class TestCos {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert c2.equals(ev.evaluate(a, vars));
+        assert c2.equals(ev.evaluate(a, vars, funcs));
     }
 }

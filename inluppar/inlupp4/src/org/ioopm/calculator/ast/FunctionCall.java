@@ -15,11 +15,19 @@ public class FunctionCall extends SymbolicExpression{
         this.seq = sequence;
     }
 
+    /**
+     * Used to add arguments to the function call list
+     * @param arg the argument to be added to this list
+     */
     public void addArg(SymbolicExpression arg) {
         args.add(arg);
     }
 
 
+    /**
+     * Accepts the visitor class to function call
+     * @return the visited function call
+     */
     @Override
     public SymbolicExpression accept(Visitor v) {
         return v.visit(this);

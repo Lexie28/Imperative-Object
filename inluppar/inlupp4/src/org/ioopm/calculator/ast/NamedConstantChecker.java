@@ -259,21 +259,41 @@ public class NamedConstantChecker implements Visitor {
         return n;
     }
 
+    /**
+     *  checks the expression and when it finds an assignment, it will check that the variable being assigned is not a named constant
+     * @param n the end command to be visited in this capacity
+     * @return the visited expression
+     */
     @Override
     public SymbolicExpression visit(End n) {
         throw new RuntimeException("end");
     }
 
+    /**
+     *  checks the expression and when it finds an assignment, it will check that the variable being assigned is not a named constant
+     * @param n the function declaration to be visited in this capacity
+     * @return the visited expression
+     */
     @Override
     public SymbolicExpression visit(FunctionDeclaration n) {
         throw new RuntimeException("n fd");
     }
 
+    /**
+     *  checks the expression and when it finds an assignment, it will check that the variable being assigned is not a named constant
+     * @param n the function call to be visited in this capacity
+     * @return the visited expression
+     */
     @Override
     public SymbolicExpression visit(FunctionCall n) {
         return n.seq.accept(this);
     }
 
+    /**
+     *  checks the expression and when it finds an assignment, it will check that the variable being assigned is not a named constant
+     * @param n the sequence to be visited in this capacity
+     * @return the visited expression
+     */
     @Override
     public SymbolicExpression visit(Sequence n) {
         SymbolicExpression result = n.expression.accept(this);

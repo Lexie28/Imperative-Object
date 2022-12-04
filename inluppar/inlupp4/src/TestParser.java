@@ -12,9 +12,10 @@ public class TestParser {
         Addition a = new Addition(new Constant(42), new Negation(new Constant(4711)));
         CalculatorParser parser = new CalculatorParser();
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         
         try {
-            SymbolicExpression s = parser.parse(a.toString(), vars);
+            SymbolicExpression s = parser.parse(a.toString(), vars, funcs);
             assert a.equals(s);
         } catch(IOException e) {
             assert false;
@@ -26,9 +27,10 @@ public class TestParser {
         Negation n = new Negation(new Negation(new Negation(new Variable("x"))));
         CalculatorParser parser = new CalculatorParser();
         Environment vars = new Environment();
+        Environment funcs = new Environment();
 
         try {
-            SymbolicExpression s = parser.parse(n.toString(), vars);
+            SymbolicExpression s = parser.parse(n.toString(), vars, funcs);
             assert n.equals(s);
         } catch(IOException e) {
             assert false;
@@ -41,10 +43,11 @@ public class TestParser {
         CalculatorParser parser = new CalculatorParser();
         Environment vars = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
+        Environment funcs = new Environment();
 
         try {
-            SymbolicExpression s = parser.parse(n.toString(), vars);
-            assert ev.evaluate(n, vars).equals(ev.evaluate(s, vars));
+            SymbolicExpression s = parser.parse(n.toString(), vars, funcs);
+            assert ev.evaluate(n, vars, funcs).equals(ev.evaluate(s, vars, funcs));
         } catch(IOException e) {
             assert false;
         }

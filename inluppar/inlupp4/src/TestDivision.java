@@ -52,7 +52,8 @@ public class TestDivision {
     @Test
     public void testEval() {
         Environment vars = new Environment();
+        Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
-        assert c3.equals(ev.evaluate(a, vars));
+        assert c3.equals(ev.evaluate(a, vars, funcs));
     }
 }
