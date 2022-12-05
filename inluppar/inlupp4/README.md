@@ -12,8 +12,11 @@ This program serves as a symbolic calculator. The calculator offers different fu
 - Logarithms (base 10)
 - Negation
 - Commands
+- Scopes
+- Conditional expressions
+- Functions
 
-It can handle i) variables and ii)constants. The commands offered to the user are Vars (listing all of our stored values), Quit (quitting the program) and Clear (clearing the contents of Vars).
+The commands offered to the user are Vars (listing all of our stored values), Quit (quitting the program), End (finishing the definition of a function) and Clear (clearing the contents of Vars).
 
 # RUNNING THE PROGRAM & TESTS
 
@@ -52,3 +55,5 @@ Following things were covered in the test file:
 - Assignment of variables
 - Use of named constants
 - Overwriting assigned variables
+- Scopes
+- Conditional expressions

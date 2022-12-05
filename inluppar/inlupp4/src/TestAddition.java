@@ -6,8 +6,11 @@ public class TestAddition {
     Constant c1 = new Constant(2.0);
     Constant c2 = new Constant(2.0);
     Constant c3 = new Constant(4.0);
+    Constant c4 = new Constant(2.0);
+    Constant c5 = new Constant(2.0);
     Addition a = new Addition(c1, c2);
     Addition a2 = new Addition(c2, c1);
+    Addition a3 = new Addition(c4, c5);
 
     @Test
     public void testGetValue() {
@@ -46,7 +49,7 @@ public class TestAddition {
 
     @Test
     public void testEquals() {
-        assert a.equals(a2);
+        assert a.equals(a3);
     }
 
     @Test

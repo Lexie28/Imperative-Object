@@ -341,6 +341,11 @@ public class CalculatorParser {
         return result;
     }
 
+    /**
+     * Checks wether the token read is a scope
+     * @return a SymbolicExpression representing the scope
+     * @throws IOException by nextToken() if it reads invalid input
+     */
     private SymbolicExpression scope() throws IOException {
         SymbolicExpression result;
         if(this.st.ttype == OPEN_SCOPE) {
@@ -358,6 +363,11 @@ public class CalculatorParser {
         return result;
     }
 
+    /**
+     * Checks wether the token read is a conditional
+     * @return a SymbolicExpression representing the scope
+     * @throws IOException by nextToken() if it reads invalid input
+     */
     private SymbolicExpression conditional() throws IOException {
         if(!this.st.sval.equals(IF)) {
             throw new RuntimeException("expected 'if'");
