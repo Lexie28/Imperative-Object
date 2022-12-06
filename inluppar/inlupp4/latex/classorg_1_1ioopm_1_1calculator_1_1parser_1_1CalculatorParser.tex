@@ -1,0 +1,42 @@
+\hypertarget{classorg_1_1ioopm_1_1calculator_1_1parser_1_1CalculatorParser}{}\doxysection{org.\+ioopm.\+calculator.\+parser.\+Calculator\+Parser Class Reference}
+\label{classorg_1_1ioopm_1_1calculator_1_1parser_1_1CalculatorParser}\index{org.ioopm.calculator.parser.CalculatorParser@{org.ioopm.calculator.parser.CalculatorParser}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classorg_1_1ioopm_1_1calculator_1_1parser_1_1CalculatorParser_a70f1be54d1cc24a2c5b4b81922d35ca2}\label{classorg_1_1ioopm_1_1calculator_1_1parser_1_1CalculatorParser_a70f1be54d1cc24a2c5b4b81922d35ca2}} 
+boolean {\bfseries in\+Function\+Parsing\+Mode} ()
+\item 
+\mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1ast_1_1SymbolicExpression}{Symbolic\+Expression}} \mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1parser_1_1CalculatorParser_a2120bf171e83d567ac3f321535dafad3}{parse}} (String input\+String, \mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1ast_1_1Environment}{Environment}} vars, \mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1ast_1_1Environment}{Environment}} funcs)  throws I\+O\+Exception 
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the parsing of strings into valid expressions defined in the A\+ST. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classorg_1_1ioopm_1_1calculator_1_1parser_1_1CalculatorParser_a2120bf171e83d567ac3f321535dafad3}\label{classorg_1_1ioopm_1_1calculator_1_1parser_1_1CalculatorParser_a2120bf171e83d567ac3f321535dafad3}} 
+\index{org.ioopm.calculator.parser.CalculatorParser@{org.ioopm.calculator.parser.CalculatorParser}!parse@{parse}}
+\index{parse@{parse}!org.ioopm.calculator.parser.CalculatorParser@{org.ioopm.calculator.parser.CalculatorParser}}
+\doxysubsubsection{\texorpdfstring{parse()}{parse()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1ast_1_1SymbolicExpression}{Symbolic\+Expression}} org.\+ioopm.\+calculator.\+parser.\+Calculator\+Parser.\+parse (\begin{DoxyParamCaption}\item[{String}]{input\+String,  }\item[{\mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1ast_1_1Environment}{Environment}}}]{vars,  }\item[{\mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1ast_1_1Environment}{Environment}}}]{funcs }\end{DoxyParamCaption}) throws I\+O\+Exception\hspace{0.3cm}{\ttfamily [inline]}}
+
+Used to parse the inputted string by the \mbox{\hyperlink{classorg_1_1ioopm_1_1calculator_1_1Calculator}{Calculator}} program 
+\begin{DoxyParams}{Parameters}
+{\em input\+String} & the string used to parse \\
+\hline
+{\em vars} & the Environment in which the variables exist \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a Symbolic\+Expression to be evaluated 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em I\+O\+Exception} & by next\+Token() if it reads invalid input \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/org/ioopm/calculator/parser/Calculator\+Parser.\+java\end{DoxyCompactItemize}
