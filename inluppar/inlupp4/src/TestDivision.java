@@ -9,6 +9,11 @@ public class TestDivision {
     Division a = new Division(c1, c2);
     Division a2 = new Division(c2, c1);
 
+    Constant c4 = new Constant(10.0);
+    Constant c5 = new Constant(5.0);
+    Constant c6 = new Constant(2.0);
+    Division a3 = new Division(c4, c5);
+
     @Test
     public void testGetValue() {
         try {
@@ -22,6 +27,7 @@ public class TestDivision {
     @Test
     public void testIsConstant() {
         assert false == a.isConstant();
+        assert false == a3.isConstant();
     }
 
     @Test
@@ -32,16 +38,19 @@ public class TestDivision {
     @Test
     public void testIsCommand() {
         assert false == a.isCommand();
+        assert false == a3.isCommand();
     }
 
     @Test
     public void testPriority() {
         assert 100 == a.getPriority();
+        assert 100 == a3.getPriority();
     }
 
     @Test
     public void testToString() {
         assert "2.0 / 2.0".equals(a.toString());
+        assert "10.0 / 5.0".equals(a3.toString());
     }
 
     @Test
@@ -55,5 +64,13 @@ public class TestDivision {
         Environment funcs = new Environment();
         EvaluationVisitor ev = new EvaluationVisitor();
         assert c3.equals(ev.evaluate(a, vars, funcs));
+    }
+
+    @Test
+    public void testEval2() {
+        Environment vars = new Environment();
+        Environment funcs = new Environment();
+        EvaluationVisitor ev = new EvaluationVisitor();
+        assert c6.equals(ev.evaluate(a3, vars, funcs));
     }
 }

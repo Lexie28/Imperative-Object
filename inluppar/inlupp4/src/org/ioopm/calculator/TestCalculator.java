@@ -14,6 +14,7 @@ public class TestCalculator {
     public static void main(String[] args) throws IOException {
         final CalculatorParser parser = new CalculatorParser();
         final Environment vars = new Environment();
+        final Environment funcs = new Environment();
         final Stats stats = new Stats();
 
         Scanner sc = new Scanner(new File(args[0]));
@@ -22,7 +23,7 @@ public class TestCalculator {
         while (sc.hasNextLine()) {
             String input = sc.nextLine();
             try {
-                SymbolicExpression ob = parser.parse(input, vars);
+                SymbolicExpression ob = parser.parse(input, vars, funcs);
                 if (ob.isCommand())
                 {
                     if (ob instanceof Clear) {
@@ -39,7 +40,7 @@ public class TestCalculator {
                 {
                     stats.addExpression();
                     EvaluationVisitor ev = new EvaluationVisitor();
-                    SymbolicExpression evaluatedob = ev.evaluate(ob, vars);
+                    SymbolicExpression evaluatedob = ev.evaluate(ob, vars, funcs);
                     fw.write("" + evaluatedob);
                     vars.put(new Variable("ans"), evaluatedob);
                     if (evaluatedob.isConstant()) {
