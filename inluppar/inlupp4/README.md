@@ -18,6 +18,8 @@ This program serves as a symbolic calculator. The calculator offers different fu
 
 The commands offered to the user are Vars (listing all of our stored values), Quit (quitting the program), End (finishing the definition of a function) and Clear (clearing the contents of Vars).
 
+Additional documentation is located at html/index.html
+
 # RUNNING THE PROGRAM & TESTS
 
 Running and interacting with the calculator
