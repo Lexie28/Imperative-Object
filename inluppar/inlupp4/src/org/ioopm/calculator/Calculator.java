@@ -38,11 +38,10 @@ public class Calculator {
                         break;
                     }
                     if (ob instanceof End) {
-
                         currentFuncName = new Variable("");
 
                     }
-                } else if (parser.getFunctionParsingMode()){
+                } else if (parser.inFunctionParsingMode()){
                     if(ob instanceof FunctionDeclaration fd) {
                         funcs.put(new Variable(fd.getIdentifier()), fd);
                         currentFuncName = new Variable(fd.getIdentifier());

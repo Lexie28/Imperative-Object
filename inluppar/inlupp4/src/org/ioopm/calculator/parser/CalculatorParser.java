@@ -41,10 +41,10 @@ public class CalculatorParser {
     private static String EQUALS = "==";
     private static String FUNCTION = "function";
 
-
+    private boolean firstExpression = false;
     private boolean functionParsingMode = false;
 
-    public boolean getFunctionParsingMode() {
+    public boolean inFunctionParsingMode() {
         return functionParsingMode;
     }
 
@@ -97,9 +97,11 @@ public class CalculatorParser {
             || this.st.sval.equals("End")) { // sval = string Variable
                 result = command();
             } else {
+                firstExpression = false;
                 result = assignment(); // går vidare med uttrycket.
             }
         } else {
+            firstExpression = false;
             result = assignment(); // om inte == word, gå till assignment ändå (kan vara tt_number)
         }
 
@@ -129,6 +131,10 @@ public class CalculatorParser {
         } else {
             if(functionParsingMode) {
                 functionParsingMode = false;
+                if(firstExpression) {
+                    funcs.remove(new Variable(st.sval));
+                    throw new RuntimeException("Function needs to contain a body");
+                }
                 return End.instance();
             } else {
                 throw new RuntimeException("End can only occur as end of function definition");
@@ -282,6 +288,7 @@ public class CalculatorParser {
                     throw new RuntimeException("Nested functions are not permitted");
                 }
                 functionParsingMode = true;
+                firstExpression = true;
                 this.st.nextToken();
                 if (this.st.ttype == StreamTokenizer.TT_WORD) {
                     func = new FunctionDeclaration(this.st.sval);
@@ -303,6 +310,7 @@ public class CalculatorParser {
                     } else if( this.st.ttype != ')'){
                         throw new SyntaxErrorException("expected ')'"); 
                     }
+                    
                 }
 
                 result = func;

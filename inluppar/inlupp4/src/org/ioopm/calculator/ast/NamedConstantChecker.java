@@ -2,6 +2,8 @@ package org.ioopm.calculator.ast;
 
 import java.util.ArrayList;
 
+import javax.management.RuntimeErrorException;
+
 
 public class NamedConstantChecker implements Visitor {
     public ArrayList<SymbolicExpression> checkList = new ArrayList<SymbolicExpression>();
@@ -286,7 +288,12 @@ public class NamedConstantChecker implements Visitor {
      */
     @Override
     public SymbolicExpression visit(FunctionCall n) {
-        return n.seq.accept(this);
+        try{
+            return n.seq.accept(this);
+        } catch (Exception e) {
+            throw new NullPointerException("Function does not exist");
+        }
+        
     }
 
     /**
