@@ -426,8 +426,9 @@ public class EvaluationVisitor implements Visitor {
             }
 
         }
-
+        
         SymbolicExpression expression = n.seq.accept(this);
+        
 
         env.popEnvironment();
         return expression;
